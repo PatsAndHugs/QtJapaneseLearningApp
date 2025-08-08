@@ -37,6 +37,7 @@ ApplicationWindow {
         }
     }
 
+
     Gradient{
         id:_itemGrad
 
@@ -69,7 +70,13 @@ ApplicationWindow {
 
             //color: myListView.currentIndex === index ? "#ffff66" : "#94DEA5"
             gradient: myListView.currentIndex == index ? _itemGradSelected : _itemGrad
-
+            Image {
+                id: _img
+                source: "qrc:/image/resources/silencesuzuka.png"
+                width:50
+                height:50
+                //fillMode: Image.PreserveAspectFit
+            }
             Text {
                 id: contactInfo
                 text: name + ": " + number
