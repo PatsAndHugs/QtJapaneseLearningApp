@@ -1,6 +1,7 @@
 import QtQuick
-
-Window {
+import QtQuick.Controls
+import QtQuick.Window
+ApplicationWindow {
 
     ///COLOR SCHEME #023D54 #9A6735 #94DEA5 #ffff66
     width: 720
@@ -9,6 +10,21 @@ Window {
     title: qsTr("Japanese Learning App")
     color:"#023D54"
 
+    header: MenuBar{
+        MenuBarItem{
+            text: qsTr("Connection Config")
+            menu:Menu {
+                id:_menu
+                MenuItem{
+                    text:"Edit Connection"
+                    onTriggered: console.log("edit connection triggered")
+                }
+
+                MenuItem{text:"Exit"}
+            }
+
+        }
+    }
     Gradient{
         id:_itemGrad
 
