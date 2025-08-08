@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Qt.labs.platform 1.1
 
 ApplicationWindow {
 
@@ -39,6 +40,24 @@ ApplicationWindow {
             Layout.preferredHeight: 20
         }
 
+        TextField{
+            id:_fileDiagTxtField
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            placeholderText: qsTr("Enter key file path...")
+            Layout.preferredHeight: 20
+            Button{
+                id:_fileDialogBtn
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.top: parent.top
+                anchors.left: parent.horizontalCenter
+                anchors.leftMargin: 30
+                text:qsTr(". . .")
+                onClicked: _fileDialog.open()
+            }
+        }
+
         Button{
             id:_connWindowBtn
             Layout.topMargin: 10
@@ -51,4 +70,19 @@ ApplicationWindow {
         }
 
     }
+
+    FileDialog{
+        id:_fileDialog
+        title: qsTr("Select File")
+        nameFilters: ["XML files (*.xml)"]
+        //selectedNameFilter:"All files(*)"
+
+        onAccepted: {
+            console.log("Selecred file " + _fileDialog.currentFile)
+            _fileDiagTxtField.text = _fileDialog.currentFile
+        }
+    }
+
 }
+
+
