@@ -1,9 +1,11 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
+
 ApplicationWindow {
 
     ///COLOR SCHEME #023D54 #9A6735 #94DEA5 #ffff66
+    id:_mainAppWindow
     width: 720
     height: 1280
     visible: true
@@ -17,7 +19,16 @@ ApplicationWindow {
                 id:_menu
                 MenuItem{
                     text:"Edit Connection"
-                    onTriggered: console.log("edit connection triggered")
+                    onClicked:{
+                        var component = Qt.createComponent("DbConnWindow.qml")
+                        if(component.status === Component.Ready){
+                            var newWindow = component.createObject(_mainAppWindow);
+                            newWindow.show()
+                        }
+                        else
+                            console.log("Error loading component:",component.errorString())
+                    }
+
                 }
 
                 MenuItem{text:"Exit"}
@@ -25,6 +36,7 @@ ApplicationWindow {
 
         }
     }
+
     Gradient{
         id:_itemGrad
 
