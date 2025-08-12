@@ -2,6 +2,7 @@
 #define XMLREADERCLASS_H
 
 #include "QtXml"
+
 class XMLReaderClass
 {
 public:
@@ -10,8 +11,17 @@ public:
 public:
 
     void loadDocument(QString filePath);
+
+    QString getUsername();
+    QString getPassword();
+
+
+private:
+
     QDomElement root;
     QDomDocument document;
+
+    QString readElement(QDomElement rootelem, QString tagName, QString attribute);
 };
 
 #endif // XMLREADERCLASS_H
