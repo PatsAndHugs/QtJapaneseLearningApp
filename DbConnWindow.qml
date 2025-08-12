@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Qt.labs.platform 1.1
+import JapaneseLearningApp.DbConnectionClass
 
 ApplicationWindow {
 
@@ -10,6 +11,10 @@ ApplicationWindow {
     visible: true
     title: qsTr("Connectiion Window")
     color:"#023D54"
+
+    DbConnClass{
+        id:_dbConnClass
+    }
 
     GridLayout{
         id:_gridLayout
@@ -65,8 +70,7 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
             text:qsTr("Save")
-            onClicked: console.log("dbconwindclicked")
-
+            onClicked: saveConnFilePath()
         }
 
     }
@@ -81,6 +85,13 @@ ApplicationWindow {
             console.log("Selecred file " + _fileDialog.currentFile)
             _fileDiagTxtField.text = _fileDialog.currentFile
         }
+    }
+
+    function saveConnFilePath()
+    {
+        _dbConnClass.configFilePath = _fileDiagTxtField.text
+        _dbConnClass.loadXmlFile()
+        _dbConnClass.setupConn()
     }
 
 }
