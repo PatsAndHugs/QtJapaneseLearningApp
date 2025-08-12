@@ -37,6 +37,7 @@ object_script.*.Release
 *_plugin_import.cpp
 
 # Temporary and log files
+CMakeLists.txt.user
 *.log
 *.tmp
 *.bak
