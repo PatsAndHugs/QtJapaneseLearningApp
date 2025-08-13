@@ -29,16 +29,16 @@ void XMLReaderClass::loadDocument(QString filePath)
 
 QString XMLReaderClass::getUsername()
 {
-    return readElement(root,"dbconfigusername","username");
+    return readElement("dbconfigusername");
 }
 
 QString XMLReaderClass::getPassword()
 {
-    return readElement(root,"dbconfigpassword","password");
+    return readElement("dbconfigpassword");
 
 }
 
-QString XMLReaderClass::readElement(QDomElement rootelem, QString tagName, QString attribute)
+QString XMLReaderClass::readElement(QString tagName)
 {
     QDomElement childElement = root.firstChildElement(tagName);
 
