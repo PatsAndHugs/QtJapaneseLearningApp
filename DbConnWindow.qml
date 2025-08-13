@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Qt.labs.platform 1.1
 import JapaneseLearningApp.DbConnectionClass
+import QtQuick.Dialogs
 
 ApplicationWindow {
 
@@ -81,7 +82,14 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: 40
             text:qsTr("Save")
-            onClicked: saveConnFilePath()
+            onClicked: textFieldCheck()
+        }
+
+        MessageDialog {
+            id:_dialog
+            title:"Message"
+            text: "No File Path Selected"
+            buttons: MessageDialog.Ok
         }
 
     }
@@ -98,11 +106,22 @@ ApplicationWindow {
         }
     }
 
+    function textFieldCheck()
+    {
+        if(_fileDiagTxtField.text !== "")
+            saveConnFilePath()
+        else
+            _dialog.open()
+    }
+
     function saveConnFilePath()
     {
         _dbConnClass.configFilePath = _fileDiagTxtField.text
         _dbConnClass.loadXmlFile()
         _dbConnClass.setupConn()
+        if(_rememberCheckBox.checkState === Qt.Checked){
+            _dbConnClass.saveFilePathToXml()
+        }
     }
 
 }

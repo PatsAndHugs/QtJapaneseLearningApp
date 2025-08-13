@@ -1,4 +1,6 @@
 #include "xmlreaderclass.h"
+#include "QFile"
+#include "QXmlStreamWriter"
 
 XMLReaderClass::XMLReaderClass() {}
 
@@ -46,4 +48,55 @@ QString XMLReaderClass::readElement(QString tagName)
         return childElement.text();
     }
     return "";
+}
+
+void XMLReaderClass::replaceElementVal(QString xmlPath, QString newText)
+{
+    QFile file = QString(xmlPath);
+
+    if(!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        return;
+    }
+
+    QDomDocument doc;
+
+    if(!doc.setContent(&file))
+    {
+        file.close();
+        return;
+    }
+    file.close();
+
+    QDomElement repRoot = doc.documentElement();
+    QDomElement targetElement = repRoot.firstChildElement("filepath");
+
+    if(!targetElement.isNull())
+    {
+        QDomNode child = targetElement.firstChild();
+        while(!child.isNull())
+        {
+            QDomNode nextChild = child.nextSibling();
+            if(child.isText())
+            {
+                targetElement.removeChild(child);
+                qDebug()<<"replaceElement";
+            }
+
+            child = nextChild;
+        }
+        //Text to save
+        QDomText outText = doc.createTextNode(newText);
+        targetElement.appendChild(outText);
+    }
+
+    QFile outFile(xmlPath);
+    if(!outFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
+        return;
+
+    QTextStream stream(&outFile);
+    doc.save(stream,4);
+    outFile.close();
+
+
 }
