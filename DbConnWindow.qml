@@ -63,6 +63,17 @@ ApplicationWindow {
             }
         }
 
+        CheckBox{
+            id:_rememberCheckBox
+            Layout.columnSpan: 2
+            Layout.alignment: Qt.AlignRight
+            text: "Remember Path"
+            checkState: Qt.Unchecked
+            onCheckedChanged: {
+                console.log("checkbox is", checked)
+            }
+        }
+
         Button{
             id:_connWindowBtn
             Layout.topMargin: 10
