@@ -119,8 +119,13 @@ ApplicationWindow {
         _dbConnClass.configFilePath = _fileDiagTxtField.text
         _dbConnClass.loadXmlFile()
         _dbConnClass.setupConn()
-        if(_rememberCheckBox.checkState === Qt.Checked){
+        if(_rememberCheckBox.checkState === Qt.Checked)
+        {
             _dbConnClass.saveFilePathToXml()
+        }
+        else
+        {
+            _dbConnClass.clearFilePathInXML()
         }
     }
 

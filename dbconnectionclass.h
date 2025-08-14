@@ -19,6 +19,7 @@ public:
     Q_INVOKABLE void setupConn();
     Q_INVOKABLE void loadXmlFile();
     Q_INVOKABLE void saveFilePathToXml();
+    Q_INVOKABLE void clearFilePathInXML();
 
     QString getConfigFilePath(){return _dbConfigFilePath;}
 

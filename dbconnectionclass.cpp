@@ -2,6 +2,7 @@
 
 DbConnectionClass::DbConnectionClass()
 {
+    xmlReader = new XMLReaderClass;
 }
 
 void DbConnectionClass::setupConn()
@@ -23,8 +24,7 @@ void DbConnectionClass::setupConn()
 void DbConnectionClass::loadXmlFile()
 {
     if(_dbConfigFilePath !="")
-    {
-        xmlReader = new XMLReaderClass;
+    {    
         xmlReader->loadDocument(_dbConfigFilePath);
         qDebug()<<"loaded xml file";
     }
@@ -32,10 +32,14 @@ void DbConnectionClass::loadXmlFile()
 
 void DbConnectionClass::saveFilePathToXml()
 {
-    xmlReader = new XMLReaderClass;
     //A:/C++Practice/qt/QtJapaneseLearningApp
     if(_dbConfigFilePath != "")
         xmlReader->replaceElementVal("Config.xml",_dbConfigFilePath);
+}
+
+void DbConnectionClass::clearFilePathInXML()
+{
+    xmlReader->replaceElementVal("Config.xml","");
 }
 
 void DbConnectionClass::setConfigFilePath(const QString &configFilePath)
