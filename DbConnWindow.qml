@@ -52,6 +52,7 @@ ApplicationWindow {
             Layout.fillWidth: true
             placeholderText: qsTr("Enter key file path...")
             Layout.preferredHeight: 20
+            text:_dbConnClass.configFilePath
             Button{
                 id:_fileDialogBtn
                 anchors.right: parent.right
@@ -69,7 +70,7 @@ ApplicationWindow {
             Layout.columnSpan: 2
             Layout.alignment: Qt.AlignRight
             text: "Remember Path"
-            checkState: Qt.Unchecked
+            checkState: setCheckBoxCheckedState()
             onCheckedChanged: {
                 console.log("checkbox is", checked)
             }
@@ -127,6 +128,14 @@ ApplicationWindow {
         {
             _dbConnClass.clearFilePathInXML()
         }
+    }
+
+    function setCheckBoxCheckedState()
+    {
+        if(_dbConnClass.bHasSavedPathFile === true)
+            return Qt.Checked
+        else
+            return Qt.Unchecked
     }
 
 }

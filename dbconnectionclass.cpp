@@ -3,6 +3,8 @@
 DbConnectionClass::DbConnectionClass()
 {
     xmlReader = new XMLReaderClass;
+    //readxml if element is not blank fetch it
+    initializeSavedPathFile();
 }
 
 void DbConnectionClass::setupConn()
@@ -47,4 +49,24 @@ void DbConnectionClass::setConfigFilePath(const QString &configFilePath)
     QString newString = configFilePath;
     _dbConfigFilePath = newString.remove(0,8);
     emit configfilePathChanged();
+}
+
+void DbConnectionClass::setHasSavedPathFile(const bool &bState)
+{
+    bHasSavedPathFile = bState;
+}
+
+void DbConnectionClass::initializeSavedPathFile()
+{
+    QString savedPathFile = xmlReader->getSavedPathFile();
+    if(savedPathFile == "")
+    {
+        bHasSavedPathFile = false;
+        return;
+    }
+    else
+    {
+        _dbConfigFilePath = savedPathFile;
+        bHasSavedPathFile = true;
+    }
 }

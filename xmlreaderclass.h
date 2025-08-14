@@ -14,7 +14,7 @@ public:
     void replaceElementVal(QString xmlPath, QString newText);
     QString getUsername();
     QString getPassword();
-
+    QString getSavedPathFile();
 
 private:
 

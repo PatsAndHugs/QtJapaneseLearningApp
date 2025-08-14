@@ -40,6 +40,12 @@ QString XMLReaderClass::getPassword()
 
 }
 
+QString XMLReaderClass::getSavedPathFile()
+{
+    loadDocument("Config.xml");
+    return readElement("filepath");
+}
+
 QString XMLReaderClass::readElement(QString tagName)
 {
     QDomElement childElement = root.firstChildElement(tagName);
