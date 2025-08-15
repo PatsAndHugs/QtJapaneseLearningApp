@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
+import QtQuick.Layouts
 
 ApplicationWindow {
 
@@ -28,7 +29,6 @@ ApplicationWindow {
                         else
                             console.log("Error loading component:",component.errorString())
                     }
-
                 }
 
                 MenuItem{text:"Exit"}
@@ -56,15 +56,19 @@ ApplicationWindow {
 
     ListView {
         id: myListView
-        width: (parent.width / 2) - 50; height: parent.height / 2
-        anchors.centerIn: parent
+        //width: (parent.width / 2) - 50; height: parent.height / 2
+        //width:500; height:500
+        // anchors.right: parent.right
+        // anchors.left: parent.left
+        // anchors.top: parent.top
+        anchors.fill: parent
         spacing:10
         delegate: Rectangle {
-
             id: wrapper
-            width: 300
+            width: myListView.width
             height: contactInfo.height * 5
             radius: 8
+            //anchors.fill: parent
             //color: ListView.isCurrentItem ? "#5ee527" : "#87ea55"
             //Behavior on color { ColorAnimation { duration: 100 } }
 
@@ -94,6 +98,34 @@ ApplicationWindow {
         model: ModelTest {}
 
         focus: true
+    }
+
+    GridLayout{
+        id:_btnGrid
+        columns: 3
+        //anchors.fill: parent
+        anchors.bottom:parent.bottom
+        anchors.left:parent.left
+        anchors.right:parent.right
+        Button{
+            id: _selectAllBtn
+            text: qsTr("Select All")
+            Layout.preferredHeight: 100
+            Layout.fillWidth: true
+        }
+        Button{
+            id: _selectLast5
+            text: qsTr("Select Last 5")
+            Layout.preferredHeight: 100
+            Layout.fillWidth: true
+        }
+        Button{
+            id: _selectAllWrong
+            text: qsTr("Select Mistakes")
+            Layout.preferredHeight: 100
+            Layout.fillWidth: true
+        }
+
     }
 
 
