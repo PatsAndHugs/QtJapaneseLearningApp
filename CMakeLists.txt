@@ -22,6 +22,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         SOURCES xmlreaderclass.h xmlreaderclass.cpp
         RESOURCES AppResources.qrc
         SOURCES dbconnectionclass.h dbconnectionclass.cpp
+        QML_FILES ListItemCard.qml
 )
 
 # add resource items here

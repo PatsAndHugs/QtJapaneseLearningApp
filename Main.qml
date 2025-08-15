@@ -63,36 +63,15 @@ ApplicationWindow {
         // anchors.top: parent.top
         anchors.fill: parent
         spacing:10
-        delegate: Rectangle {
-            id: wrapper
-            width: myListView.width
-            height: contactInfo.height * 5
-            radius: 8
-            //anchors.fill: parent
-            //color: ListView.isCurrentItem ? "#5ee527" : "#87ea55"
-            //Behavior on color { ColorAnimation { duration: 100 } }
 
-            //color: myListView.currentIndex === index ? "#ffff66" : "#94DEA5"
-            gradient: myListView.currentIndex == index ? _itemGradSelected : _itemGrad
-            Image {
-                id: _img
-                source: "qrc:/image/resources/silencesuzuka.png"
-                width:50
-                height:50
-                //fillMode: Image.PreserveAspectFit
-            }
-            Text {
-                id: contactInfo
-                text: name + ": " + number
-                color: wrapper.ListView.isCurrentItem ? "black" : "black"
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                anchors.centerIn: parent
-            }
-            MouseArea{
-                anchors.fill: parent
-                onClicked: myListView.currentIndex = index
-            }
+        delegate: ListItemCard{ id:_wrapper
+                                lblText:name + ": " + number
+                                lblTextColor: ListView.isCurrentItem ? "black" : "black"
+                                //mouseAreaOnclick: myListView.currentIndex = index
+                                width: myListView.width
+                                height: 100
+                                gradient: myListView.currentIndex == index ? _itemGradSelected : _itemGrad
+                                MouseArea{anchors.fill: parent; onClicked: myListView.currentIndex = index}
         }
 
         model: ModelTest {}
