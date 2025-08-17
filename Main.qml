@@ -65,7 +65,9 @@ ApplicationWindow {
         spacing:10
 
         delegate: ListItemCard{ id:_wrapper
-                                lblText:name + ": " + number
+                                kanjiText: Kanji
+                                kunyomiText: Kunyomi
+                                onyomiText: Onyomi
                                 lblTextColor: ListView.isCurrentItem ? "black" : "black"
                                 //mouseAreaOnclick: myListView.currentIndex = index
                                 width: myListView.width

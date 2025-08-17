@@ -5,23 +5,50 @@ Rectangle {
     color: "black"
     radius: 8
     //property alias mouseAreaOnclick: _mouseArea.onClicked
-    property alias lblTextColor: _text.color
-    property alias lblText: _text.text
+    property alias lblTextColor: _textKunyomi.color
+    property alias kanjiText: _textKanji.text
+    property alias kunyomiText: _textKunyomi.text
+    property alias onyomiText: _textOnyomi.text
 
-    Image {
-        id: _img
-        source: "qrc:/image/resources/silencesuzuka.png"
-        width:50
-        height:50
-        //fillMode: Image.PreserveAspectFit
+    // Image {
+    //     id: _img
+    //     source: "qrc:/image/resources/silencesuzuka.png"
+    //     width:50
+    //     height:50
+    //     //fillMode: Image.PreserveAspectFit
+    // }
+    Text{
+        id:_textKanji
+        color: "black"
+        font.pointSize: 36
+        horizontalAlignment: Text.AlignHCenter
+        anchors.left: parent.left
+        anchors.leftMargin: 50
+        anchors.bottom: parent.bottom
+        anchors.top: parent.top
+        anchors.topMargin: 10
     }
 
     Text{
-        id:_text
+        id:_textKunyomi
         color: "black"
         horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        anchors.centerIn: parent
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.top: parent.top
+        anchors.topMargin: 5
+        font.pointSize: 20
+    }
+
+    Text{
+        id:_textOnyomi
+        color: "black"
+        horizontalAlignment: Text.AlignHCenter
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 10
+        font.pointSize: 20
     }
 
     MouseArea{
