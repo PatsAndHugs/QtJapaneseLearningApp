@@ -2,15 +2,18 @@ import QtQuick
 
 ListModel{
     ListElement {
-        name: "Bill Smith"
-        number: "555 3264"
+        Kanji: "人"
+        Kunyomi: "ひと　ーり　ーと"
+        Onyomi:"シン　ニン"
     }
     ListElement {
-        name: "John Brown"
-        number: "555 8426"
+        Kanji: "時"
+        Kunyomi: "とき　ーどき"
+        Onyomi: "ジ"
     }
     ListElement {
-        name: "Sam Wise"
-        number: "555 0473"
+        Kanji: "一"
+        Kunyomi: "ひとー"
+        Onyomi:　"イチ　イツ"
     }
 }
