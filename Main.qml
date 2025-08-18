@@ -10,8 +10,11 @@ ApplicationWindow {
     width: 720
     height: 1280
     visible: true
+    x: Screen.width / 2 - width / 2
+    y: Screen.height / 2 - height / 2
     title: qsTr("Japanese Learning App")
     color:"#023D54"
+
 
     header: MenuBar{
         MenuBarItem{
@@ -88,23 +91,30 @@ ApplicationWindow {
         anchors.bottom:parent.bottom
         anchors.left:parent.left
         anchors.right:parent.right
-        Button{
+
+        AppBaseBtn{
             id: _selectAllBtn
-            text: qsTr("Select All")
+            text:qsTr("Select Alll")
             Layout.preferredHeight: 100
-            Layout.fillWidth: true
+            Layout.preferredWidth: parent.width / parent.columns
+            btnBgColor: "#ffff66"
+            font.pointSize: 15
         }
-        Button{
+        AppBaseBtn{
             id: _selectLast5
             text: qsTr("Select Last 5")
             Layout.preferredHeight: 100
-            Layout.fillWidth: true
+            Layout.preferredWidth: parent.width / parent.columns
+            btnBgColor: "#ffff66"
+            font.pointSize: 15
         }
-        Button{
+        AppBaseBtn{
             id: _selectAllWrong
-            text: qsTr("Select Mistakes")
+            text: qsTr("Select All Mistakes")
             Layout.preferredHeight: 100
-            Layout.fillWidth: true
+            Layout.preferredWidth: parent.width / parent.columns
+            btnBgColor: "#ffff66"
+            font.pointSize: 15
         }
 
     }

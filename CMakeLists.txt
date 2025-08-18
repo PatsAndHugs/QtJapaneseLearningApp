@@ -23,6 +23,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         RESOURCES AppResources.qrc
         SOURCES dbconnectionclass.h dbconnectionclass.cpp
         QML_FILES ListItemCard.qml
+        QML_FILES AppBaseBtn.qml
 )
 
 # add resource items here

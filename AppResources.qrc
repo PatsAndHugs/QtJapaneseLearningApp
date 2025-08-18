@@ -2,4 +2,5 @@
     <qresource prefix="/image">
         <file>resources/silencesuzuka.png</file>
     </qresource>
+    <qresource prefix="/"/>
 </RCC>
