@@ -1,12 +1,11 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Basic
 
 Button {
     id: _baseBtn
     property alias btnBgColor: _rect.color
 
-
-    contentItem: Text {
+    contentItem:Text {
         id: _text
         text: _baseBtn.text
         font: _baseBtn.font

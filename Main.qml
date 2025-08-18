@@ -97,7 +97,7 @@ ApplicationWindow {
             text:qsTr("Select Alll")
             Layout.preferredHeight: 100
             Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: "#ffff66"
+            btnBgColor: _selectAllBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
         }
         AppBaseBtn{
@@ -105,7 +105,7 @@ ApplicationWindow {
             text: qsTr("Select Last 5")
             Layout.preferredHeight: 100
             Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: "#ffff66"
+            btnBgColor: _selectLast5.hovered ? "white" : "#ffff66"
             font.pointSize: 15
         }
         AppBaseBtn{
@@ -113,7 +113,7 @@ ApplicationWindow {
             text: qsTr("Select All Mistakes")
             Layout.preferredHeight: 100
             Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: "#ffff66"
+            btnBgColor: _selectAllWrong.hovered ? "white" : "#ffff66"
             font.pointSize: 15
         }
 
