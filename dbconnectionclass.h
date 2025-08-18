@@ -5,6 +5,7 @@
 #include <xmlreaderclass.h>
 #include <qsqldatabase.h>
 #include <qqml.h>
+#include <kanjilistmodel.h>
 
 class DbConnectionClass : public QObject
 {
@@ -27,6 +28,7 @@ public:
 
     bool getHasSavedPathFile(){return bHasSavedPathFile;}
     void setHasSavedPathFile(const bool &bState);
+    Q_INVOKABLE KanjiListModel* getModel(){return _model;}
 
 signals:
 
@@ -35,11 +37,14 @@ signals:
 
 private:
 
+    KanjiListModel* _model;
     QString _dbConfigFilePath;
     XMLReaderClass* xmlReader;
     QSqlDatabase db;
     void initializeSavedPathFile();
     bool bHasSavedPathFile;
+
+    void insertItemsToModel();
 };
 
 #endif // DBCONNECTIONCLASS_H

@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
+import JapaneseLearningApp.DbConnectionClass
 
 ApplicationWindow {
 
@@ -14,7 +15,6 @@ ApplicationWindow {
     y: Screen.height / 2 - height / 2
     title: qsTr("Japanese Learning App")
     color:"#023D54"
-
 
     header: MenuBar{
         MenuBarItem{
@@ -39,7 +39,6 @@ ApplicationWindow {
 
         }
     }
-
 
     Gradient{
         id:_itemGrad
@@ -68,9 +67,9 @@ ApplicationWindow {
         spacing:10
 
         delegate: ListItemCard{ id:_wrapper
-                                kanjiText: Kanji
-                                kunyomiText: Kunyomi
-                                onyomiText: Onyomi
+                                kanjiText: kanji
+                                kunyomiText: kunyomi
+                                onyomiText: onyomi
                                 lblTextColor: ListView.isCurrentItem ? "black" : "black"
                                 //mouseAreaOnclick: myListView.currentIndex = index
                                 width: myListView.width
@@ -79,8 +78,7 @@ ApplicationWindow {
                                 MouseArea{anchors.fill: parent; onClicked: myListView.currentIndex = index}
         }
 
-        model: ModelTest {}
-
+        model: KanjiModel
         focus: true
     }
 
@@ -117,6 +115,10 @@ ApplicationWindow {
             font.pointSize: 15
         }
 
+    }
+
+    DbConnClass{
+        id: _dbConnClass
     }
 
 

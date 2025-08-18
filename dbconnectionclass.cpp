@@ -5,6 +5,8 @@ DbConnectionClass::DbConnectionClass()
     xmlReader = new XMLReaderClass;
     //readxml if element is not blank fetch it
     initializeSavedPathFile();
+    _model = new KanjiListModel;
+    insertItemsToModel();
 }
 
 void DbConnectionClass::setupConn()
@@ -69,4 +71,12 @@ void DbConnectionClass::initializeSavedPathFile()
         _dbConfigFilePath = savedPathFile;
         bHasSavedPathFile = true;
     }
+}
+
+void DbConnectionClass::insertItemsToModel()
+{
+    KanjiItemStruct kanjiStruct("今","いま","none","Today");
+    KanjiItemStruct kanjiStruct2("目","め","モク","Eye");
+    _model->addItem(kanjiStruct);
+    _model->addItem(kanjiStruct2);
 }
