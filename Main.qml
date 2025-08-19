@@ -68,6 +68,7 @@ ApplicationWindow {
 
         delegate: ListItemCard{ id:_wrapper
                                 kanjiText: kanji
+                                englishMeaningText: kanjienglishname
                                 kunyomiText: kunyomi
                                 onyomiText: onyomi
                                 lblTextColor: ListView.isCurrentItem ? "black" : "black"

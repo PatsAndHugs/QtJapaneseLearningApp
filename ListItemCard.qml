@@ -9,6 +9,7 @@ Rectangle {
     property alias kanjiText: _textKanji.text
     property alias kunyomiText: _textKunyomi.text
     property alias onyomiText: _textOnyomi.text
+    property alias englishMeaningText: _textEnglishMeaning.text
 
     // Image {
     //     id: _img
@@ -24,8 +25,19 @@ Rectangle {
         horizontalAlignment: Text.AlignHCenter
         anchors.left: parent.left
         anchors.leftMargin: 50
-        anchors.bottom: parent.bottom
+        //anchors.bottom: parent.bottom
         anchors.top: parent.top
+        anchors.topMargin: 10
+    }
+
+    Text{
+        id:_textEnglishMeaning
+        color: "black"
+        font.pointSize: 15
+        horizontalAlignment: Text.AlignJustify
+        anchors.left: parent.left
+        anchors.leftMargin: 50
+        anchors.bottom: parent.bottom
         anchors.topMargin: 10
     }
 
