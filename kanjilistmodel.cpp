@@ -33,7 +33,7 @@ QHash<int, QByteArray> KanjiListModel::roleNames() const
     roles[KanjiRole] = "kanji";
     roles[KunyomiRole] = "kunyomi";
     roles[OnyomiRole] = "onyomi";
-    roles[KanjiEnglishNameRole] = "kanjienglishrole";
+    roles[KanjiEnglishNameRole] = "kanjienglishname";
     return roles;
 }
 
