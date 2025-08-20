@@ -37,9 +37,40 @@ QHash<int, QByteArray> KanjiListModel::roleNames() const
     return roles;
 }
 
+bool KanjiListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (!hasIndex(index.row(), index.column(), index.parent()) || !value.isValid())
+        return false;
+
+    KanjiItemStruct &item = m_items[index.row()];
+    if (role == KanjiRole) item.Kanji = value.toString();
+    else if (role == KunyomiRole) item.Kunyomi = value.toString();
+    else if (role == OnyomiRole) item.Onyomi = value.toString();
+    else if (role == KanjiEnglishNameRole) item.KanjiEnglishName = value.toString();
+    else return false;
+
+    emit dataChanged(index, index, { role } );
+    qDebug()<<"emitted";
+    return true;
+}
+
 void KanjiListModel::addItem(const KanjiItemStruct &item)
 {
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items.append(item);
     endInsertRows();
+
+    QModelIndex changedIndex = index(m_items.count()-1, 0);
+    QModelIndex startindex = createIndex(0, 0);
+    emit dataChanged(startindex, changedIndex);
+
+}
+
+Qt::ItemFlags KanjiListModel::flags(const QModelIndex &index) const
+{
+    if (!index.isValid())
+        return Qt::NoItemFlags;
+
+    // Example: All items are enabled, selectable, and editable
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }

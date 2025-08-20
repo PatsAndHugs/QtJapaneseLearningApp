@@ -98,6 +98,7 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectAllBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
+            onClicked: _dbConnClass.populateList()
         }
         AppBaseBtn{
             id: _selectLast5

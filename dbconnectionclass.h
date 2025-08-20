@@ -22,7 +22,7 @@ public:
     Q_INVOKABLE void loadXmlFile();
     Q_INVOKABLE void saveFilePathToXml();
     Q_INVOKABLE void clearFilePathInXML();
-
+    Q_INVOKABLE void populateList();
     QString getConfigFilePath(){return _dbConfigFilePath;}
     void setConfigFilePath(const QString &configFilePath);
 
@@ -45,6 +45,8 @@ private:
     bool bHasSavedPathFile;
 
     void insertItemsToModel();
+    QString username;
+    QString password;
 };
 
 #endif // DBCONNECTIONCLASS_H
