@@ -4,7 +4,8 @@
 KanjiList::KanjiList(QObject *parent)
 {
     //testdata
-    //mItems.append({true, QStringLiteral("asd")});
+    mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
+        ,QStringLiteral("asd"),QStringLiteral("asd")});
 }
 
 QVector<KanjiListStruct> KanjiList::items() const

@@ -9,7 +9,7 @@ struct KanjiListStruct
     QString kanji;
     QString kunyomi;
     QString onyomi;
-    QString KanjiEnglishName;
+    QString kanjiEnglishName;
 };
 
 class KanjiList : public QObject
