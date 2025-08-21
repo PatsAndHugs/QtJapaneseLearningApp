@@ -6,9 +6,9 @@
 
 struct KanjiListStruct
 {
-    QString Kanji;
-    QString Kunyomi;
-    QString Onyomi;
+    QString kanji;
+    QString kunyomi;
+    QString onyomi;
     QString KanjiEnglishName;
 };
 
@@ -30,6 +30,7 @@ signals:
 
 public slots:
     void appendItem();
+    void addItems(QList<KanjiListStruct> listToAdd);
 
 private:
     QVector<KanjiListStruct> mItems;

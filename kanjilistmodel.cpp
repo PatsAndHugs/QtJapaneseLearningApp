@@ -1,8 +1,8 @@
 #include "kanjilistmodel.h"
 
+#include "kanjilist.h"
 
-
-KanjiListModel::KanjiListModel(QObject *parent){}
+KanjiListModel::KanjiListModel(QObject *parent):mList(nullptr){}
 
 int KanjiListModel::rowCount(const QModelIndex &parent) const
 {
@@ -56,12 +56,15 @@ bool KanjiListModel::setData(const QModelIndex &index, const QVariant &value, in
 
 void KanjiListModel::addItem(const KanjiItemStruct &item)
 {
+    beginResetModel();
     beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
     m_items.append(item);
     endInsertRows();
 
     QModelIndex changedIndex = index(m_items.count()-1, 0);
     QModelIndex startindex = createIndex(0, 0);
+    qDebug()<<item.KanjiEnglishName;
+    endResetModel();
     emit dataChanged(startindex, changedIndex);
 
 }
@@ -73,4 +76,26 @@ Qt::ItemFlags KanjiListModel::flags(const QModelIndex &index) const
 
     // Example: All items are enabled, selectable, and editable
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+}
+
+void KanjiListModel::setList(KanjiList *list)
+{
+    beginResetModel();
+
+    if(mList)
+        mList->disconnect(this);
+
+    mList =list;
+
+    if(mList)
+    {
+        connect(mList, &KanjiList::preItemAppended, this, [=]() {
+            const int index = mList->items().size();
+            beginInsertRows(QModelIndex(), index, index);
+        });
+        connect(mList, &KanjiList::postItemAppended, this, [=]() {
+            endInsertRows();
+        });
+    }
+    endResetModel();
 }

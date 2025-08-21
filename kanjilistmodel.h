@@ -4,6 +4,8 @@
 #include <QAbstractListModel>
 #include <QList>
 
+class KanjiList;
+
 struct KanjiItemStruct{
     QString Kanji;
     QString Kunyomi;
@@ -22,6 +24,8 @@ struct KanjiItemStruct{
 class KanjiListModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(KanjiList *list READ getList WRITE setList);
+
 public:
     enum MyRoles{
         KanjiRole = Qt::UserRole +1,
@@ -38,9 +42,13 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
     void addItem(const KanjiItemStruct& item);
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+    KanjiList *getList(){return mList;}
+    void setList(KanjiList *list);
 
 private:
     QList<KanjiItemStruct> m_items;
+
+    KanjiList *mList;
 };
 
 #endif // KANJILISTMODEL_H
