@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     qmlRegisterType<DbConnectionClass>("JapaneseLearningApp.DbConnectionClass",1,0,"DbConnClass");
     qmlRegisterType<KanjiListModel>("KanjiClass",1,0,"KanjiListModel");
-    qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "kanjiList",
+    qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "KanjiList",
         QStringLiteral("KanjiList Should not be created in Qml"));
 
     KanjiList kanjiList;
