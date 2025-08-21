@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
+
 import JapaneseLearningApp.DbConnectionClass
+import KanjiClass 1.0
 
 ApplicationWindow {
 
@@ -67,10 +69,10 @@ ApplicationWindow {
         spacing:10
 
         delegate: ListItemCard{ id:_wrapper
-                                kanjiText: kanji
-                                englishMeaningText: kanjienglishname
-                                kunyomiText: kunyomi
-                                onyomiText: onyomi
+                                kanjiText: model.kanji
+                                englishMeaningText: model.kanjiEnglishName
+                                kunyomiText: model.kunyomi
+                                onyomiText: model.onyomi
                                 lblTextColor: ListView.isCurrentItem ? "black" : "black"
                                 //mouseAreaOnclick: myListView.currentIndex = index
                                 width: myListView.width
@@ -79,7 +81,10 @@ ApplicationWindow {
                                 MouseArea{anchors.fill: parent; onClicked: myListView.currentIndex = index}
         }
 
-        model: KanjiModel
+        model: KanjiListModel{
+            list: kanjiList
+        }
+
         focus: true
     }
 
