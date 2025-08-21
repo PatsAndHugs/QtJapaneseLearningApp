@@ -4,22 +4,9 @@
 #include <QAbstractListModel>
 #include <QList>
 
+Q_MOC_INCLUDE("kanjilist.h")
+
 class KanjiList;
-
-struct KanjiItemStruct{
-    QString Kanji;
-    QString Kunyomi;
-    QString Onyomi;
-    QString KanjiEnglishName;
-
-    KanjiItemStruct(QString valKanji,QString valKunyomi,QString valOnyomi,QString valEnglishName)
-    {
-        Kanji = valKanji;
-        Kunyomi = valKunyomi;
-        Onyomi = valOnyomi;
-        KanjiEnglishName = valEnglishName;
-    }
-};
 
 class KanjiListModel : public QAbstractListModel
 {

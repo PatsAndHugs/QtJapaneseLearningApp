@@ -2,81 +2,101 @@
 
 #include "kanjilist.h"
 
-KanjiListModel::KanjiListModel(QObject *parent):mList(nullptr){}
+KanjiListModel::KanjiListModel(QObject *parent)
+    :QAbstractListModel(parent)
+    , mList(nullptr)
+{
+
+}
+
+
 
 int KanjiListModel::rowCount(const QModelIndex &parent) const
 {
-    if(parent.isValid())
+    if(parent.isValid() || !mList)
         return 0;
-    return m_items.count();
+
+    return mList->items().size();
 }
 
 QVariant KanjiListModel::data(const QModelIndex &index, int role) const
 {
-    if(!index.isValid() || index.row() >= m_items.count())
+    if(!index.isValid() || !mList)
         return QVariant();
 
-    const KanjiItemStruct &item = m_items.at(index.row());
-    switch (role)
-    {
-        case KanjiRole: return item.Kanji;
-        case KunyomiRole: return item.Kunyomi;
-        case OnyomiRole: return item.Onyomi;
-        case KanjiEnglishNameRole: return item.KanjiEnglishName;
-        default: return QVariant();
-    }
-}
+    const KanjiListStruct item = mList->items().at(index.row());
+    switch(role){
+    case KanjiRole:
+        return QVariant(item.kanji);
 
-QHash<int, QByteArray> KanjiListModel::roleNames() const
-{
-    QHash<int, QByteArray> roles;
-    roles[KanjiRole] = "kanji";
-    roles[KunyomiRole] = "kunyomi";
-    roles[OnyomiRole] = "onyomi";
-    roles[KanjiEnglishNameRole] = "kanjienglishname";
-    return roles;
+    case KunyomiRole:
+        return QVariant(item.kunyomi);
+
+    case OnyomiRole:
+        return QVariant(item.onyomi);
+
+    case KanjiEnglishNameRole:
+        return QVariant(item.kanjiEnglishName);
+    }
+
+    return QVariant();
 }
 
 bool KanjiListModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (!hasIndex(index.row(), index.column(), index.parent()) || !value.isValid())
+    if(!mList)
         return false;
 
-    KanjiItemStruct &item = m_items[index.row()];
-    if (role == KanjiRole) item.Kanji = value.toString();
-    else if (role == KunyomiRole) item.Kunyomi = value.toString();
-    else if (role == OnyomiRole) item.Onyomi = value.toString();
-    else if (role == KanjiEnglishNameRole) item.KanjiEnglishName = value.toString();
-    else return false;
+    KanjiListStruct item = mList->items().at(index.row());
+    switch (role){
+    case KanjiRole:
+        item.kanji = value.toString();
+        break;
+    case KunyomiRole:
+        item.kunyomi = value.toString();
+        break;
 
-    emit dataChanged(index, index, { role } );
-    qDebug()<<"emitted";
-    return true;
-}
+    case OnyomiRole:
+        item.onyomi = value.toString();
+        break;
 
-void KanjiListModel::addItem(const KanjiItemStruct &item)
-{
-    beginResetModel();
-    beginInsertRows(QModelIndex(), m_items.count(), m_items.count());
-    m_items.append(item);
-    endInsertRows();
+    case KanjiEnglishNameRole:
+        item.kanjiEnglishName = value.toString();
+        break;
+    }
 
-    QModelIndex changedIndex = index(m_items.count()-1, 0);
-    QModelIndex startindex = createIndex(0, 0);
-    qDebug()<<item.KanjiEnglishName;
-    endResetModel();
-    emit dataChanged(startindex, changedIndex);
-
+    if(mList->setItemAt(index.row(), item)){
+        emit dataChanged(index, index, QVector<int>() << role);
+        return true;
+    }
+    return false;
 }
 
 Qt::ItemFlags KanjiListModel::flags(const QModelIndex &index) const
 {
-    if (!index.isValid())
+    if(!index.isValid())
         return Qt::NoItemFlags;
 
-    // Example: All items are enabled, selectable, and editable
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    return Qt::ItemIsEditable;
 }
+
+
+QHash<int, QByteArray> KanjiListModel::roleNames() const
+{
+    QHash<int, QByteArray> names;
+    names[KanjiRole] = "kanji";
+    names[KunyomiRole] = "kunyomi";
+    names[OnyomiRole] = "onyomi";
+    names[KanjiEnglishNameRole] = "kanjiEnglishName";
+    return names;
+}
+
+
+KanjiList *KanjiListModel::list() const
+{
+    return mList;
+}
+
 
 void KanjiListModel::setList(KanjiList *list)
 {
@@ -85,10 +105,9 @@ void KanjiListModel::setList(KanjiList *list)
     if(mList)
         mList->disconnect(this);
 
-    mList =list;
+    mList = list;
 
-    if(mList)
-    {
+    if(mList){
         connect(mList, &KanjiList::preItemAppended, this, [=]() {
             const int index = mList->items().size();
             beginInsertRows(QModelIndex(), index, index);
@@ -97,5 +116,7 @@ void KanjiListModel::setList(KanjiList *list)
             endInsertRows();
         });
     }
+
     endResetModel();
 }
+
