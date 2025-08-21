@@ -11,30 +11,35 @@ class KanjiList;
 class KanjiListModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(KanjiList *list READ getList WRITE setList);
+    Q_PROPERTY(KanjiList *list READ list WRITE setList);
 
 public:
-    enum MyRoles{
+    explicit KanjiListModel(QObject *parent = nullptr);
+
+    enum {
         KanjiRole = Qt::UserRole +1,
         KunyomiRole,
         OnyomiRole,
         KanjiEnglishNameRole
 
     };
-    explicit KanjiListModel(QObject* parent = nullptr);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
-    QHash<int, QByteArray> roleNames() const override;
-    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
-    void addItem(const KanjiItemStruct& item);
+
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    bool setData(const QModelIndex &index, const QVariant &value,
+                 int role = Qt::EditRole) override;
+
     Qt::ItemFlags flags(const QModelIndex &index) const override;
-    KanjiList *getList(){return mList;}
+
+    virtual QHash<int, QByteArray> roleNames() const override;
+
+    KanjiList *list() const;
     void setList(KanjiList *list);
 
 private:
-    QList<KanjiItemStruct> m_items;
-
     KanjiList *mList;
 };
 
