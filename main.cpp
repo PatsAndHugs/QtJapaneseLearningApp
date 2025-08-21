@@ -10,9 +10,12 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     qmlRegisterType<DbConnectionClass>("JapaneseLearningApp.DbConnectionClass",1,0,"DbConnClass");
-    qmlRegisterType<KanjiListModel>("KanjiListModel",1,0,"KanjiListModel");
-    DbConnectionClass* dbConnClass = new DbConnectionClass;
+    qmlRegisterType<KanjiListModel>("KanjiClass",1,0,"KanjiListModel");
+    qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "kanjiList",
+        QStringLiteral("KanjiList Should not be created in Qml"));
+
     KanjiList kanjiList;
+
     QQmlApplicationEngine engine;
     QObject::connect(
         &engine,
@@ -21,8 +24,7 @@ int main(int argc, char *argv[])
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
 
-    engine.rootContext()->setContextProperty("KanjiModel", dbConnClass->getModel());
-    //engine.rootContext()->setContextProperty(QStringLiteral("kanjiList"), &kanjiList);
+    engine.rootContext()->setContextProperty(QStringLiteral("kanjiList"), &kanjiList);
     engine.loadFromModule("QtJapaneseLearningApp", "Main");
 
     return app.exec();
