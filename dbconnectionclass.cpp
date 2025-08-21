@@ -108,10 +108,10 @@ void DbConnectionClass::insertItemsToModel()
     //         }
     //     }
     // }
-    KanjiItemStruct kanjiStruct("今","いま","none","Today");
-    KanjiItemStruct kanjiStruct2("目","め","モク","Eye");
-    _model->addItem(kanjiStruct);
-    _model->addItem(kanjiStruct2);
+    // KanjiItemStruct kanjiStruct("今","いま","none","Today");
+    // KanjiItemStruct kanjiStruct2("目","め","モク","Eye");
+    // _model->addItem(kanjiStruct);
+    // _model->addItem(kanjiStruct2);
 
     //db.close();
 }
