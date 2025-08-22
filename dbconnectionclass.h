@@ -6,6 +6,7 @@
 #include <qsqldatabase.h>
 #include <qqml.h>
 #include <kanjilistmodel.h>
+#include "kanjilist.h"
 
 class DbConnectionClass : public QObject
 {
@@ -22,13 +23,15 @@ public:
     Q_INVOKABLE void loadXmlFile();
     Q_INVOKABLE void saveFilePathToXml();
     Q_INVOKABLE void clearFilePathInXML();
-    Q_INVOKABLE void populateList();
+
     QString getConfigFilePath(){return _dbConfigFilePath;}
     void setConfigFilePath(const QString &configFilePath);
 
     bool getHasSavedPathFile(){return bHasSavedPathFile;}
     void setHasSavedPathFile(const bool &bState);
     Q_INVOKABLE KanjiListModel* getModel(){return _model;}
+
+    QList<KanjiListStruct> getDbKanjiList(){return dbKanjiList;}
 
 signals:
 
@@ -47,6 +50,8 @@ private:
     void insertItemsToModel();
     QString username;
     QString password;
+
+    QList<KanjiListStruct> dbKanjiList;
 };
 
 #endif // DBCONNECTIONCLASS_H
