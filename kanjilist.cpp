@@ -1,11 +1,13 @@
 #include "kanjilist.h"
-
+#include "dbconnectionclass.h"
 
 KanjiList::KanjiList(QObject *parent)
 {
+    dbClass = new DbConnectionClass;
+    addItems();
     //testdata
-    mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
-        ,QStringLiteral("asd"),QStringLiteral("asd")});
+    // mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
+    //     ,QStringLiteral("asd"),QStringLiteral("asd")});
 }
 
 QVector<KanjiListStruct> KanjiList::items() const
@@ -37,14 +39,16 @@ void KanjiList::appendItem()
     emit postItemAppended();
 }
 
-void KanjiList::addItems(QList<KanjiListStruct> listToAdd)
+void KanjiList::addItems()
 {
-    for(int i = 0;i < listToAdd.count(); i++)
+    QList<KanjiListStruct> itemList = dbClass->getDbKanjiList();
+
+    for(int i = 0;i < itemList.count(); i++)
     {
         emit preItemAppended();
 
-        mItems.append({listToAdd[i].kanji,listToAdd[i].kunyomi,
-                       listToAdd[i].onyomi,listToAdd[i].kanjiEnglishName});
+        mItems.append({itemList[i].kanji,itemList[i].kunyomi,
+                       itemList[i].onyomi,itemList[i].kanjiEnglishName});
 
         emit postItemAppended();
     }
