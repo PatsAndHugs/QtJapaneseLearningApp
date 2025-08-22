@@ -103,7 +103,7 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectAllBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
-            onClicked: _dbConnClass.populateList()
+            onClicked: kanjiList.addItems()
         }
         AppBaseBtn{
             id: _selectLast5
@@ -121,12 +121,5 @@ ApplicationWindow {
             btnBgColor: _selectAllWrong.hovered ? "white" : "#ffff66"
             font.pointSize: 15
         }
-
     }
-
-    DbConnClass{
-        id: _dbConnClass
-    }
-
-
 }
