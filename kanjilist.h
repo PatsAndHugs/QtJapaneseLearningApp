@@ -4,12 +4,30 @@
 #include "QObject"
 #include "QVector"
 
+class DbConnectionClass;
+
 struct KanjiListStruct
 {
     QString kanji;
     QString kunyomi;
     QString onyomi;
     QString kanjiEnglishName;
+
+    KanjiListStruct(){
+        kanji = "";
+        kunyomi = "";
+        onyomi = "";
+        kanjiEnglishName = "";
+    }
+
+    KanjiListStruct(QString valKanji, QString valKunyomi,
+                    QString valOnyomi, QString valEnglishName)
+    {
+        kanji = valKanji;
+        kunyomi = valKunyomi;
+        onyomi = valOnyomi;
+        kanjiEnglishName = valEnglishName;
+    }
 };
 
 class KanjiList : public QObject
@@ -30,10 +48,11 @@ signals:
 
 public slots:
     void appendItem();
-    void addItems(QList<KanjiListStruct> listToAdd);
+    void addItems();
 
 private:
     QVector<KanjiListStruct> mItems;
+    DbConnectionClass *dbClass;
 };
 
 #endif // KANJILIST_H
