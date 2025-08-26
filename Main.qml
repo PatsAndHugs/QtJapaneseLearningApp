@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
 
-import JapaneseLearningApp.DbConnectionClass
+//import JapaneseLearningApp.DbConnectionClass
 import KanjiClass 1.0
 
 ApplicationWindow {
@@ -66,7 +66,12 @@ ApplicationWindow {
         // anchors.left: parent.left
         // anchors.top: parent.top
         anchors.fill: parent
-        spacing:10
+        //spacing:10
+        model: KanjiListModel{
+            id:_myModel
+            list: kanjiList
+            selectionlist: kanjiList
+        }
 
         delegate: ListItemCard{ id:_wrapper
                                 kanjiText: model.kanji
@@ -77,20 +82,24 @@ ApplicationWindow {
                                 //mouseAreaOnclick: myListView.currentIndex = index
                                 width: myListView.width
                                 height: 100
-                                gradient: myListView.currentIndex == index ? _itemGradSelected : _itemGrad
-                                MouseArea{anchors.fill: parent; onClicked: myListView.currentIndex = index}
-        }
+                                //color: model.isSelected ? "lightblue" : "black"
+                                gradient: model.isSelected ? _itemGradSelected : _itemGrad
+                                MouseArea{anchors.fill: parent;
+                                    onClicked: {
+                                        myListView.currentIndex = index
+                                        model.isSelected = !model.isSelected
 
-        model: KanjiListModel{
-            list: kanjiList
-        }
+                                        //TODO kanjiList.changeisSelected(index)
+                                    }
+                                }
 
+        }
         focus: true
     }
 
-    GridLayout{
+    RowLayout{
         id:_btnGrid
-        columns: 3
+
         //anchors.fill: parent
         anchors.bottom:parent.bottom
         anchors.left:parent.left
@@ -103,7 +112,6 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectAllBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
-            onClicked: kanjiList.addItems()
         }
         AppBaseBtn{
             id: _selectLast5
@@ -112,6 +120,7 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectLast5.hovered ? "white" : "#ffff66"
             font.pointSize: 15
+            onClicked:kanjiList.updateLastItemIsSelected(1)
         }
         AppBaseBtn{
             id: _selectAllWrong
@@ -123,3 +132,4 @@ ApplicationWindow {
         }
     }
 }
+
