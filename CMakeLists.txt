@@ -17,7 +17,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
     VERSION 1.0
     QML_FILES
         Main.qml
-        QML_FILES ModelTest.qml
+        QML_FILES
         QML_FILES DbConnWindow.qml
         SOURCES xmlreaderclass.h xmlreaderclass.cpp
         RESOURCES AppResources.qrc
