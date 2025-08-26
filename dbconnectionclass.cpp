@@ -95,7 +95,8 @@ void DbConnectionClass::insertItemsToModel()
                     query.value(1).toString(),
                     query.value(2).toString(),
                     query.value(3).toString(),
-                    query.value(4).toString()
+                    query.value(4).toString(),
+                    false
                 );
 
                 qDebug()<<query.value(1).toString()<<query.value(2).toString()
