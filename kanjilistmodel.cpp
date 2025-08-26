@@ -37,6 +37,9 @@ QVariant KanjiListModel::data(const QModelIndex &index, int role) const
 
     case KanjiEnglishNameRole:
         return QVariant(item.kanjiEnglishName);
+
+    case IsSelectedRole:
+        return QVariant(item.isSelected);
     }
 
     return QVariant();
@@ -63,10 +66,15 @@ bool KanjiListModel::setData(const QModelIndex &index, const QVariant &value, in
     case KanjiEnglishNameRole:
         item.kanjiEnglishName = value.toString();
         break;
+
+    case IsSelectedRole:
+        item.isSelected = value.toBool();
+        break;
     }
 
     if(mList->setItemAt(index.row(), item)){
         emit dataChanged(index, index, QVector<int>() << role);
+        qDebug()<<"setdata change";
         return true;
     }
     return false;
@@ -88,6 +96,7 @@ QHash<int, QByteArray> KanjiListModel::roleNames() const
     names[KunyomiRole] = "kunyomi";
     names[OnyomiRole] = "onyomi";
     names[KanjiEnglishNameRole] = "kanjiEnglishName";
+    names[IsSelectedRole] = "isSelected";
     return names;
 }
 
@@ -117,6 +126,35 @@ void KanjiListModel::setList(KanjiList *list)
         });
     }
 
+    endResetModel();
+}
+
+KanjiList *KanjiListModel::selectionlist() const
+{
+    return mList;
+}
+
+void KanjiListModel::updateSelection(KanjiList *list)
+{
+    beginResetModel();
+
+    mList = list;
+
+    if(mList){
+        connect(mList, &KanjiList::postIsSelectedChanged, this, [=]() {
+            QList<int> newSelectionList = mList->getSelectionList();
+            for(int i = 0 ;i < newSelectionList.count();i++)
+            {
+                QModelIndex changedIndex = index(newSelectionList[i],0);
+                QVector<int> changedRoles;
+                changedRoles <<IsSelectedRole << KanjiRole << KanjiEnglishNameRole << OnyomiRole << KunyomiRole;
+                emit dataChanged(changedIndex,changedIndex,changedRoles);
+                qDebug()<<"updateSelection"<<newSelectionList.count();
+                qDebug()<<"current index "<<newSelectionList[i];
+            }
+
+        });
+    }
     endResetModel();
 }
 

@@ -2,7 +2,7 @@ import QtQuick
 
 Rectangle {
     id:_cardBase
-    color: "black"
+    color: "white"
     radius: 8
     //property alias mouseAreaOnclick: _mouseArea.onClicked
     property alias lblTextColor: _textKunyomi.color

@@ -2,7 +2,7 @@
 #define KANJILISTMODEL_H
 
 #include <QAbstractListModel>
-#include <QList>
+//#include <QList>
 
 Q_MOC_INCLUDE("kanjilist.h")
 
@@ -12,16 +12,17 @@ class KanjiListModel : public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(KanjiList *list READ list WRITE setList);
+    Q_PROPERTY(KanjiList *selectionlist READ selectionlist WRITE updateSelection)
 
 public:
     explicit KanjiListModel(QObject *parent = nullptr);
 
     enum {
-        KanjiRole = Qt::UserRole +1,
+        KanjiRole = Qt::UserRole,
         KunyomiRole,
         OnyomiRole,
-        KanjiEnglishNameRole
-
+        KanjiEnglishNameRole,
+        IsSelectedRole
     };
 
 
@@ -38,6 +39,9 @@ public:
 
     KanjiList *list() const;
     void setList(KanjiList *list);
+
+    KanjiList *selectionlist() const;
+    void updateSelection(KanjiList *list);
 
 private:
     KanjiList *mList;
