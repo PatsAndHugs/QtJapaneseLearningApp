@@ -17,12 +17,14 @@ QVector<KanjiListStruct> KanjiList::items() const
 
 bool KanjiList::setItemAt(int index, const KanjiListStruct &item)
 {
-    if(index < 0 || index <= mItems.size())
+    if(index < 0 || index >= mItems.size())
         return false;
+
 
     const KanjiListStruct &oldItem = mItems.at(index);
     if(item.kanji == oldItem.kanji && item.kunyomi == oldItem.kunyomi
-        && item.onyomi == oldItem.onyomi && item.kanjiEnglishName == oldItem.kanjiEnglishName && item.isSelected == oldItem.isSelected)
+        && item.onyomi == oldItem.onyomi && item.kanjiEnglishName == oldItem.kanjiEnglishName
+        && item.isSelected == oldItem.isSelected)
         return false;
 
     mItems[index] = item;
