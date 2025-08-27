@@ -6,8 +6,12 @@ KanjiList::KanjiList(QObject *parent)
     dbClass = new DbConnectionClass;
     //addItems();
     //testdata
-    mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
+    for(int i = 0;i < 10; i++)
+    {
+        mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
                      ,QStringLiteral("asd"),QStringLiteral("asd"),false});
+    }
+
 }
 
 QVector<KanjiListStruct> KanjiList::items() const
@@ -72,6 +76,9 @@ void KanjiList::updateLastItemIsSelected(int count)
         emit postIsSelectedChanged();
         qDebug()<<mItems[i].isSelected;
     }
+}
 
-
+void KanjiList::updateAllItemsIsSelected()
+{
+    updateLastItemIsSelected(mItems.count());
 }

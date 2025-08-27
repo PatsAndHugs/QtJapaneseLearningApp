@@ -51,6 +51,7 @@ public slots:
     void appendItem();
     void addItems();
     void updateLastItemIsSelected(int count);
+    void updateAllItemsIsSelected();
 
 private:
     QVector<KanjiListStruct> mItems;
