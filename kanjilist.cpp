@@ -1,5 +1,6 @@
 #include "kanjilist.h"
 #include "dbconnectionclass.h"
+#include <qforeach.h>
 
 KanjiList::KanjiList(QObject *parent)
 {
@@ -81,4 +82,14 @@ void KanjiList::updateLastItemIsSelected(int count)
 void KanjiList::updateAllItemsIsSelected()
 {
     updateLastItemIsSelected(mItems.count());
+}
+
+void KanjiList::addSelectedItemsToList()
+{
+    mSelectedItemsList.clear();
+    for(const KanjiListStruct &item : std::as_const(mItems))
+    {
+        if(item.isSelected == true)
+            mSelectedItemsList.append(item);
+    }
 }

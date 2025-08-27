@@ -52,11 +52,13 @@ public slots:
     void addItems();
     void updateLastItemIsSelected(int count);
     void updateAllItemsIsSelected();
+    void addSelectedItemsToList();
 
 private:
     QVector<KanjiListStruct> mItems;
     DbConnectionClass *dbClass;
     QList<int> mSelectionList;
+    QList<KanjiListStruct> mSelectedItemsList;
 };
 
 #endif // KANJILIST_H
