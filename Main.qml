@@ -66,7 +66,7 @@ ApplicationWindow {
         // anchors.left: parent.left
         // anchors.top: parent.top
         anchors.fill: parent
-        //spacing:10
+        spacing:10
         model: KanjiListModel{
             id:_myModel
             list: kanjiList
@@ -79,17 +79,13 @@ ApplicationWindow {
                                 kunyomiText: model.kunyomi
                                 onyomiText: model.onyomi
                                 lblTextColor: ListView.isCurrentItem ? "black" : "black"
-                                //mouseAreaOnclick: myListView.currentIndex = index
                                 width: myListView.width
                                 height: 100
-                                //color: model.isSelected ? "lightblue" : "black"
                                 gradient: model.isSelected ? _itemGradSelected : _itemGrad
                                 MouseArea{anchors.fill: parent;
                                     onClicked: {
                                         myListView.currentIndex = index
                                         model.isSelected = !model.isSelected
-
-                                        //TODO kanjiList.changeisSelected(index)
                                     }
                                 }
 
@@ -97,14 +93,14 @@ ApplicationWindow {
         focus: true
     }
 
-    RowLayout{
+    GridLayout{
         id:_btnGrid
 
         //anchors.fill: parent
         anchors.bottom:parent.bottom
         anchors.left:parent.left
         anchors.right:parent.right
-
+        columns: 4
         AppBaseBtn{
             id: _selectAllBtn
             text:qsTr("Select Alll")
@@ -112,22 +108,31 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectAllBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
+            onClicked: kanjiList.updateAllItemsIsSelected()
         }
         AppBaseBtn{
-            id: _selectLast5
+            id: _selectLast5Btn
             text: qsTr("Select Last 5")
             Layout.preferredHeight: 100
             Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _selectLast5.hovered ? "white" : "#ffff66"
+            btnBgColor: _selectLast5Btn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
-            onClicked:kanjiList.updateLastItemIsSelected(1)
+            onClicked:kanjiList.updateLastItemIsSelected(5)
         }
         AppBaseBtn{
-            id: _selectAllWrong
+            id: _selectAllWrongBtn
             text: qsTr("Select All Mistakes")
             Layout.preferredHeight: 100
             Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _selectAllWrong.hovered ? "white" : "#ffff66"
+            btnBgColor: _selectAllWrongBtn.hovered ? "white" : "#ffff66"
+            font.pointSize: 15
+        }
+        AppBaseBtn{
+            id: _confirmBtn
+            text: qsTr("Confirm")
+            Layout.preferredHeight: 100
+            Layout.preferredWidth: parent.width / parent.columns
+            btnBgColor: _confirmBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
         }
     }
