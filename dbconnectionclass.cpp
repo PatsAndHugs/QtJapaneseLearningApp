@@ -7,7 +7,7 @@ DbConnectionClass::DbConnectionClass()
     //readxml if element is not blank fetch it
     initializeSavedPathFile();
     loadXmlFile();
-    setupConn();
+    //setupConn();
     insertItemsToModel();
 }
 
