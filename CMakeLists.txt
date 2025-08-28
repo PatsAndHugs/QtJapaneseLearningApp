@@ -26,6 +26,10 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES AppBaseBtn.qml
         SOURCES kanjilistmodel.h kanjilistmodel.cpp
         SOURCES kanjilist.h kanjilist.cpp
+        QML_FILES
+        QML_FILES
+        QML_FILES
+        QML_FILES views/KanjiTestWindow.qml
 )
 
 # add resource items here
