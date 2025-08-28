@@ -43,7 +43,7 @@ ApplicationWindow {
     }
 
     Gradient{
-        id:_itemGrad
+        id:_itemGradSelected
 
         GradientStop { position: 0.0; color: "#94DEA5" }
 
@@ -51,7 +51,7 @@ ApplicationWindow {
     }
 
     Gradient{
-        id:_itemGradSelected
+        id:_itemGrad
 
         GradientStop { position: 0.0; color: "#ffff66" }
 
