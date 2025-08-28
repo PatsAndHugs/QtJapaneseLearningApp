@@ -5,13 +5,13 @@
 KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
-    //addItems();
+    addItems();
     //testdata
-    for(int i = 0;i < 10; i++)
-    {
-        mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
-                     ,QStringLiteral("asd"),QStringLiteral("asd"),false});
-    }
+    // for(int i = 0;i < 10; i++)
+    // {
+    //     mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
+    //                  ,QStringLiteral("asd"),QStringLiteral("asd"),false});
+    // }
 
 }
 
@@ -59,7 +59,6 @@ void KanjiList::addItems()
 
         emit postItemAppended();
     }
-
 }
 
 void KanjiList::updateLastItemIsSelected(int count)
@@ -92,4 +91,5 @@ void KanjiList::addSelectedItemsToList()
         if(item.isSelected == true)
             mSelectedItemsList.append(item);
     }
+    qDebug()<<"slected items newList count: "<<mSelectedItemsList.count();
 }
