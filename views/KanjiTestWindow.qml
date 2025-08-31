@@ -16,11 +16,13 @@ ApplicationWindow {
     color:"#023D54"
 
     GridLayout{
-
-        //anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
+        id:_mainGrid
+        //anchors.verticalCenter: parent.verticalCenter
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.top: parent.top
+        //anchors.bottom: _canvasGrid.top
+        anchors.topMargin: 200
         columns: 2
         rowSpacing: 20
 
@@ -92,5 +94,78 @@ ApplicationWindow {
 
         }
 
+    }
+
+    GridLayout{
+        id: _canvasGrid
+        //anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.top: _mainGrid.bottom
+        anchors.topMargin: 50
+        anchors.bottom:parent.bottom
+        anchors.left: parent.left
+        columns:5
+        Button{
+            id:_drawBtn
+            text:qsTr("DRAW")
+            Layout.preferredHeight: 50
+            Layout.preferredWidth: 100
+            Layout.column: 3
+            onClicked: {
+                console.log("draw")
+                _canvas.penColor = "black"
+                _canvas.penLineWidth = 3
+            }
+        }
+        Button{
+            id:_eraseBtn
+            text:qsTr("ERASE")
+            Layout.preferredHeight: 50
+            Layout.preferredWidth: 100
+            Layout.column: 4
+            onClicked: {
+                console.log("draw")
+                _canvas.penColor = "#023D54"
+                _canvas.penLineWidth = 30
+            }
+        }
+
+        Canvas {
+            id: _canvas
+            property real lastX
+            property real lastY
+            property color penColor
+            property real penLineWidth
+            Layout.columnSpan: 5
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            onPaint: {
+                var ctx = getContext('2d')
+                ctx.lineWidth = penLineWidth
+                ctx.strokeStyle = penColor
+                ctx.beginPath()
+                ctx.moveTo(lastX, lastY)
+                lastX = area.mouseX
+                lastY = area.mouseY
+                ctx.lineTo(lastX, lastY)
+                ctx.stroke()
+            }
+
+            MouseArea {
+                id: area
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+                onPressed:{
+                    _canvas.lastX = mouseX
+                    _canvas.lastY = mouseY
+                }
+                onPositionChanged: (mouse) => {
+                    _canvas.requestPaint()
+                }
+                onClicked: console.log("canvas clicked")
+            }
+
+        }
     }
 }
