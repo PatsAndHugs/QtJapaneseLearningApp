@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
 
     engine.rootContext()->setContextProperty(QStringLiteral("kanjiList"), &kanjiList);
-    engine.loadFromModule("QtJapaneseLearningApp", "KanjiTestWindow");
+    engine.loadFromModule("QtJapaneseLearningApp", "Main");
 
     return app.exec();
 }
