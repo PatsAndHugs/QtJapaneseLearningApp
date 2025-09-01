@@ -8,6 +8,7 @@ class DbConnectionClass;
 
 struct KanjiListStruct
 {
+    QString kanjiId;
     QString kanji;
     QString kunyomi;
     QString onyomi;
@@ -17,9 +18,10 @@ struct KanjiListStruct
     KanjiListStruct(){
     }
 
-    KanjiListStruct(QString valKanji, QString valKunyomi,
+    KanjiListStruct(QString valKanjiId, QString valKanji, QString valKunyomi,
                     QString valOnyomi, QString valEnglishName, bool valIsSelected)
     {
+        kanjiId = valKanjiId;
         kanji = valKanji;
         kunyomi = valKunyomi;
         onyomi = valOnyomi;

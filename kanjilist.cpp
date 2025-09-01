@@ -7,11 +7,11 @@ KanjiList::KanjiList(QObject *parent)
     dbClass = new DbConnectionClass;
     addItems();
     //testdata
-    // for(int i = 0;i < 10; i++)
-    // {
-    //     mItems.append({QStringLiteral("asd"), QStringLiteral("asd")
-    //                  ,QStringLiteral("asd"),QStringLiteral("asd"),false});
-    // }
+    for(int i = 0;i < 10; i++)
+    {
+        mItems.append({QStringLiteral("91"),QStringLiteral("asd"), QStringLiteral("asd")
+                     ,QStringLiteral("asd"),QStringLiteral("asd"),false});
+    }
 
 }
 
@@ -27,7 +27,7 @@ bool KanjiList::setItemAt(int index, const KanjiListStruct &item)
 
 
     const KanjiListStruct &oldItem = mItems.at(index);
-    if(item.kanji == oldItem.kanji && item.kunyomi == oldItem.kunyomi
+    if(item.kanjiId == oldItem.kanjiId && item.kanji == oldItem.kanji && item.kunyomi == oldItem.kunyomi
         && item.onyomi == oldItem.onyomi && item.kanjiEnglishName == oldItem.kanjiEnglishName
         && item.isSelected == oldItem.isSelected)
         return false;
@@ -54,7 +54,7 @@ void KanjiList::addItems()
     {
         emit preItemAppended();
 
-        mItems.append({itemList[i].kanji,itemList[i].kunyomi,
+        mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
                        itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].isSelected});
 
         emit postItemAppended();
@@ -86,10 +86,16 @@ void KanjiList::updateAllItemsIsSelected()
 void KanjiList::addSelectedItemsToList()
 {
     mSelectedItemsList.clear();
+
     for(const KanjiListStruct &item : std::as_const(mItems))
     {
         if(item.isSelected == true)
             mSelectedItemsList.append(item);
     }
-    qDebug()<<"slected items newList count: "<<mSelectedItemsList.count();
+
+    for(const auto &item : std::as_const(mSelectedItemsList))
+    {
+        qDebug()<<"selected items newList: "<<item.kanjiId;
+
+    }
 }

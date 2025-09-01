@@ -92,6 +92,7 @@ void DbConnectionClass::insertItemsToModel()
             {
 
                 KanjiListStruct kanjiStruct(
+                    query.value(0).toString(),
                     query.value(1).toString(),
                     query.value(2).toString(),
                     query.value(3).toString(),
