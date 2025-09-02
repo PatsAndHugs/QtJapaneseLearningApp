@@ -15,13 +15,18 @@ public:
 
     explicit KanjiQuiz(QObject *parent = nullptr);
 
+public slots:
+
+    void getKanjiList(QList<KanjiListStruct> list);
+
 private:
 
     KanjiList *kanjiListClass;
 
     QList<KanjiListStruct> kanjiList;
 
-    void getKanjiList();
+    QList<int> randomListNumbers;
+    void setRandomListNumbers();
 };
 
 #endif // KANJIQUIZ_H
