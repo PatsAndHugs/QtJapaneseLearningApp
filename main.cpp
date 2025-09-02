@@ -5,6 +5,7 @@
 #include <dbconnectionclass.h>
 #include <kanjilistmodel.h>
 #include <kanjilist.h>
+#include <kanjiquiz.h>
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +15,10 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "KanjiList",
         QStringLiteral("KanjiList Should not be created in Qml"));
 
+
+    qmlRegisterType<KanjiQuiz>("KanjiClass",1,0,"KanjiQuiz");
     KanjiList kanjiList;
+    KanjiQuiz kanjiQuiz;
 
     QQmlApplicationEngine engine;
     QObject::connect(
@@ -25,6 +29,8 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
 
     engine.rootContext()->setContextProperty(QStringLiteral("kanjiList"), &kanjiList);
+    engine.rootContext()->setContextProperty(QStringLiteral("kanjiQuiz"), &kanjiQuiz);
+
     engine.loadFromModule("QtJapaneseLearningApp", "Main");
 
     return app.exec();
