@@ -86,7 +86,6 @@ void KanjiList::updateAllItemsIsSelected()
 void KanjiList::addSelectedItemsToList()
 {
     mSelectedItemsList.clear();
-
     for(const KanjiListStruct &item : std::as_const(mItems))
     {
         if(item.isSelected == true)
