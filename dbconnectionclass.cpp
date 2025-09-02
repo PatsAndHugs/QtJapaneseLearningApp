@@ -9,6 +9,7 @@ DbConnectionClass::DbConnectionClass()
     loadXmlFile();
     //setupConn();
     insertItemsToModel();
+    UserId = "USR-1";
 }
 
 void DbConnectionClass::setupConn()
