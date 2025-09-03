@@ -17,10 +17,6 @@ ApplicationWindow {
     title: qsTr("Kanji Test")
     color:"#023D54"
 
-    KanjiQuiz{
-        id: _kanjiQuiz
-    }
-
     GridLayout{
         id:_mainGrid
         //anchors.verticalCenter: parent.verticalCenter
@@ -38,7 +34,7 @@ ApplicationWindow {
             font.pointSize: 50
             horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignCenter
-            text:qsTr("月")
+            text:kanjiQuiz.kanjiTxt
             Layout.columnSpan: 2
         }
 
@@ -50,7 +46,7 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignHCenter
-            text:qsTr("moon, month")
+            text:kanjiQuiz.englishNameTxt
             Layout.columnSpan: 2
             Layout.row: 2
         }
@@ -88,6 +84,9 @@ ApplicationWindow {
             font.pointSize: 15
             Layout.row: 5
             Layout.leftMargin: 10
+            onClicked: {
+                kanjiQuiz.testFunc()
+            }
         }
         Button{
             id: _skipBtn
