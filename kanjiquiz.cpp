@@ -19,6 +19,16 @@ void KanjiQuiz::setKanjiTxt(QString newVal)
     m_kanjiTxt = newVal;
 }
 
+void KanjiQuiz::setKunyomiTxt(QString newVal)
+{
+    m_kunyomiTxt = newVal;
+}
+
+void KanjiQuiz::setOnyomiTxt(QString newVal)
+{
+    m_onyomiTxt = newVal;
+}
+
 void KanjiQuiz::getKanjiList(QList<KanjiListStruct> list)
 {
     kanjiList = list;
@@ -29,8 +39,7 @@ void KanjiQuiz::getKanjiList(QList<KanjiListStruct> list)
 
 void KanjiQuiz::testFunc()
 {
-    m_englishNameTxt = "Kappa";
-    qDebug()<<"testFunc kanjilist count: "<<kanjiList.count();
+    qDebug()<<"testFunc value: "<<m_kunyomiTxt;
 }
 
 void KanjiQuiz::randomizeKanjiList()
@@ -47,11 +56,39 @@ void KanjiQuiz::randomizeKanjiList()
     if(!kanjiList.empty())
     {
         qDebug()<<"initialize kanjienglishnamelbl";
-
-        m_englishNameTxt = kanjiList.at(0).kanjiEnglishName;
-        emit englishNameTxtChanged();
-
-        m_kanjiTxt = kanjiList.at(0).kanji;
-        emit kanjiTxtChanged();
+        setItemsVal();
     }
+}
+
+void KanjiQuiz::getNextItem()
+{
+    if(m_kunyomiTxt == kanjiList.at(currentListIndex).kunyomi &&
+        m_onyomiTxt == kanjiList.at(currentListIndex).onyomi)
+    {
+        if(currentListIndex < kanjiList.count() -1)
+        {
+            currentListIndex++;
+            setItemsVal();
+
+            m_kunyomiTxt="";
+            emit kunyomiTxtChanged();
+            m_onyomiTxt="";
+            emit onyomiTxtChanged();
+        }
+    }
+}
+
+void KanjiQuiz::setItemsVal()
+{
+    m_englishNameTxt = kanjiList.at(currentListIndex).kanjiEnglishName;
+    emit englishNameTxtChanged();
+
+    m_kanjiTxt = kanjiList.at(currentListIndex).kanji;
+    emit kanjiTxtChanged();
+
+    m_kunyomiTxt = kanjiList.at(currentListIndex).kunyomi;
+    emit kunyomiTxtChanged();
+
+    m_onyomiTxt = kanjiList.at(currentListIndex).onyomi;
+    emit onyomiTxtChanged();
 }
