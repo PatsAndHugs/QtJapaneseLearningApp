@@ -85,7 +85,9 @@ ApplicationWindow {
             Layout.row: 5
             Layout.leftMargin: 10
             onClicked: {
-                kanjiQuiz.testFunc()
+                kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
+                kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
+                kanjiQuiz.getNextItem()
             }
         }
         Button{
@@ -96,7 +98,9 @@ ApplicationWindow {
             //color: _confirmBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
             Layout.rightMargin: 10
-
+            onClicked:{
+                kanjiQuiz.testFunc()
+            }
         }
 
     }
