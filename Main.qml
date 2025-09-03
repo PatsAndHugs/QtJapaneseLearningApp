@@ -136,14 +136,13 @@ ApplicationWindow {
             font.pointSize: 15
             onClicked:{
                 kanjiList.addSelectedItemsToList()
-                kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
-                //var component = Qt.createComponent("DbConnWindow.qml")
                 var component = Qt.createComponent("views/KanjiTestWindow.qml")
                 if(component.status === Component.Ready){
                     var newWindow = component.createObject(_mainAppWindow);
                     newWindow.show()
                     _mainAppWindow.hide()
                 }
+                kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
             }
 
         }
