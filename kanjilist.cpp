@@ -7,11 +7,17 @@ KanjiList::KanjiList(QObject *parent)
     dbClass = new DbConnectionClass;
     addItems();
     //testdata
-    for(int i = 0;i < 10; i++)
-    {
-        mItems.append({QStringLiteral("91"),QStringLiteral("asd"), QStringLiteral("asd")
-                     ,QStringLiteral("asd"),QStringLiteral("asd"),false});
-    }
+
+    mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
+                 ,QStringLiteral("ツキ"),QStringLiteral("moon"),false});
+    mItems.append({QStringLiteral("KJ-2"),QStringLiteral("日"), QStringLiteral("ひ、よう")
+                   ,QStringLiteral("ニチ、ジツ"),QStringLiteral("sun"),false});
+    mItems.append({QStringLiteral("KJ-3"),QStringLiteral("妹"), QStringLiteral("いもうと")
+                   ,QStringLiteral("マイ"),QStringLiteral("younger sister"),false});
+    mItems.append({QStringLiteral("KJ-4"),QStringLiteral("姉"), QStringLiteral("あね、はは")
+                   ,QStringLiteral("シ"),QStringLiteral("elder sister"),false});
+    mItems.append({QStringLiteral("KJ-5"),QStringLiteral("星"), QStringLiteral("ほし")
+                   ,QStringLiteral("セイ、ショウ"),QStringLiteral("star"),false});
 
 }
 
