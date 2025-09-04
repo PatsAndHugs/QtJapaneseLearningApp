@@ -87,7 +87,11 @@ ApplicationWindow {
             onClicked: {
                 kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
                 kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
-                kanjiQuiz.getNextItem()
+                if(kanjiQuiz.getNextItem()){
+                    _txtFieldKunyomi.text = "";
+                    _txtFieldOnyomi.text = "";
+                }
+
             }
         }
         Button{
@@ -99,6 +103,8 @@ ApplicationWindow {
             font.pointSize: 15
             Layout.rightMargin: 10
             onClicked:{
+                kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
+                kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
                 kanjiQuiz.testFunc()
             }
         }
