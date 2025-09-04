@@ -39,7 +39,7 @@ void KanjiQuiz::getKanjiList(QList<KanjiListStruct> list)
 
 void KanjiQuiz::testFunc()
 {
-    qDebug()<<"testFunc value: "<<m_kunyomiTxt;
+    checkIfStringMatches(m_kunyomiTxt, kanjiList.at(currentListIndex).kunyomi);
 }
 
 void KanjiQuiz::randomizeKanjiList()
@@ -49,33 +49,27 @@ void KanjiQuiz::randomizeKanjiList()
 
     std::shuffle(kanjiList.begin(), kanjiList.end(), gen);
 
-    for(const KanjiListStruct &item : std::as_const(kanjiList))
-        qDebug()<<"kanji list item:  "<<item.kanjiEnglishName;
-
     //initial values for labels in qml
     if(!kanjiList.empty())
     {
-        qDebug()<<"initialize kanjienglishnamelbl";
         setItemsVal();
     }
 }
 
-void KanjiQuiz::getNextItem()
+bool KanjiQuiz::getNextItem()
 {
-    if(m_kunyomiTxt == kanjiList.at(currentListIndex).kunyomi &&
-        m_onyomiTxt == kanjiList.at(currentListIndex).onyomi)
+    if(checkIfStringMatches(m_kunyomiTxt, kanjiList.at(currentListIndex).kunyomi) &&
+        checkIfStringMatches(m_onyomiTxt, kanjiList.at(currentListIndex).onyomi))
     {
         if(currentListIndex < kanjiList.count() -1)
         {
             currentListIndex++;
             setItemsVal();
-
-            m_kunyomiTxt="";
-            emit kunyomiTxtChanged();
-            m_onyomiTxt="";
-            emit onyomiTxtChanged();
+            return true;
         }
     }
+
+    return false;
 }
 
 void KanjiQuiz::setItemsVal()
@@ -85,10 +79,54 @@ void KanjiQuiz::setItemsVal()
 
     m_kanjiTxt = kanjiList.at(currentListIndex).kanji;
     emit kanjiTxtChanged();
-
-    m_kunyomiTxt = kanjiList.at(currentListIndex).kunyomi;
-    emit kunyomiTxtChanged();
-
-    m_onyomiTxt = kanjiList.at(currentListIndex).onyomi;
-    emit onyomiTxtChanged();
 }
+
+bool KanjiQuiz::checkIfStringMatches(QString txtVal, QString valToCompare)
+{
+    QString txt = txtVal;
+
+    QStringList newStringList = getValStringList(txt);
+    QStringList newCompareList = getValStringList(valToCompare);
+
+    int correctCounter = 0;
+    if(newStringList.empty())
+        return false;
+
+    for(int i = 0; i < newStringList.count(); i++)
+    {
+        for (int j = 0; j < newCompareList.count(); ++j)
+        {
+            if(newStringList[i] == newCompareList[j])
+                correctCounter++;
+
+        }
+    }
+
+    if(correctCounter > 0 && correctCounter < newCompareList.count())
+    {
+        qDebug()<<"you got some of it";
+        return true;
+    }
+    if(correctCounter == newCompareList.count())
+    {
+        qDebug()<<"everything is correct";
+        return true;
+    }
+    return false;
+}
+
+QStringList KanjiQuiz::getValStringList(QString val)
+{
+    QString kunyomiString = val;
+    kunyomiString = kunyomiString.simplified();
+    kunyomiString.replace(',',' ');
+
+    //for JP comma
+    int indexJpComma = kunyomiString.indexOf("、");
+    kunyomiString = kunyomiString.replace(indexJpComma, 1, " ");
+
+    QStringList stringList = kunyomiString.split(" ",Qt::SkipEmptyParts);
+
+    return stringList;
+}
+

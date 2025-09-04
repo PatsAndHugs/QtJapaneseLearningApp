@@ -2,6 +2,7 @@
 #define KANJIQUIZ_H
 
 #include <QObject>
+#include <QQmlProperty>
 
 #include "kanjilist.h"
 
@@ -35,7 +36,7 @@ public slots:
 
     void getKanjiList(QList<KanjiListStruct> list);
     void testFunc();
-    void getNextItem();
+    bool getNextItem();
 
 signals:
 
@@ -61,6 +62,9 @@ private:
     //set m_englishnameTxt and m_kanjiTxt to the current item
     //in the list base on the currentindex
     void setItemsVal();
+
+    bool checkIfStringMatches(QString txtVal, QString valToCompare);
+    QStringList getValStringList(QString val);
 };
 
 #endif // KANJIQUIZ_H
