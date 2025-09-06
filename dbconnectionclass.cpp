@@ -7,9 +7,9 @@ DbConnectionClass::DbConnectionClass()
     //readxml if element is not blank fetch it
     initializeSavedPathFile();
     loadXmlFile();
-    //setupConn();
+    //setupConn(); //uncomment to connect to db
     insertItemsToModel();
-    UserId = "USR-1";
+
 }
 
 void DbConnectionClass::setupConn()
@@ -84,8 +84,14 @@ void DbConnectionClass::insertItemsToModel()
     {
         qDebug()<<"db connection successful";
         QSqlQuery query(db);
-        query.prepare("Select KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning "
-                      "FROM JapaneseLearningDb.KanjiTable");
+
+        query.prepare("SELECT tKanji.KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning, LastDateAnswered, NextDateToAnswer, CorrectStreak "
+                      "FROM JapaneseLearningDb.KanjiTable as tKanji "
+                      "JOIN JapaneseLearningDb.UserDateTable as tDate ON tDate.KanjiId = tKanji.KanjiId "
+                      "WHERE tDate.UserId = :userIdVal");
+
+        query.bindValue(":userIdVal", UserId);
+
         if(query.exec())
         {
             qDebug()<<"db query exec successful";
@@ -93,11 +99,14 @@ void DbConnectionClass::insertItemsToModel()
             {
 
                 KanjiListStruct kanjiStruct(
-                    query.value(0).toString(),
-                    query.value(1).toString(),
-                    query.value(2).toString(),
-                    query.value(3).toString(),
-                    query.value(4).toString(),
+                    query.value(0).toString(),//kanjiid
+                    query.value(1).toString(),//kanji
+                    query.value(2).toString(),//kunyomi
+                    query.value(3).toString(),//onyomi
+                    query.value(4).toString(),//kanjiMeaning
+                    query.value(5).toString(),//lastdateanswered
+                    query.value(6).toString(),//nextdatetoanswer
+                    query.value(7).toInt(),   //correctstreak
                     false
                 );
 
@@ -112,3 +121,5 @@ void DbConnectionClass::insertItemsToModel()
 
     db.close();
 }
+
+

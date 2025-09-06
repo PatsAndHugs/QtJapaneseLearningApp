@@ -52,7 +52,7 @@ private:
     QString password;
 
     QList<KanjiListStruct> dbKanjiList;
-    QString UserId;
+    QString UserId = "USR-1";;
 };
 
 #endif // DBCONNECTIONCLASS_H
