@@ -1,6 +1,7 @@
 #include <qdebug.h>
 #include <random>
 #include <algorithm>
+
 #include "kanjiquiz.h"
 
 KanjiQuiz::KanjiQuiz(QObject *parent)
@@ -39,7 +40,8 @@ void KanjiQuiz::getKanjiList(QList<KanjiListStruct> list)
 
 void KanjiQuiz::testFunc()
 {
-    checkIfStringMatches(m_kunyomiTxt, kanjiList.at(currentListIndex).kunyomi);
+   // QDateTime dt = QDateTime::currentDateTime();
+    qDebug()<<"current date time: "<<kanjiList.at(currentListIndex).nextDateToAnswer;
 }
 
 void KanjiQuiz::randomizeKanjiList()
@@ -58,6 +60,17 @@ void KanjiQuiz::randomizeKanjiList()
 
 bool KanjiQuiz::getNextItem()
 {
+    QDateTime currentDate = QDateTime::currentDateTime();
+    //TODO get current correct counter from db if <3 add +1 day
+    //if ctr >= 3 && ctr << 6 add + 3days
+    //if ctr >= 6 && ctr << 9 add +7days
+    //if ctr >= 9 && ctr << 12 add + 1month
+    //if ctr > 12 +9999months / finished
+
+    //PLACEHOLDER
+    QDateTime nextDateAns = currentDate.addDays(3);
+
+
     if(checkIfStringMatches(m_kunyomiTxt, kanjiList.at(currentListIndex).kunyomi) &&
         checkIfStringMatches(m_onyomiTxt, kanjiList.at(currentListIndex).onyomi))
     {
@@ -65,11 +78,25 @@ bool KanjiQuiz::getNextItem()
         {
             currentListIndex++;
             setItemsVal();
+
+            KanjiQuizItemList.append({
+                kanjiList.at(currentListIndex).kanjiId,
+                true,
+                currentDate,
+                nextDateAns
+            });
+
             return true;
         }
     }
 
     return false;
+}
+
+void KanjiQuiz::skipItem()
+{
+    qDebug()<<"skipped Item";
+    currentListIndex++;
 }
 
 void KanjiQuiz::setItemsVal()

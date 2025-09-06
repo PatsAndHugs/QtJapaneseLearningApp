@@ -3,10 +3,19 @@
 
 #include <QObject>
 #include <QQmlProperty>
+#include <QDateTime>
 
 #include "kanjilist.h"
 
 struct KanjiListStruct;
+
+struct KanjiQuizStruct
+{
+    QString kaniId;
+    bool isAnswerCorrect;
+    QDateTime dateAnswered;
+    QDateTime nextDateToAnswer;
+};
 
 class KanjiQuiz : public  QObject
 {
@@ -37,6 +46,7 @@ public slots:
     void getKanjiList(QList<KanjiListStruct> list);
     void testFunc();
     bool getNextItem();
+    void skipItem();
 
 signals:
 
@@ -65,6 +75,8 @@ private:
 
     bool checkIfStringMatches(QString txtVal, QString valToCompare);
     QStringList getValStringList(QString val);
+
+    QList<KanjiQuizStruct> KanjiQuizItemList;
 };
 
 #endif // KANJIQUIZ_H
