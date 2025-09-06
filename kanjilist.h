@@ -13,19 +13,26 @@ struct KanjiListStruct
     QString kunyomi;
     QString onyomi;
     QString kanjiEnglishName;
+    QString lastDateAnswered;
+    QString nextDateToAnswer;
+    int correctStreak;
     bool isSelected;
 
     KanjiListStruct(){
     }
 
     KanjiListStruct(QString valKanjiId, QString valKanji, QString valKunyomi,
-                    QString valOnyomi, QString valEnglishName, bool valIsSelected)
+                    QString valOnyomi, QString valEnglishName, QString valLastDateAnswered,
+                    QString valNextDateToAnswer, int valCorrectStreak, bool valIsSelected)
     {
         kanjiId = valKanjiId;
         kanji = valKanji;
         kunyomi = valKunyomi;
         onyomi = valOnyomi;
         kanjiEnglishName = valEnglishName;
+        lastDateAnswered = valLastDateAnswered;
+        nextDateToAnswer = valNextDateToAnswer;
+        correctStreak = valCorrectStreak;
         isSelected = valIsSelected;
     }
 };

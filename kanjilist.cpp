@@ -6,18 +6,23 @@ KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
     addItems();
-    //testdata
 
+    //testdata
     mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
-                 ,QStringLiteral("ツキ"),QStringLiteral("moon"),false});
+                   ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),0,false});
     mItems.append({QStringLiteral("KJ-2"),QStringLiteral("日"), QStringLiteral("ひ、よう")
-                   ,QStringLiteral("ニチ、ジツ"),QStringLiteral("sun"),false});
+                   ,QStringLiteral("ニチ、ジツ"),QStringLiteral("sun"),QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),0,false});
     mItems.append({QStringLiteral("KJ-3"),QStringLiteral("妹"), QStringLiteral("いもうと")
-                   ,QStringLiteral("マイ"),QStringLiteral("younger sister"),false});
+                   ,QStringLiteral("マイ"),QStringLiteral("younger sister"),QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),0,false});
     mItems.append({QStringLiteral("KJ-4"),QStringLiteral("姉"), QStringLiteral("あね、はは")
-                   ,QStringLiteral("シ"),QStringLiteral("elder sister"),false});
+                   ,QStringLiteral("シ"),QStringLiteral("elder sister"), QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),0,false});
     mItems.append({QStringLiteral("KJ-5"),QStringLiteral("星"), QStringLiteral("ほし")
-                   ,QStringLiteral("セイ、ショウ"),QStringLiteral("star"),false});
+                   ,QStringLiteral("セイ、ショウ"),QStringLiteral("star"), QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),0,false});
 
 }
 
@@ -33,8 +38,14 @@ bool KanjiList::setItemAt(int index, const KanjiListStruct &item)
 
 
     const KanjiListStruct &oldItem = mItems.at(index);
-    if(item.kanjiId == oldItem.kanjiId && item.kanji == oldItem.kanji && item.kunyomi == oldItem.kunyomi
-        && item.onyomi == oldItem.onyomi && item.kanjiEnglishName == oldItem.kanjiEnglishName
+    if(item.kanjiId == oldItem.kanjiId
+        && item.kanji == oldItem.kanji
+        && item.kunyomi == oldItem.kunyomi
+        && item.onyomi == oldItem.onyomi
+        && item.kanjiEnglishName == oldItem.kanjiEnglishName
+        && item.lastDateAnswered == oldItem.lastDateAnswered
+        && item.nextDateToAnswer == oldItem.nextDateToAnswer
+        && item.correctStreak == oldItem.correctStreak
         && item.isSelected == oldItem.isSelected)
         return false;
 
@@ -61,7 +72,9 @@ void KanjiList::addItems()
         emit preItemAppended();
 
         mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
-                       itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].isSelected});
+                       itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
+                       itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
+                       itemList[i].isSelected});
 
         emit postItemAppended();
     }
