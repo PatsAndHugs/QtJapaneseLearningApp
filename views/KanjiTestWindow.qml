@@ -84,12 +84,29 @@ ApplicationWindow {
             font.pointSize: 15
             Layout.row: 5
             Layout.leftMargin: 10
+            property string getItemResult
             onClicked: {
                 kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
                 kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
-                if(kanjiQuiz.getNextItem()){
+
+                getItemResult = kanjiQuiz.getNextItem()
+
+                if(getItemResult === "get"){
                     _txtFieldKunyomi.text = "";
                     _txtFieldOnyomi.text = "";
+                }
+                else if(getItemResult === "finish"){
+                    var component = Qt.createComponent("KanjiTallyWindow.qml")
+                    if(component.status === Component.Ready){
+                        var newWindow = component.createObject(_mainAppWindow);
+                        if(newWindow){
+                            newWindow.show()
+                            _mainAppWindow.hide()
+                        }
+                    }
+                    else {
+                        console.log("Error loading component:", component.errorString());
+                    }
                 }
 
             }
@@ -102,10 +119,31 @@ ApplicationWindow {
             //color: _confirmBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
             Layout.rightMargin: 10
+            property string skipItemResult
             onClicked:{
                 kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
                 kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
-                kanjiQuiz.testFunc()
+
+                skipItemResult = kanjiQuiz.skipItem()
+
+                if(skipItemResult === "next"){
+                    _txtFieldKunyomi.text = "";
+                    _txtFieldOnyomi.text = "";
+                }
+                else if(skipItemResult === "finish"){
+                    console.log("skipped finished")
+                    var component = Qt.createComponent("KanjiTallyWindow.qml")
+                    if(component.status === Component.Ready){
+                        var newWindow = component.createObject(_mainAppWindow);
+                        if(newWindow){
+                            newWindow.show()
+                            _mainAppWindow.hide()
+                        }
+                    }
+                    else {
+                        console.log("Error loading component:", component.errorString());
+                    }
+                }
             }
         }
 
