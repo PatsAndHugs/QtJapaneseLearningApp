@@ -58,45 +58,82 @@ void KanjiQuiz::randomizeKanjiList()
     }
 }
 
-bool KanjiQuiz::getNextItem()
+QString KanjiQuiz::getNextItem()
 {
-    QDateTime currentDate = QDateTime::currentDateTime();
-    //TODO get current correct counter from db if <3 add +1 day
-    //if ctr >= 3 && ctr << 6 add + 3days
-    //if ctr >= 6 && ctr << 9 add +7days
-    //if ctr >= 9 && ctr << 12 add + 1month
-    //if ctr > 12 +9999months / finished
-
-    //PLACEHOLDER
-    QDateTime nextDateAns = currentDate.addDays(3);
-
-
     if(checkIfStringMatches(m_kunyomiTxt, kanjiList.at(currentListIndex).kunyomi) &&
         checkIfStringMatches(m_onyomiTxt, kanjiList.at(currentListIndex).onyomi))
     {
+        if(currentListIndex < kanjiList.count())
+        {
+
+            QDate nextDate = getDaysToAddToItem(currentListIndex);
+            int currentCorrectCounter = kanjiList.at(currentListIndex).correctStreak;
+
+            kanjiQuizItemList.append({
+                kanjiList.at(currentListIndex).kanjiId,
+                true,
+                QDate::currentDate(),
+                nextDate,
+                currentCorrectCounter++
+            });
+
+            if(currentListIndex < kanjiList.count() -1)
+            {
+                currentListIndex++;
+                setItemsVal();
+            }
+            else
+            {
+                //TODO SHOW TALLY WINDOW
+                for(auto item : kanjiQuizItemList)
+                    qDebug()<<"item: "<<item.kaniId;
+
+                return "finish";
+            }
+
+            qDebug()<<"nextdate is: "<<nextDate;
+            return "get";
+        }
+    }
+
+    return "pause";
+}
+
+QString KanjiQuiz::skipItem()
+{
+    qDebug()<<"skipped Item";
+
+    //resets correct ctr and moves the item for the next day
+    if(currentListIndex < kanjiList.count())
+    {
+        QDate nextDate = QDate::currentDate().addDays(1);
+        int currentCorrectCounter = 0;
+
+        kanjiQuizItemList.append({
+            kanjiList.at(currentListIndex).kanjiId,
+            true,
+            QDate::currentDate(),
+            nextDate,
+            currentCorrectCounter
+        });
+
         if(currentListIndex < kanjiList.count() -1)
         {
             currentListIndex++;
             setItemsVal();
-
-            KanjiQuizItemList.append({
-                kanjiList.at(currentListIndex).kanjiId,
-                true,
-                currentDate,
-                nextDateAns
-            });
-
-            return true;
         }
+        else
+        {
+            //TODO SHOW TALLY WINDOW
+            for(auto item : kanjiQuizItemList)
+                qDebug()<<"item: "<<item.kaniId;
+
+            return "finish";
+        }
+        return "get";
     }
 
-    return false;
-}
-
-void KanjiQuiz::skipItem()
-{
-    qDebug()<<"skipped Item";
-    currentListIndex++;
+    return "pause";
 }
 
 void KanjiQuiz::setItemsVal()
@@ -155,5 +192,24 @@ QStringList KanjiQuiz::getValStringList(QString val)
     QStringList stringList = kunyomiString.split(" ",Qt::SkipEmptyParts);
 
     return stringList;
+}
+
+QDate KanjiQuiz::getDaysToAddToItem(int index)
+{
+    int correctCtr = kanjiList.at(index).correctStreak;
+    QDate currentDate = QDate::currentDate();
+    QDate nextDate;
+    if(correctCtr < 3)
+        nextDate = currentDate.addDays(1);
+    if (correctCtr >= 3 && correctCtr << 6)
+        nextDate = currentDate.addDays(3);
+    if (correctCtr >= 6 && correctCtr << 9)
+        nextDate = currentDate.addDays(7);
+    if (correctCtr >= 9 && correctCtr << 12)
+        nextDate = currentDate.addMonths(1);
+    if (correctCtr > 12)
+        nextDate = currentDate.addYears(500);
+
+    return nextDate;
 }
 

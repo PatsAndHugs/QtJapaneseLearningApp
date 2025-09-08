@@ -13,8 +13,9 @@ struct KanjiQuizStruct
 {
     QString kaniId;
     bool isAnswerCorrect;
-    QDateTime dateAnswered;
-    QDateTime nextDateToAnswer;
+    QDate dateAnswered;
+    QDate nextDateToAnswer;
+    int correctCounter;
 };
 
 class KanjiQuiz : public  QObject
@@ -45,8 +46,10 @@ public slots:
 
     void getKanjiList(QList<KanjiListStruct> list);
     void testFunc();
-    bool getNextItem();
-    void skipItem();
+    //get = get next; pause = do nothing; finish = end of items reached
+    QString getNextItem();
+    //get = get next; pause = do nothing; finish = end of items reached
+    QString skipItem();
 
 signals:
 
@@ -76,7 +79,9 @@ private:
     bool checkIfStringMatches(QString txtVal, QString valToCompare);
     QStringList getValStringList(QString val);
 
-    QList<KanjiQuizStruct> KanjiQuizItemList;
+    QList<KanjiQuizStruct> kanjiQuizItemList;
+
+    QDate getDaysToAddToItem(int index);
 };
 
 #endif // KANJIQUIZ_H
