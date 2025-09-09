@@ -33,6 +33,8 @@ qt_add_qml_module(appQtJapaneseLearningApp
         SOURCES kanjiquiz.h kanjiquiz.cpp
         QML_FILES
         QML_FILES views/KanjiTallyWindow.qml
+        SOURCES kanjiquizresultmodel.h kanjiquizresultmodel.cpp
+        QML_FILES views/KanjiListCard.qml
 )
 
 # add resource items here
