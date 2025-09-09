@@ -16,6 +16,10 @@ struct KanjiQuizStruct
     QDate dateAnswered;
     QDate nextDateToAnswer;
     int correctCounter;
+    QString kanji;
+    QString onyomi;
+    QString kunyomi;
+    QString kanjiEnglishMeaning;
 };
 
 class KanjiQuiz : public  QObject
@@ -50,6 +54,8 @@ public slots:
     QString getNextItem();
     //get = get next; pause = do nothing; finish = end of items reached
     QString skipItem();
+
+    QList<KanjiQuizStruct> getResultList(){return kanjiQuizItemList;}
 
 signals:
 

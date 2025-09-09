@@ -74,7 +74,12 @@ QString KanjiQuiz::getNextItem()
                 true,
                 QDate::currentDate(),
                 nextDate,
-                currentCorrectCounter++
+                currentCorrectCounter++,
+                kanjiList.at(currentListIndex).kanji,
+                kanjiList.at(currentListIndex).onyomi,
+                kanjiList.at(currentListIndex).kunyomi,
+                kanjiList.at(currentListIndex).kanjiEnglishName
+
             });
 
             if(currentListIndex < kanjiList.count() -1)
@@ -111,10 +116,14 @@ QString KanjiQuiz::skipItem()
 
         kanjiQuizItemList.append({
             kanjiList.at(currentListIndex).kanjiId,
-            true,
+            false,
             QDate::currentDate(),
             nextDate,
-            currentCorrectCounter
+            currentCorrectCounter,
+            kanjiList.at(currentListIndex).kanji,
+            kanjiList.at(currentListIndex).onyomi,
+            kanjiList.at(currentListIndex).kunyomi,
+            kanjiList.at(currentListIndex).kanjiEnglishName
         });
 
         if(currentListIndex < kanjiList.count() -1)
