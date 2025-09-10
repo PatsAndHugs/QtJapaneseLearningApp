@@ -7,7 +7,7 @@ DbConnectionClass::DbConnectionClass()
     //readxml if element is not blank fetch it
     initializeSavedPathFile();
     loadXmlFile();
-    //setupConn(); //uncomment to connect to db
+    setupConn(); //uncomment to connect to db
     insertItemsToModel();
 
 }
@@ -61,6 +61,33 @@ void DbConnectionClass::setConfigFilePath(const QString &configFilePath)
 void DbConnectionClass::setHasSavedPathFile(const bool &bState)
 {
     bHasSavedPathFile = bState;
+}
+
+void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list)
+{
+    if(db.open())
+    {
+        qDebug()<<"DB update func called";
+        QSqlQuery query(db);
+        query.prepare("UPDATE JapaneseLearningDb.UserDateTable "
+                      "SET LastDateAnswered = :lastdateanswered, "
+                      "NextDateToAnswer = :nextdatetoanswer, "
+                      "CorrectStreak = :correctcounter "
+                      "WHERE UserId = :userid && KanjiId = :kanjiid");
+
+        for(const KanjiQuizStruct &item : list)
+        {
+            query.bindValue(":lastdateanswered", item.dateAnswered.toString("yyyy-MM-dd"));
+            query.bindValue(":nextdatetoanswer", item.nextDateToAnswer.toString("yyyy-MM-dd"));
+            query.bindValue(":correctcounter", item.correctCounter);
+            query.bindValue(":kanjiid", item.kanjiId);
+            query.bindValue(":userid", UserId);
+            if(query.exec())
+                qDebug()<<"update executed";
+        }
+    }
+
+    db.close();
 }
 
 void DbConnectionClass::initializeSavedPathFile()

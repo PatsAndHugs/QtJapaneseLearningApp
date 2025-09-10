@@ -7,6 +7,7 @@
 #include <qqml.h>
 #include <kanjilistmodel.h>
 #include "kanjilist.h"
+#include "kanjiquiz.h"
 
 class DbConnectionClass : public QObject
 {
@@ -32,6 +33,8 @@ public:
     Q_INVOKABLE KanjiListModel* getModel(){return _model;}
 
     QList<KanjiListStruct> getDbKanjiList(){return dbKanjiList;}
+
+    void UpdateDbItems(QList<KanjiQuizStruct> list);
 
 signals:
 
