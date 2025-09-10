@@ -11,7 +11,7 @@ struct KanjiListStruct;
 
 struct KanjiQuizStruct
 {
-    QString kaniId;
+    QString kanjiId;
     bool isAnswerCorrect;
     QDate dateAnswered;
     QDate nextDateToAnswer;
@@ -88,6 +88,8 @@ private:
     QList<KanjiQuizStruct> kanjiQuizItemList;
 
     QDate getDaysToAddToItem(int index);
+
+    DbConnectionClass *dbConnClass;
 };
 
 #endif // KANJIQUIZ_H

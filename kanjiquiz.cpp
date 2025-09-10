@@ -3,11 +3,12 @@
 #include <algorithm>
 
 #include "kanjiquiz.h"
+#include "dbconnectionclass.h"
 
 KanjiQuiz::KanjiQuiz(QObject *parent)
 {
     qDebug()<<"kanji quiz constructor";
-
+    dbConnClass = new DbConnectionClass;
 }
 
 void KanjiQuiz::setEnglishNameTxt(QString newVal)
@@ -74,7 +75,7 @@ QString KanjiQuiz::getNextItem()
                 true,
                 QDate::currentDate(),
                 nextDate,
-                currentCorrectCounter++,
+                ++currentCorrectCounter,
                 kanjiList.at(currentListIndex).kanji,
                 kanjiList.at(currentListIndex).onyomi,
                 kanjiList.at(currentListIndex).kunyomi,
@@ -89,10 +90,7 @@ QString KanjiQuiz::getNextItem()
             }
             else
             {
-                //TODO SHOW TALLY WINDOW
-                for(auto item : kanjiQuizItemList)
-                    qDebug()<<"item: "<<item.kaniId;
-
+                dbConnClass->UpdateDbItems(kanjiQuizItemList);
                 return "finish";
             }
 
@@ -133,10 +131,7 @@ QString KanjiQuiz::skipItem()
         }
         else
         {
-            //TODO SHOW TALLY WINDOW
-            for(auto item : kanjiQuizItemList)
-                qDebug()<<"item: "<<item.kaniId;
-
+            dbConnClass->UpdateDbItems(kanjiQuizItemList);
             return "finish";
         }
         return "get";
@@ -197,6 +192,9 @@ QStringList KanjiQuiz::getValStringList(QString val)
     //for JP comma
     int indexJpComma = kunyomiString.indexOf("、");
     kunyomiString = kunyomiString.replace(indexJpComma, 1, " ");
+    //for JP hypen
+    int indexJpHypen = kunyomiString.indexOf("ー");
+    kunyomiString = kunyomiString.replace(indexJpHypen, 1, " ");
 
     QStringList stringList = kunyomiString.split(" ",Qt::SkipEmptyParts);
 
