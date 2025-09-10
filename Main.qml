@@ -135,14 +135,16 @@ ApplicationWindow {
             btnBgColor: _confirmBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
             onClicked:{
-                kanjiList.addSelectedItemsToList()
-                var component = Qt.createComponent("views/KanjiTestWindow.qml")
-                if(component.status === Component.Ready){
-                    var newWindow = component.createObject(_mainAppWindow);
-                    newWindow.show()
-                    _mainAppWindow.hide()
+                if(kanjiList.getSelectedItemsCount() > 0){
+                    kanjiList.addSelectedItemsToList()
+                    var component = Qt.createComponent("views/KanjiTestWindow.qml")
+                    if(component.status === Component.Ready){
+                        var newWindow = component.createObject(_mainAppWindow);
+                        newWindow.show()
+                        _mainAppWindow.hide()
+                    }
+                    kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
                 }
-                kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
             }
 
         }
