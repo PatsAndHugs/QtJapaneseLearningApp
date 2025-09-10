@@ -17,7 +17,7 @@ QVariant KanjiQuizResultModel::data(const QModelIndex &index, int role) const
     switch(role)
     {
         case KanjiIdRole:
-            return data.kaniId;
+            return data.kanjiId;
 
         case IsAnswerCorrectRole:
             return data.isAnswerCorrect;
