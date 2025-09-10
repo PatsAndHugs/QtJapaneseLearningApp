@@ -63,6 +63,7 @@ public slots:
     void updateAllItemsIsSelected();
     void addSelectedItemsToList();
     QList<KanjiListStruct> getSelectedItemsList(){return mSelectedItemsList;}
+    int getSelectedItemsCount();
 
 private:
     QVector<KanjiListStruct> mItems;
