@@ -70,13 +70,21 @@ Popup {
         }
 
         Button{
-            text: qsTr("LogIn")
+            text: qsTr("Login")
             Layout.preferredHeight: 50
             Layout.preferredWidth: parent.width / parent.columns
+            onClicked:{
+                userLogin.username = _usernameTxtField.text
+                userLogin.password = _passwordTxtField.text
+                if(userLogin.loginResult() === true)
+                    console.log("Login Successful")
+                else
+                    console.log("Login Failed")
+            }
         }
 
         Button{
-            text: qsTr("Cancel")
+            text: qsTr("Register")
             Layout.preferredHeight: 50
             Layout.preferredWidth: parent.width / parent.columns
         }
