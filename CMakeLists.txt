@@ -35,6 +35,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/KanjiTallyWindow.qml
         SOURCES kanjiquizresultmodel.h kanjiquizresultmodel.cpp
         QML_FILES views/KanjiListCard.qml
+        QML_FILES views/LogInPopUp.qml
 )
 
 # add resource items here
