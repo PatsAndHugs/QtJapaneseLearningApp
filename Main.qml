@@ -33,6 +33,8 @@ ApplicationWindow {
                         _loginPopup.open()
                     }
                 }
+                MenuItem{text:"Logout"}
+                MenuItem{text:"Exit"}
             }
         }
 
