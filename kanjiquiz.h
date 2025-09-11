@@ -57,6 +57,8 @@ public slots:
 
     QList<KanjiQuizStruct> getResultList(){return kanjiQuizItemList;}
 
+    void clearQuizList();
+
 signals:
 
     void englishNameTxtChanged();

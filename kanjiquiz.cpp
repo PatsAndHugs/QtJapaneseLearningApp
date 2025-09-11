@@ -36,6 +36,8 @@ void KanjiQuiz::getKanjiList(QList<KanjiListStruct> list)
     kanjiList = list;
     qDebug()<<"getKanjiList"<<kanjiList.count();
 
+    //reset counter whenever user returns to main menu
+    currentListIndex = 0;
     randomizeKanjiList();
 }
 
@@ -50,11 +52,11 @@ void KanjiQuiz::randomizeKanjiList()
     std::random_device rd;
     std::mt19937 gen(rd());
 
-    std::shuffle(kanjiList.begin(), kanjiList.end(), gen);
-
     //initial values for labels in qml
     if(!kanjiList.empty())
     {
+        std::shuffle(kanjiList.begin(), kanjiList.end(), gen);
+
         setItemsVal();
     }
 }
@@ -138,6 +140,11 @@ QString KanjiQuiz::skipItem()
     }
 
     return "pause";
+}
+
+void KanjiQuiz::clearQuizList()
+{
+    kanjiQuizItemList.clear();
 }
 
 void KanjiQuiz::setItemsVal()
