@@ -36,6 +36,9 @@ public:
 
     void UpdateDbItems(QList<KanjiQuizStruct> list);
 
+    void populateModelList();
+    bool loginUser(QString usernameVal, QString passwordVal);
+
 signals:
 
     void configfilePathChanged();
@@ -50,7 +53,7 @@ private:
     void initializeSavedPathFile();
     bool bHasSavedPathFile;
 
-    void insertItemsToModel();
+
     QString username;
     QString password;
 

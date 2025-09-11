@@ -7,9 +7,9 @@ DbConnectionClass::DbConnectionClass()
     //readxml if element is not blank fetch it
     initializeSavedPathFile();
     loadXmlFile();
-    //setupConn(); //uncomment to connect to db
-    insertItemsToModel();
-
+    setupConn(); //uncomment to connect to db
+    //populateModelList();
+    qDebug()<<"DBCONN CONSTRUCTOR";
 }
 
 void DbConnectionClass::setupConn()
@@ -105,7 +105,7 @@ void DbConnectionClass::initializeSavedPathFile()
     }
 }
 
-void DbConnectionClass::insertItemsToModel()
+void DbConnectionClass::populateModelList()
 {
     if(db.open())
     {
@@ -147,6 +147,31 @@ void DbConnectionClass::insertItemsToModel()
     qDebug()<<"insertitems to model";
 
     db.close();
+}
+
+bool DbConnectionClass::loginUser(QString usernameVal, QString passwordVal)
+{
+    if(db.open())
+    {
+        qDebug()<<"DB loginuser called";
+        QSqlQuery query(db);
+        query.prepare("SELECT * FROM JapaneseLearningDb.UserTable "
+                      "WHERE  UserName = :username && UserPassword = :password");
+
+        query.bindValue(":username", usernameVal);
+        query.bindValue(":password", passwordVal);
+        if(query.exec())
+        {
+            if(query.next())
+            {
+                UserId = query.value(1).toString();
+                qDebug()<<"USERID "<<UserId;
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 
