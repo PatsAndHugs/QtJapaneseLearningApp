@@ -6,23 +6,23 @@ KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
     addItems();
-
+    qDebug()<<"kanjilist constructor";
     //testdata
-    // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
-    //                ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),1,false});
-    // mItems.append({QStringLiteral("KJ-2"),QStringLiteral("日"), QStringLiteral("ひ、よう")
-    //                ,QStringLiteral("ニチ、ジツ"),QStringLiteral("sun"),QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),4,false});
-    // mItems.append({QStringLiteral("KJ-3"),QStringLiteral("妹"), QStringLiteral("いもうと")
-    //                ,QStringLiteral("マイ"),QStringLiteral("younger sister"),QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),10,false});
-    // mItems.append({QStringLiteral("KJ-4"),QStringLiteral("姉"), QStringLiteral("あね、はは")
-    //                ,QStringLiteral("シ"),QStringLiteral("elder sister"), QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),14,false});
-    // mItems.append({QStringLiteral("KJ-5"),QStringLiteral("星"), QStringLiteral("ほし")
-    //                ,QStringLiteral("セイ、ショウ"),QStringLiteral("star"), QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),13,false});
+    mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
+                   ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),1,false});
+    mItems.append({QStringLiteral("KJ-2"),QStringLiteral("日"), QStringLiteral("ひ、よう")
+                   ,QStringLiteral("ニチ、ジツ"),QStringLiteral("sun"),QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),4,false});
+    mItems.append({QStringLiteral("KJ-3"),QStringLiteral("妹"), QStringLiteral("いもうと")
+                   ,QStringLiteral("マイ"),QStringLiteral("younger sister"),QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),10,false});
+    mItems.append({QStringLiteral("KJ-4"),QStringLiteral("姉"), QStringLiteral("あね、はは")
+                   ,QStringLiteral("シ"),QStringLiteral("elder sister"), QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),14,false});
+    mItems.append({QStringLiteral("KJ-5"),QStringLiteral("星"), QStringLiteral("ほし")
+                   ,QStringLiteral("セイ、ショウ"),QStringLiteral("star"), QStringLiteral("09/06/25")
+                   ,QStringLiteral("09/06/25"),13,false});
 
 }
 
