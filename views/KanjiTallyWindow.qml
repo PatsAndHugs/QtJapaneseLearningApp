@@ -8,7 +8,7 @@ import KanjiClass 1.0
 ApplicationWindow {
 
     ///COLOR SCHEME #023D54 #9A6735 #94DEA5 #ffff66
-    id:_mainAppWindow
+    id:_tallyAppWindow
     width: 720
     height: 1280
     visible: true
@@ -32,28 +32,90 @@ ApplicationWindow {
 
         GradientStop { position: 1.0; color: "#F2CDB1" }
     }
-
-    ListView {
-        id:_listView
+    ColumnLayout{
+        id:_tallyColLayout
         anchors.fill: parent
-        spacing: 10
 
-        model: KanjiQuizResultModel{
-            id:_model
-            dataList: kanjiQuiz.getResultList()
+        RowLayout{
+            id:_scoreRowLayout
+            Layout.alignment: Qt.AlignHCenter
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.topMargin: 50
+            Label{
+                text: qsTr("Correct: ")
+                font.pointSize: 20
+                Layout.alignment: Qt.AlignHCenter
+            }
+            Label{
+                text: qsTr("100")
+                font.pointSize: 20
+                Layout.alignment: Qt.AlignLeft
+            }
+            Label{
+                text: qsTr("Wrong: ")
+                font.pointSize: 20
+                Layout.alignment: Qt.AlignHCenter
+            }
+            Label{
+                text: qsTr("100")
+                font.pointSize: 20
+                Layout.alignment: Qt.AlignLeft
+            }
+
         }
 
-        delegate: KanjiListCard{
-            id:_wrapper
-            kanjiText: model.kanji
-            englishMeaningText: model.kanjiEnglishMeaning
-            kunyomiText: model.kunyomi
-            onyomiText: model.onyomi
-            lblTextColor: ListView.isCurrentItem ? "black" : "black"
-            width: myListView.width
-            height: 100
-            gradient: model.isAnswerCorrect ? _itemCorrect : _itemWrong
+        ListView {
+            id:_listView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.topMargin: 100
+            Layout.rightMargin: 20
+            Layout.leftMargin: 20
+            spacing: 10
 
+            model: KanjiQuizResultModel{
+                id:_model
+                dataList: kanjiQuiz.getResultList()
+            }
+
+            delegate: KanjiListCard{
+                id:_wrapper
+                kanjiText: model.kanji
+                englishMeaningText: model.kanjiEnglishMeaning
+                kunyomiText: model.kunyomi
+                onyomiText: model.onyomi
+                lblTextColor: ListView.isCurrentItem ? "black" : "black"
+                width: _listView.width
+                height: 100
+                gradient: model.isAnswerCorrect ? _itemCorrect : _itemWrong
+
+            }
+        }
+
+        RowLayout{
+            id:_scoreBtnRowLayout
+            Layout.alignment: Qt.AlignHCenter
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.bottomMargin: 50
+            Layout.rightMargin: 40
+            Layout.leftMargin: 40
+
+            Button{
+                text:qsTr("Return To Main Menu")
+                Layout.preferredHeight: 100
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                font.pointSize: 20
+                onClicked: {
+                     _tallyAppWindow.close()
+                    kanjiQuiz.clearQuizList()
+                    _mainAppWindow.show()
+                }
+            }
         }
     }
+
+
 }
