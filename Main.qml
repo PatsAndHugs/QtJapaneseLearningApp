@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
+import "views"
 
 //import JapaneseLearningApp.DbConnectionClass
 import KanjiClass 1.0
@@ -18,7 +19,23 @@ ApplicationWindow {
     title: qsTr("Japanese Learning App")
     color:"#023D54"
 
+    LogInPopUp{
+        id:_loginPopup
+    }
+
     header: MenuBar{
+        MenuBarItem{
+            text: qsTr("LogIn")
+            menu:Menu{
+                MenuItem{
+                    text: qsTr("Login")
+                    onClicked:{
+                        _loginPopup.open()
+                    }
+                }
+            }
+        }
+
         MenuBarItem{
             text: qsTr("Connection Config")
             menu:Menu {
