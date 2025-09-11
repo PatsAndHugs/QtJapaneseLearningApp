@@ -8,7 +8,7 @@ import KanjiClass 1.0
 ApplicationWindow {
 
     ///COLOR SCHEME #023D54 #9A6735 #94DEA5 #ffff66
-    id:_mainAppWindow
+    id:_testAppWindow
     width: 720
     height: 1280
     visible: true
@@ -17,6 +17,23 @@ ApplicationWindow {
     title: qsTr("Kanji Test")
     color:"#023D54"
 
+    header: MenuBar{
+        MenuBarItem{
+            text: qsTr("Menu")
+            menu:Menu {
+                id:_menu
+                MenuItem{
+                    text:qsTr("Back To Main Menu")
+                    onClicked:{
+                        _mainAppWindow.show()
+                        _testAppWindow.close()
+                    }
+                }
+
+                MenuItem{text:qsTr("Cancel")}
+            }
+        }
+    }
     GridLayout{
         id:_mainGrid
         //anchors.verticalCenter: parent.verticalCenter
@@ -100,8 +117,8 @@ ApplicationWindow {
                     if(component.status === Component.Ready){
                         var newWindow = component.createObject(_mainAppWindow);
                         if(newWindow){
+                             _testAppWindow.close()
                             newWindow.show()
-                            _mainAppWindow.hide()
                         }
                     }
                     else {
@@ -136,8 +153,8 @@ ApplicationWindow {
                     if(component.status === Component.Ready){
                         var newWindow = component.createObject(_mainAppWindow);
                         if(newWindow){
+                            _testAppWindow.close()
                             newWindow.show()
-                            _mainAppWindow.hide()
                         }
                     }
                     else {
