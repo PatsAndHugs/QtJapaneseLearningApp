@@ -7,6 +7,7 @@
 #include <kanjilist.h>
 #include <kanjiquiz.h>
 #include <kanjiquizresultmodel.h>
+#include <userloginclass.h>
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +22,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<KanjiQuiz>("KanjiClass",1,0,"KanjiQuiz");
     KanjiList kanjiList;
     KanjiQuiz kanjiQuiz;
+    UserLoginClass loginClass;
+
 
     QQmlApplicationEngine engine;
     QObject::connect(
@@ -32,6 +35,8 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty(QStringLiteral("kanjiList"), &kanjiList);
     engine.rootContext()->setContextProperty(QStringLiteral("kanjiQuiz"), &kanjiQuiz);
+    engine.rootContext()->setContextProperty(QStringLiteral("userLogin"), &loginClass);
+
 
     engine.loadFromModule("QtJapaneseLearningApp", "Main");
 
