@@ -46,6 +46,23 @@ QString XMLReaderClass::getSavedPathFile()
     return readElement("filepath");
 }
 
+QStringList XMLReaderClass::getSavedUserInfo()
+{
+    QStringList userInfoList;
+    //loadDocument("Config.xml");
+    userInfoList.append(readElement("uival"));
+    userInfoList.append(readElement("unval"));
+    userInfoList.append(readElement("upval"));
+
+    return userInfoList;
+}
+
+QString XMLReaderClass::getLoggedinStatus()
+{
+    loadDocument("Config.xml");
+    return readElement("isloggedin");
+}
+
 QString XMLReaderClass::readElement(QString tagName)
 {
     QDomElement childElement = root.firstChildElement(tagName);
@@ -56,7 +73,7 @@ QString XMLReaderClass::readElement(QString tagName)
     return "";
 }
 
-void XMLReaderClass::replaceElementVal(QString xmlPath, QString newText)
+void XMLReaderClass::replaceElementVal(QString xmlPath, QString tagName, QString newText)
 {
     QFile file = QString(xmlPath);
 
@@ -75,7 +92,7 @@ void XMLReaderClass::replaceElementVal(QString xmlPath, QString newText)
     file.close();
 
     QDomElement repRoot = doc.documentElement();
-    QDomElement targetElement = repRoot.firstChildElement("filepath");
+    QDomElement targetElement = repRoot.firstChildElement(tagName);
 
     if(!targetElement.isNull())
     {

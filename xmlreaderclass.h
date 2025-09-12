@@ -11,10 +11,12 @@ public:
 public:
 
     void loadDocument(QString filePath);
-    void replaceElementVal(QString xmlPath, QString newText);
+    void replaceElementVal(QString xmlPath, QString tagName, QString newText);
     QString getUsername();
     QString getPassword();
     QString getSavedPathFile();
+    QStringList getSavedUserInfo();
+    QString getLoggedinStatus();
 
 private:
 
@@ -22,6 +24,7 @@ private:
     QDomDocument document;
 
     QString readElement(QString tagName);
+
 };
 
 #endif // XMLREADERCLASS_H
