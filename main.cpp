@@ -20,6 +20,10 @@ int main(int argc, char *argv[])
 
 
     qmlRegisterType<KanjiQuiz>("KanjiClass",1,0,"KanjiQuiz");
+
+    DbConnectionClass connClass;
+    connClass.setupConn();
+
     KanjiList kanjiList;
     KanjiQuiz kanjiQuiz;
     UserLoginClass loginClass;
