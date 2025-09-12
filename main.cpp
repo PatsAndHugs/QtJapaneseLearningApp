@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("kanjiList"), &kanjiList);
     engine.rootContext()->setContextProperty(QStringLiteral("kanjiQuiz"), &kanjiQuiz);
     engine.rootContext()->setContextProperty(QStringLiteral("userLogin"), &loginClass);
-
+    engine.rootContext()->setContextProperty(QStringLiteral("dbConn"), &connClass);
 
     engine.loadFromModule("QtJapaneseLearningApp", "Main");
 
