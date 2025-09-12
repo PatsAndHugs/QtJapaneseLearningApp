@@ -124,6 +124,16 @@ void KanjiListModel::setList(KanjiList *list)
         connect(mList, &KanjiList::postItemAppended, this, [=]() {
             endInsertRows();
         });
+
+        connect(mList, &KanjiList::preItemRemoved, this, [=]() {
+
+            beginRemoveRows(QModelIndex(),0, mList->items().size()-1);
+
+        });
+
+        connect(mList, &KanjiList::postItemRemoved, this, [=]() {
+            endRemoveRows();
+        });
     }
 
     endResetModel();
