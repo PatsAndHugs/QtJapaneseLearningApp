@@ -113,7 +113,6 @@ void DbConnectionClass::saveUserInfoToXml()
     xmlReader->replaceElementVal("Config.xml","unval",username);
     xmlReader->replaceElementVal("Config.xml","upval",password);
     xmlReader->replaceElementVal("Config.xml","isloggedin","true");
-
 }
 
 void DbConnectionClass::initializeUserInfo()
@@ -137,9 +136,8 @@ void DbConnectionClass::initializeUserInfo()
     loginUser(username,password);
 }
 
-void DbConnectionClass::populateModelList()
+void DbConnectionClass::populateModelList(QString userIdVal)
 {
-
     QSqlQuery query(db);
 
     query.prepare("SELECT tKanji.KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning, LastDateAnswered, NextDateToAnswer, CorrectStreak "
@@ -147,7 +145,7 @@ void DbConnectionClass::populateModelList()
                   "JOIN JapaneseLearningDb.UserDateTable as tDate ON tDate.KanjiId = tKanji.KanjiId "
                   "WHERE tDate.UserId = :userIdVal");
 
-    query.bindValue(":userIdVal", userId);
+    query.bindValue(":userIdVal", userIdVal);
 
     if(query.exec())
     {
@@ -197,12 +195,20 @@ bool DbConnectionClass::loginUser(QString usernameVal, QString passwordVal)
             username = query.value(2).toString();
             password = query.value(3).toString();
             saveUserInfoToXml();
-            qDebug()<<"USERID "<<userId;
             return true;
         }
     }
 
     return false;
+}
+
+void DbConnectionClass::logoutUser()
+{
+    //clearxml
+    xmlReader->replaceElementVal("Config.xml","uival","");
+    xmlReader->replaceElementVal("Config.xml","unval","");
+    xmlReader->replaceElementVal("Config.xml","upval","");
+    xmlReader->replaceElementVal("Config.xml","isloggedin","false");
 }
 
 

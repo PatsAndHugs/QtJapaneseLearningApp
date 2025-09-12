@@ -36,8 +36,9 @@ public:
 
     void UpdateDbItems(QList<KanjiQuizStruct> list);
 
-    void populateModelList();
+    void populateModelList(QString userIdVal);
     bool loginUser(QString usernameVal, QString passwordVal);
+    Q_INVOKABLE void logoutUser();
 
 signals:
 
@@ -59,7 +60,7 @@ private:
     QString password;
 
     QList<KanjiListStruct> dbKanjiList;
-    QString userId = "USR-1";;
+    QString userId;
 };
 
 #endif // DBCONNECTIONCLASS_H
