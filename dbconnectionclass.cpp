@@ -3,17 +3,18 @@
 
 DbConnectionClass::DbConnectionClass()
 {
-    xmlReader = new XMLReaderClass;
-    //readxml if element is not blank fetch it
-    initializeSavedPathFile();
-    loadXmlFile();
-    setupConn(); //uncomment to connect to db
-    //populateModelList();
     qDebug()<<"DBCONN CONSTRUCTOR";
 }
 
 void DbConnectionClass::setupConn()
 {
+
+    xmlReader = new XMLReaderClass;
+    //readxml if element is not blank fetch it
+    initializeSavedPathFile();
+    loadDbConfigXmlFile();
+    //populateModelList();
+
     if(xmlReader == nullptr)
         return;
 
@@ -27,9 +28,13 @@ void DbConnectionClass::setupConn()
     db.setUserName(username);
     db.setPassword(password);
     qDebug()<<username<<" "<<password;
+    if(!db.open())
+        qDebug()<<"Database Connection Failed";
+
+    initializeUserInfo();
 }
 
-void DbConnectionClass::loadXmlFile()
+void DbConnectionClass::loadDbConfigXmlFile()
 {
     if(_dbConfigFilePath !="")
     {    
@@ -42,12 +47,12 @@ void DbConnectionClass::saveFilePathToXml()
 {
     //A:/C++Practice/qt/QtJapaneseLearningApp
     if(_dbConfigFilePath != "")
-        xmlReader->replaceElementVal("Config.xml",_dbConfigFilePath);
+        xmlReader->replaceElementVal("Config.xml","filepath",_dbConfigFilePath);
 }
 
 void DbConnectionClass::clearFilePathInXML()
 {
-    xmlReader->replaceElementVal("Config.xml","");
+    xmlReader->replaceElementVal("Config.xml","filepath","");
 }
 
 
@@ -65,29 +70,26 @@ void DbConnectionClass::setHasSavedPathFile(const bool &bState)
 
 void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list)
 {
-    if(db.open())
-    {
-        qDebug()<<"DB update func called";
-        QSqlQuery query(db);
-        query.prepare("UPDATE JapaneseLearningDb.UserDateTable "
-                      "SET LastDateAnswered = :lastdateanswered, "
-                      "NextDateToAnswer = :nextdatetoanswer, "
-                      "CorrectStreak = :correctcounter "
-                      "WHERE UserId = :userid && KanjiId = :kanjiid");
 
-        for(const KanjiQuizStruct &item : list)
-        {
-            query.bindValue(":lastdateanswered", item.dateAnswered.toString("yyyy-MM-dd"));
-            query.bindValue(":nextdatetoanswer", item.nextDateToAnswer.toString("yyyy-MM-dd"));
-            query.bindValue(":correctcounter", item.correctCounter);
-            query.bindValue(":kanjiid", item.kanjiId);
-            query.bindValue(":userid", UserId);
-            if(query.exec())
-                qDebug()<<"update executed";
-        }
+    qDebug()<<"DB update func called";
+    QSqlQuery query(db);
+    query.prepare("UPDATE JapaneseLearningDb.UserDateTable "
+                  "SET LastDateAnswered = :lastdateanswered, "
+                  "NextDateToAnswer = :nextdatetoanswer, "
+                  "CorrectStreak = :correctcounter "
+                  "WHERE UserId = :userid && KanjiId = :kanjiid");
+
+    for(const KanjiQuizStruct &item : list)
+    {
+        query.bindValue(":lastdateanswered", item.dateAnswered.toString("yyyy-MM-dd"));
+        query.bindValue(":nextdatetoanswer", item.nextDateToAnswer.toString("yyyy-MM-dd"));
+        query.bindValue(":correctcounter", item.correctCounter);
+        query.bindValue(":kanjiid", item.kanjiId);
+        query.bindValue(":userid", userId);
+        if(query.exec())
+            qDebug()<<"update executed";
     }
 
-    db.close();
 }
 
 void DbConnectionClass::initializeSavedPathFile()
@@ -105,44 +107,72 @@ void DbConnectionClass::initializeSavedPathFile()
     }
 }
 
+void DbConnectionClass::saveUserInfoToXml()
+{
+    xmlReader->replaceElementVal("Config.xml","uival",userId);
+    xmlReader->replaceElementVal("Config.xml","unval",username);
+    xmlReader->replaceElementVal("Config.xml","upval",password);
+    xmlReader->replaceElementVal("Config.xml","isloggedin","true");
+
+}
+
+void DbConnectionClass::initializeUserInfo()
+{
+    xmlReader->loadDocument("Config.xml");
+    QStringList userInfoList = xmlReader->getSavedUserInfo();
+    if(userInfoList.isEmpty())
+        return;
+
+
+    for(const QString &info : std::as_const(userInfoList))
+    {
+        if(info == "")
+            return;
+    }
+
+    userId = userInfoList.at(0);
+    username = userInfoList.at(1);
+    password = userInfoList.at(2);
+    qDebug()<<"initialize user info"<<userId<<username<<password;
+    loginUser(username,password);
+}
+
 void DbConnectionClass::populateModelList()
 {
-    if(db.open())
+
+    QSqlQuery query(db);
+
+    query.prepare("SELECT tKanji.KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning, LastDateAnswered, NextDateToAnswer, CorrectStreak "
+                  "FROM JapaneseLearningDb.KanjiTable as tKanji "
+                  "JOIN JapaneseLearningDb.UserDateTable as tDate ON tDate.KanjiId = tKanji.KanjiId "
+                  "WHERE tDate.UserId = :userIdVal");
+
+    query.bindValue(":userIdVal", userId);
+
+    if(query.exec())
     {
-        qDebug()<<"db connection successful";
-        QSqlQuery query(db);
-
-        query.prepare("SELECT tKanji.KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning, LastDateAnswered, NextDateToAnswer, CorrectStreak "
-                      "FROM JapaneseLearningDb.KanjiTable as tKanji "
-                      "JOIN JapaneseLearningDb.UserDateTable as tDate ON tDate.KanjiId = tKanji.KanjiId "
-                      "WHERE tDate.UserId = :userIdVal");
-
-        query.bindValue(":userIdVal", UserId);
-
-        if(query.exec())
+        qDebug()<<"db query exec successful";
+        while(query.next())
         {
-            qDebug()<<"db query exec successful";
-            while(query.next())
-            {
 
-                KanjiListStruct kanjiStruct(
-                    query.value(0).toString(),//kanjiid
-                    query.value(1).toString(),//kanji
-                    query.value(2).toString(),//kunyomi
-                    query.value(3).toString(),//onyomi
-                    query.value(4).toString(),//kanjiMeaning
-                    query.value(5).toString(),//lastdateanswered
-                    query.value(6).toString(),//nextdatetoanswer
-                    query.value(7).toInt(),   //correctstreak
-                    false
-                );
+            KanjiListStruct kanjiStruct(
+                query.value(0).toString(),//kanjiid
+                query.value(1).toString(),//kanji
+                query.value(2).toString(),//kunyomi
+                query.value(3).toString(),//onyomi
+                query.value(4).toString(),//kanjiMeaning
+                query.value(5).toString(),//lastdateanswered
+                query.value(6).toString(),//nextdatetoanswer
+                query.value(7).toInt(),   //correctstreak
+                false
+            );
 
-                qDebug()<<query.value(1).toString()<<query.value(2).toString()
-                       <<query.value(3).toString()<<query.value(4).toString();
-                dbKanjiList.append(kanjiStruct);
-            }
+            qDebug()<<query.value(1).toString()<<query.value(2).toString()
+                   <<query.value(3).toString()<<query.value(4).toString();
+            dbKanjiList.append(kanjiStruct);
         }
     }
+
 
     qDebug()<<"insertitems to model";
 
@@ -151,23 +181,24 @@ void DbConnectionClass::populateModelList()
 
 bool DbConnectionClass::loginUser(QString usernameVal, QString passwordVal)
 {
-    if(db.open())
-    {
-        qDebug()<<"DB loginuser called";
-        QSqlQuery query(db);
-        query.prepare("SELECT * FROM JapaneseLearningDb.UserTable "
-                      "WHERE  UserName = :username && UserPassword = :password");
 
-        query.bindValue(":username", usernameVal);
-        query.bindValue(":password", passwordVal);
-        if(query.exec())
+    qDebug()<<"DB loginuser called";
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM JapaneseLearningDb.UserTable "
+                  "WHERE  UserName = :username && UserPassword = :password");
+
+    query.bindValue(":username", usernameVal);
+    query.bindValue(":password", passwordVal);
+    if(query.exec())
+    {
+        if(query.next())
         {
-            if(query.next())
-            {
-                UserId = query.value(1).toString();
-                qDebug()<<"USERID "<<UserId;
-                return true;
-            }
+            userId = query.value(1).toString();
+            username = query.value(2).toString();
+            password = query.value(3).toString();
+            saveUserInfoToXml();
+            qDebug()<<"USERID "<<userId;
+            return true;
         }
     }
 

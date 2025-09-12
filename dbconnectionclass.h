@@ -21,7 +21,7 @@ public:
     DbConnectionClass();
 
     Q_INVOKABLE void setupConn();
-    Q_INVOKABLE void loadXmlFile();
+    Q_INVOKABLE void loadDbConfigXmlFile();
     Q_INVOKABLE void saveFilePathToXml();
     Q_INVOKABLE void clearFilePathInXML();
 
@@ -52,13 +52,14 @@ private:
     QSqlDatabase db;
     void initializeSavedPathFile();
     bool bHasSavedPathFile;
-
+    void saveUserInfoToXml();
+    void initializeUserInfo();
 
     QString username;
     QString password;
 
     QList<KanjiListStruct> dbKanjiList;
-    QString UserId = "USR-1";;
+    QString userId = "USR-1";;
 };
 
 #endif // DBCONNECTIONCLASS_H
