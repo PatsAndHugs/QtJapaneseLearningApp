@@ -77,7 +77,10 @@ Popup {
                 userLogin.username = _usernameTxtField.text
                 userLogin.password = _passwordTxtField.text
                 if(userLogin.loginResult() === true)
+                {
                     console.log("Login Successful")
+                    kanjiList.addItems()
+                }
                 else
                     console.log("Login Failed")
             }
