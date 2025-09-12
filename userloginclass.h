@@ -24,6 +24,7 @@ public:
 public slots:
 
     bool loginResult();
+    void logout();
 
 signals:
 

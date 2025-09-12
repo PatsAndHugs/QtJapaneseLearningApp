@@ -27,3 +27,9 @@ bool UserLoginClass::loginResult()
     return false;
 }
 
+void UserLoginClass::logout()
+{
+    m_username = "";
+    m_password = "";
+}
+
