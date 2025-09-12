@@ -1,17 +1,17 @@
 #include "kanjilist.h"
 #include "dbconnectionclass.h"
 #include <qforeach.h>
-#include "xmlreaderclass.h"
 
 KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
 
-    XMLReaderClass *xmlReader = new XMLReaderClass;
+    xmlReader = new XMLReaderClass;
     if(xmlReader->getLoggedinStatus() == "true")
+    {
         addItems();
-
-    qDebug()<<"kanjilist constructor";
+        qDebug()<<"kanjilist constructor";
+    }
     //testdata
     // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
     //                ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
@@ -70,7 +70,10 @@ void KanjiList::appendItem()
 
 void KanjiList::addItems()
 {
-    dbClass->populateModelList();
+    xmlReader->loadDocument("Config.xml");
+    QString userId = xmlReader->getSavedUserInfo().at(0);
+    dbClass->populateModelList(userId);
+    qDebug()<<"addItems userid "<<userId;
     QList<KanjiListStruct> itemList = dbClass->getDbKanjiList();
 
     for(int i = 0;i < itemList.count(); i++)
@@ -84,6 +87,15 @@ void KanjiList::addItems()
 
         emit postItemAppended();
     }
+}
+
+void KanjiList::clearItems()
+{
+    emit preItemRemoved();
+    mItems.clear();
+    emit postItemRemoved();
+
+    qDebug()<<"clear "<<mItems.count();
 }
 
 void KanjiList::updateLastItemIsSelected(int count)

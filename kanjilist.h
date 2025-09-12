@@ -4,7 +4,11 @@
 #include <QObject>
 #include <QVector>
 
+#include "xmlreaderclass.h"
+
+
 class DbConnectionClass;
+
 
 struct KanjiListStruct
 {
@@ -54,11 +58,15 @@ signals:
     void preItemAppended();
     void postItemAppended();
 
+    void preItemRemoved();
+    void postItemRemoved();
     void postIsSelectedChanged();
+
 
 public slots:
     void appendItem();
     void addItems();
+    void clearItems();
     void updateLastItemIsSelected(int count);
     void updateAllItemsIsSelected();
     void addSelectedItemsToList();
@@ -70,6 +78,7 @@ private:
     DbConnectionClass *dbClass;
     QList<int> mSelectionList;
     QList<KanjiListStruct> mSelectedItemsList;
+    XMLReaderClass *xmlReader;
 };
 
 #endif // KANJILIST_H
