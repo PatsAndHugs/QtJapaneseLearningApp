@@ -1,11 +1,16 @@
 #include "kanjilist.h"
 #include "dbconnectionclass.h"
 #include <qforeach.h>
+#include "xmlreaderclass.h"
 
 KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
-    addItems();
+
+    XMLReaderClass *xmlReader = new XMLReaderClass;
+    if(xmlReader->getLoggedinStatus() == "true")
+        addItems();
+
     qDebug()<<"kanjilist constructor";
     //testdata
     // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
