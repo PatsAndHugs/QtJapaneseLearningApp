@@ -33,7 +33,13 @@ ApplicationWindow {
                         _loginPopup.open()
                     }
                 }
-                MenuItem{text:"Logout"}
+                MenuItem{
+                    text:"Logout"
+                    onClicked:{
+                        kanjiList.clearItems()
+                        dbConn.logoutUser()
+                    }
+                }
                 MenuItem{text:"Exit"}
             }
         }
@@ -145,6 +151,7 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectAllWrongBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
+            onClicked:kanjiList.clearItems()
         }
         AppBaseBtn{
             id: _confirmBtn
