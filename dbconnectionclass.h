@@ -40,6 +40,8 @@ public:
     bool loginUser(QString usernameVal, QString passwordVal);
     Q_INVOKABLE void logoutUser();
 
+    bool insertUser(QString unameVal, QString passwordVal, QString emailVal);
+
 signals:
 
     void configfilePathChanged();

@@ -1,5 +1,6 @@
 #include "dbconnectionclass.h"
 #include "qsqlquery.h"
+#include <QSqlError>
 
 DbConnectionClass::DbConnectionClass()
 {
@@ -209,6 +210,57 @@ void DbConnectionClass::logoutUser()
     xmlReader->replaceElementVal("Config.xml","unval","");
     xmlReader->replaceElementVal("Config.xml","upval","");
     xmlReader->replaceElementVal("Config.xml","isloggedin","false");
+}
+
+bool DbConnectionClass::insertUser(QString unameVal, QString passwordVal, QString emailVal)
+{
+    qDebug()<<"DB insertuser called";
+\
+    QSqlQuery query;
+
+    //Check if the username is unique
+    query.prepare("SELECT * FROM JapaneseLearningDb.UserTable "
+                  "WHERE UserName COLLATE utf8mb4_bin = :username");
+    query.bindValue(":username", unameVal);
+    if(query.exec())
+    {
+        if(query.next())
+        {
+            return false;
+        }
+    }
+
+    query.prepare("INSERT INTO JapaneseLearningDb.UserTable(UserName, UserPassword, EmailAddress) "
+                  "VALUES(:username, :password, :email)");
+
+    query.bindValue(":username", unameVal);
+    query.bindValue(":password", passwordVal);
+    query.bindValue(":email", emailVal);
+
+    if (!query.exec())
+    {
+        qDebug() << "Error inserting data:" << query.lastError().text();
+    }
+    else
+    {
+        qDebug() << "Data inserted successfully!";
+
+        query.prepare("UPDATE JapaneseLearningDb.UserTable "
+                      "SET UserId = CONCAT('USR-', Id) "
+                      "WHERE UserName = :username");
+        query.bindValue(":username", unameVal);
+
+        if (!query.exec())
+        {
+            qDebug() << "Error updating userid:" << query.lastError().text();
+            return false;
+        }
+        else
+            return true;
+
+    }
+
+    return false;
 }
 
 
