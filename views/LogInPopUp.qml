@@ -90,6 +90,10 @@ Popup {
             text: qsTr("Register")
             Layout.preferredHeight: 50
             Layout.preferredWidth: parent.width / parent.columns
+            onClicked: {
+                _registerPopup.open()
+                _loginPopup.close()
+            }
         }
 
     }
@@ -100,5 +104,9 @@ Popup {
     focus: true
     modal: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+    RegisterPopUp{
+        id:_registerPopup
+    }
 }
 
