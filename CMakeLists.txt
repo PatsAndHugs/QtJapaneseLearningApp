@@ -37,6 +37,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/KanjiListCard.qml
         QML_FILES views/LogInPopUp.qml
         SOURCES userloginclass.h userloginclass.cpp
+        QML_FILES views/RegisterPopUp.qml
 )
 
 # add resource items here
