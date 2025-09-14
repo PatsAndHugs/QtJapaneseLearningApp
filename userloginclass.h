@@ -10,6 +10,7 @@ class UserLoginClass : public QObject
     Q_OBJECT
     Q_PROPERTY(QString username READ username WRITE setUsername NOTIFY usernameChanged)
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
+    Q_PROPERTY(QString email READ email WRITE setEmail NOTIFY emailChanged)
 
 public:
     explicit UserLoginClass(QObject *parent = nullptr);
@@ -21,15 +22,20 @@ public:
     QString password(){return m_password;}
     void setPassword(QString passwordVal);
 
+    QString email(){return m_email;}
+    void setEmail(QString emailVal);
+
 public slots:
 
     bool loginResult();
     void logout();
+    bool registerUser();
 
 signals:
 
     void usernameChanged();
     void passwordChanged();
+    void emailChanged();
 
 private:
 
@@ -37,6 +43,7 @@ private:
 
     QString m_username;
     QString m_password;
+    QString m_email;
 
 };
 

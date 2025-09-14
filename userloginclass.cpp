@@ -16,6 +16,11 @@ void UserLoginClass::setPassword(QString passwordVal)
     m_password = passwordVal;
 }
 
+void UserLoginClass::setEmail(QString emailVal)
+{
+    m_email = emailVal;
+}
+
 bool UserLoginClass::loginResult()
 {
     QString newUsername = m_username.simplified();
@@ -31,5 +36,17 @@ void UserLoginClass::logout()
 {
     m_username = "";
     m_password = "";
+}
+
+bool UserLoginClass::registerUser()
+{
+    QString newUsername = m_username.simplified();
+    QString newPassword = m_password.simplified();
+    QString newEmail = m_email.simplified();
+
+    if(m_username != "" && m_password != "" && m_email != "")
+        return dbConnClass->insertUser(newUsername, newPassword, newEmail);
+
+    return false;
 }
 
