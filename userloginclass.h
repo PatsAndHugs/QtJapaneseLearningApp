@@ -30,6 +30,7 @@ public slots:
     bool loginResult();
     void logout();
     bool registerUser();
+    bool getLoginStatus();
 
 signals:
 

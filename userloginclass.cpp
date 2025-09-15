@@ -1,5 +1,5 @@
 #include "userloginclass.h"
-
+#include "xmlreaderclass.h"
 
 UserLoginClass::UserLoginClass(QObject *parent)
 {
@@ -48,5 +48,15 @@ bool UserLoginClass::registerUser()
         return dbConnClass->insertUser(newUsername, newPassword, newEmail);
 
     return false;
+}
+
+bool UserLoginClass::getLoginStatus()
+{
+    XMLReaderClass *xmlReader = new XMLReaderClass;
+
+    if(xmlReader->getLoggedinStatus() == "true")
+        return true;
+    else
+        return false;
 }
 
