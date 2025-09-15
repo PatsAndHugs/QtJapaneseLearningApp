@@ -25,19 +25,27 @@ ApplicationWindow {
 
     header: MenuBar{
         MenuBarItem{
-            text: qsTr("LogIn")
-            menu:Menu{
+            text: qsTr("User")
+            onTriggered:{
+                console.log("triggered");
+                if(userLogin.getLoginStatus() === true)
+                    _userMenuItem.text ="Logout"
+                else
+                    _userMenuItem.text ="Login"
+            }
+            menu:Menu{ 
                 MenuItem{
+                    id:_userMenuItem
                     text: qsTr("Login")
                     onClicked:{
-                        _loginPopup.open()
-                    }
-                }
-                MenuItem{
-                    text:"Logout"
-                    onClicked:{
-                        kanjiList.clearItems()
-                        dbConn.logoutUser()
+
+                        if(userLogin.getLoginStatus() === true){
+                            kanjiList.clearItems()
+                            dbConn.logoutUser()
+                        }
+                        else{
+                            _loginPopup.open()
+                        }
                     }
                 }
                 MenuItem{text:"Exit"}
@@ -151,7 +159,6 @@ ApplicationWindow {
             Layout.preferredWidth: parent.width / parent.columns
             btnBgColor: _selectAllWrongBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
-            onClicked:kanjiList.clearItems()
         }
         AppBaseBtn{
             id: _confirmBtn
