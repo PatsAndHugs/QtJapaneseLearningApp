@@ -63,6 +63,8 @@ private:
 
     QList<KanjiListStruct> dbKanjiList;
     QString userId;
+
+    QString encryptString(QString stringVal);
 };
 
 #endif // DBCONNECTIONCLASS_H

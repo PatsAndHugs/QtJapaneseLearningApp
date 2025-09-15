@@ -1,6 +1,7 @@
 #include "dbconnectionclass.h"
 #include "qsqlquery.h"
 #include <QSqlError>
+#include <QCryptographicHash>
 
 DbConnectionClass::DbConnectionClass()
 {
@@ -182,12 +183,15 @@ bool DbConnectionClass::loginUser(QString usernameVal, QString passwordVal)
 {
 
     qDebug()<<"DB loginuser called";
+
+    QString storePassword = encryptString(passwordVal);
+
     QSqlQuery query(db);
     query.prepare("SELECT * FROM JapaneseLearningDb.UserTable "
                   "WHERE  UserName = :username && UserPassword = :password");
 
     query.bindValue(":username", usernameVal);
-    query.bindValue(":password", passwordVal);
+    query.bindValue(":password", storePassword);
     if(query.exec())
     {
         if(query.next())
@@ -215,7 +219,9 @@ void DbConnectionClass::logoutUser()
 bool DbConnectionClass::insertUser(QString unameVal, QString passwordVal, QString emailVal)
 {
     qDebug()<<"DB insertuser called";
-\
+
+    QString storePassword = encryptString(passwordVal);
+
     QSqlQuery query;
 
     //Check if the username is unique
@@ -234,7 +240,7 @@ bool DbConnectionClass::insertUser(QString unameVal, QString passwordVal, QStrin
                   "VALUES(:username, :password, :email)");
 
     query.bindValue(":username", unameVal);
-    query.bindValue(":password", passwordVal);
+    query.bindValue(":password", storePassword);
     query.bindValue(":email", emailVal);
 
     if (!query.exec())
@@ -263,4 +269,12 @@ bool DbConnectionClass::insertUser(QString unameVal, QString passwordVal, QStrin
     return false;
 }
 
+
+QString DbConnectionClass::encryptString(QString stringVal)
+{
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    hash.addData(stringVal.toUtf8());
+    QByteArray resultHash = hash.result();
+    return resultHash.toHex();
+}
 
