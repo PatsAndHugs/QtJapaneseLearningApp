@@ -179,8 +179,19 @@ ApplicationWindow {
                     kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
                 }
             }
-
         }
+    }
+
+    RoundButton{
+        id:_addBtn
+        text: "\u002B"
+        font.pointSize: 30
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.bottomMargin: 200
+        anchors.rightMargin: 20
+        width:100; height: 100
+        onClicked: kanjiList.addNewListItems()
     }
 }
 
