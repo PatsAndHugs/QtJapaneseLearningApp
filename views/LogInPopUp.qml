@@ -80,6 +80,7 @@ Popup {
                 {
                     console.log("Login Successful")
                     kanjiList.addItems()
+                    _loginPopup.close()
                 }
                 else
                     console.log("Login Failed")
