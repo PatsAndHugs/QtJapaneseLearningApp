@@ -269,7 +269,7 @@ bool DbConnectionClass::insertUser(QString unameVal, QString passwordVal, QStrin
     return false;
 }
 
-bool DbConnectionClass::insertKanjiItemForUser()
+bool DbConnectionClass::insertKanjiItemForUser(QString userIdVal)
 {
     QSqlQuery query;
     query.prepare("SELECT KanjiId, Id, UserId FROM JapaneseLearningDb.UserDateTable "
@@ -277,7 +277,7 @@ bool DbConnectionClass::insertKanjiItemForUser()
                   "ORDER BY Id DESC "
                   "LIMIT 1");
 
-    query.bindValue(":userid", userId);
+    query.bindValue(":userid", userIdVal);
 
     QString lastKanjiId;
     if (!query.exec())
@@ -318,7 +318,7 @@ bool DbConnectionClass::insertKanjiItemForUser()
 
     for(const QString &item : kanjiIdList)
     {
-        query.bindValue(":userid", userId);
+        query.bindValue(":userid", userIdVal);
         query.bindValue(":kanjiid", item);
 
         if (!query.exec())
@@ -329,6 +329,9 @@ bool DbConnectionClass::insertKanjiItemForUser()
         else
             qDebug() << "insertKanjiItemForUser";
     }
+
+    if(!kanjiIdList.isEmpty())
+        addNewItemsToDbKanjiList(kanjiIdList, userIdVal);
 
     return true;
 }
@@ -345,6 +348,11 @@ void DbConnectionClass::testFunc()
     }
 }
 
+void DbConnectionClass::clearDbKanjiList()
+{
+    dbKanjiList.clear();
+}
+
 
 QString DbConnectionClass::encryptString(QString stringVal)
 {
@@ -352,5 +360,47 @@ QString DbConnectionClass::encryptString(QString stringVal)
     hash.addData(stringVal.toUtf8());
     QByteArray resultHash = hash.result();
     return resultHash.toHex();
+}
+
+void DbConnectionClass::addNewItemsToDbKanjiList(QStringList list, QString userIdVal)
+{
+    QSqlQuery query(db);
+    appendKanjiList.clear();
+
+    qDebug()<<"addNewItemsToDbKanjiList list count: "<<list.count();
+
+    query.prepare("SELECT tKanji.KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning, LastDateAnswered, NextDateToAnswer, CorrectStreak "
+                  "FROM JapaneseLearningDb.KanjiTable as tKanji "
+                  "JOIN JapaneseLearningDb.UserDateTable as tDate ON tDate.KanjiId = tKanji.KanjiId "
+                  "WHERE tDate.UserId = :userIdVal && tKanji.KanjiId = :kanjiid");
+
+    for(QString &newId : list)
+    {
+        query.bindValue(":userIdVal", userIdVal);
+        query.bindValue(":kanjiid", newId);
+        qDebug()<<"addNewItemsToDbKanjiList newid: "<<newId;
+        if(query.exec())
+        {
+            if(query.next())
+            {
+                KanjiListStruct kanjiStruct(
+                    query.value(0).toString(),//kanjiid
+                    query.value(1).toString(),//kanji
+                    query.value(2).toString(),//kunyomi
+                    query.value(3).toString(),//onyomi
+                    query.value(4).toString(),//kanjiMeaning
+                    query.value(5).toString(),//lastdateanswered
+                    query.value(6).toString(),//nextdatetoanswer
+                    query.value(7).toInt(),   //correctstreak
+                    false
+                );
+                qDebug()<<query.value(1).toString()<<query.value(2).toString()
+                         <<query.value(3).toString()<<query.value(4).toString();
+                appendKanjiList.append(kanjiStruct);
+
+                qDebug()<<"addNewItemsToDbKanjiList";
+            }
+        }
+    }
 }
 

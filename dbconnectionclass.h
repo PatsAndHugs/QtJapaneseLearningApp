@@ -34,6 +34,8 @@ public:
 
     QList<KanjiListStruct> getDbKanjiList(){return dbKanjiList;}
 
+    QList<KanjiListStruct> getAppendKanjiList(){return appendKanjiList;}
+
     void UpdateDbItems(QList<KanjiQuizStruct> list);
 
     void populateModelList(QString userIdVal);
@@ -42,9 +44,11 @@ public:
 
     bool insertUser(QString unameVal, QString passwordVal, QString emailVal);
 
-    Q_INVOKABLE bool insertKanjiItemForUser();
+    Q_INVOKABLE bool insertKanjiItemForUser(QString userIdVal);
 
     Q_INVOKABLE void testFunc();
+
+    void clearDbKanjiList();
 
 signals:
 
@@ -69,6 +73,9 @@ private:
     QString userId;
 
     QString encryptString(QString stringVal);
+
+    void addNewItemsToDbKanjiList(QStringList list, QString userIdVal);
+    QList<KanjiListStruct> appendKanjiList;
 };
 
 #endif // DBCONNECTIONCLASS_H
