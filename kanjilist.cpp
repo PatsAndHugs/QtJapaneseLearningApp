@@ -91,6 +91,7 @@ void KanjiList::addItems()
 
 void KanjiList::clearItems()
 {
+    dbClass->clearDbKanjiList();
     emit preItemRemoved();
     mItems.clear();
     emit postItemRemoved();
@@ -146,4 +147,25 @@ int KanjiList::getSelectedItemsCount()
             selectedItemsCount++;
     }
     return selectedItemsCount;
+}
+
+void KanjiList::addNewListItems()
+{
+    xmlReader->loadDocument("Config.xml");
+    QString userId = xmlReader->getSavedUserInfo().at(0);
+    dbClass->insertKanjiItemForUser(userId);
+    qDebug()<<"addItems userid "<<userId;
+    QList<KanjiListStruct> itemList = dbClass->getAppendKanjiList();
+
+    for(int i = 0;i < itemList.count(); i++)
+    {
+        emit preItemAppended();
+
+        mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
+                       itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
+                       itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
+                       itemList[i].isSelected});
+
+        emit postItemAppended();
+    }
 }
