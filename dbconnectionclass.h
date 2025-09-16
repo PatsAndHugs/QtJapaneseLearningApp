@@ -42,6 +42,10 @@ public:
 
     bool insertUser(QString unameVal, QString passwordVal, QString emailVal);
 
+    Q_INVOKABLE bool insertKanjiItemForUser();
+
+    Q_INVOKABLE void testFunc();
+
 signals:
 
     void configfilePathChanged();

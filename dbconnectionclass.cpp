@@ -269,6 +269,82 @@ bool DbConnectionClass::insertUser(QString unameVal, QString passwordVal, QStrin
     return false;
 }
 
+bool DbConnectionClass::insertKanjiItemForUser()
+{
+    QSqlQuery query;
+    query.prepare("SELECT KanjiId, Id, UserId FROM JapaneseLearningDb.UserDateTable "
+                  "WHERE UserId = :userid "
+                  "ORDER BY Id DESC "
+                  "LIMIT 1");
+
+    query.bindValue(":userid", userId);
+
+    QString lastKanjiId;
+    if (!query.exec())
+    {
+        qDebug() << "Error retrieving data:" << query.lastError().text();
+        return false;
+    }
+    else
+    {
+        if(query.next())
+        {
+            lastKanjiId = query.value(0).toString();
+        }
+        else
+        {
+            lastKanjiId = "KI-0";
+        }
+    }
+
+    QStringList kanjiIdList;
+    //get kanjiid number Kj-1
+    if(lastKanjiId !="")
+    {
+        QString newString = lastKanjiId.remove(0,3);
+        int counterId = newString.toInt();
+
+        //increment and add to qstringlist
+        for(int i = counterId + 1; i <= counterId + 5; i++)
+        {
+            QString newKanjiId = "KI-" + QString::number(i);
+            kanjiIdList.append(newKanjiId);
+        }
+    }
+
+    //insert values to userdatetable
+    query.prepare("INSERT INTO JapaneseLearningDb.UserDateTable(UserId, KanjiId) "
+                  "VALUES(:userid, :kanjiid)");
+
+    for(const QString &item : kanjiIdList)
+    {
+        query.bindValue(":userid", userId);
+        query.bindValue(":kanjiid", item);
+
+        if (!query.exec())
+        {
+            qDebug() << "Error inserting data:" << query.lastError().text();
+            return false;
+        }
+        else
+            qDebug() << "insertKanjiItemForUser";
+    }
+
+    return true;
+}
+
+void DbConnectionClass::testFunc()
+{
+    int counterId = 5;
+
+    //increment and add to qstringlist
+    for(int i = counterId+1; i <= counterId + 5; i++)
+    {
+        QString newKanjiId = "KI-" + QString::number(i);
+        qDebug()<<"testFunc: "<<newKanjiId;
+    }
+}
+
 
 QString DbConnectionClass::encryptString(QString stringVal)
 {
