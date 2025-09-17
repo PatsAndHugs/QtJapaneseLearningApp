@@ -105,7 +105,6 @@ void KanjiList::updateLastItemIsSelected(int count)
         return;
 
     int lastIndex = mItems.count() - count;
-    qDebug()<<mItems.count();
 
     for(int i = lastIndex;i < mItems.count(); i++)
     {
@@ -119,6 +118,25 @@ void KanjiList::updateLastItemIsSelected(int count)
 void KanjiList::updateAllItemsIsSelected()
 {
     updateLastItemIsSelected(mItems.count());
+}
+
+void KanjiList::updateAllCurrentDateItemsIsSelected()
+{
+    if(mItems.isEmpty())
+        return;
+
+    for(int i = 0;i < mItems.count(); i++)
+    {
+        QDate itemNextDate = QDate::fromString(mItems.at(i).nextDateToAnswer,
+                                "yyyy-MM-dd");
+
+        if(itemNextDate == QDate::currentDate())
+        {
+            mItems[i].isSelected = true;
+            mSelectionList.append(i);
+            emit postIsSelectedChanged();
+        }
+    }
 }
 
 void KanjiList::addSelectedItemsToList()
