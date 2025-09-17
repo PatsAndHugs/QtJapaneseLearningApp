@@ -91,20 +91,24 @@ ApplicationWindow {
         GradientStop { position: 1.0; color: "#e3ffbf" }
     }
 
-    ListView {
-        id: myListView
-        //width: (parent.width / 2) - 50; height: parent.height / 2
-        //width:500; height:500
-        // anchors.right: parent.right
-        // anchors.left: parent.left
-        // anchors.top: parent.top
-        anchors.fill: parent
-        spacing:10
-        model: KanjiListModel{
+    FilterKanjiListModel{
+        id:_filterModel
+        sourceModel: KanjiListModel{
             id:_myModel
             list: kanjiList
             selectionlist: kanjiList
         }
+    }
+
+    ListView {
+        id: myListView
+        anchors.top:_searchInput.bottom
+        anchors.right: parent.right
+        anchors.left: parent.left
+        anchors.bottom: _btnGrid.top
+        anchors.bottomMargin: 100
+        spacing:10
+        model: _filterModel
 
         delegate: ListItemCard{ id:_wrapper
                                 kanjiText: model.kanji
@@ -126,9 +130,18 @@ ApplicationWindow {
         focus: true
     }
 
+    TextField {
+        id: _searchInput
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.left: parent.left
+        placeholderText: "Search..."
+        font.pointSize: 15
+        onTextChanged: _filterModel.searchText = _searchInput.text
+    }
+
     GridLayout{
         id:_btnGrid
-
         //anchors.fill: parent
         anchors.bottom:parent.bottom
         anchors.left:parent.left
