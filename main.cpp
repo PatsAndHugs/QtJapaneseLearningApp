@@ -8,12 +8,14 @@
 #include <kanjiquiz.h>
 #include <kanjiquizresultmodel.h>
 #include <userloginclass.h>
+#include <filterkanjilistmodel.h>
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     qmlRegisterType<DbConnectionClass>("JapaneseLearningApp.DbConnectionClass",1,0,"DbConnClass");
     qmlRegisterType<KanjiListModel>("KanjiClass",1,0,"KanjiListModel");
+    qmlRegisterType<FilterKanjiListModel>("KanjiClass",1,0,"FilterKanjiListModel");
     qmlRegisterType<KanjiQuizResultModel>("KanjiClass",1,0,"KanjiQuizResultModel");
     qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "KanjiList",
         QStringLiteral("KanjiList Should not be created in Qml"));
