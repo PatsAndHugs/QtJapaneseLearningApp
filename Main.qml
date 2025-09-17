@@ -166,12 +166,13 @@ ApplicationWindow {
             onClicked:kanjiList.updateLastItemIsSelected(5)
         }
         AppBaseBtn{
-            id: _selectAllWrongBtn
-            text: qsTr("Select All Mistakes")
+            id: _selectTodayItemsBtn
+            text: qsTr("Items For Today")
             Layout.preferredHeight: 100
             Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _selectAllWrongBtn.hovered ? "white" : "#ffff66"
+            btnBgColor: _selectTodayItemsBtn.hovered ? "white" : "#ffff66"
             font.pointSize: 15
+            onClicked:kanjiList.updateAllCurrentDateItemsIsSelected()
         }
         AppBaseBtn{
             id: _confirmBtn
