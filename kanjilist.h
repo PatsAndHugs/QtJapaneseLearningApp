@@ -81,6 +81,7 @@ private:
     QList<int> mSelectionList;
     QList<KanjiListStruct> mSelectedItemsList;
     XMLReaderClass *xmlReader;
+    void checkAndUpdateDateToAnswer();
 };
 
 #endif // KANJILIST_H

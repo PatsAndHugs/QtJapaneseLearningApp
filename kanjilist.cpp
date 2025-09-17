@@ -12,6 +12,8 @@ KanjiList::KanjiList(QObject *parent)
         addItems();
         qDebug()<<"kanjilist constructor";
     }
+
+    checkAndUpdateDateToAnswer();
     //testdata
     // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
     //                ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
@@ -186,4 +188,20 @@ void KanjiList::addNewListItems()
 
         emit postItemAppended();
     }
+}
+
+void KanjiList::checkAndUpdateDateToAnswer()
+{
+    if(mItems.isEmpty())
+        return;
+
+    for(int i = 0;i < mItems.count(); i++)
+    {
+        QDate itemsDate = QDate::fromString(mItems.at(i).nextDateToAnswer,
+                                            "yyyy-MM-dd");
+
+        if(itemsDate < QDate::currentDate())
+            mItems[i].nextDateToAnswer = QDate::currentDate().toString("yyyy-MM-dd");
+    }
+    qDebug()<<"checkAndUpdateDateToAnswer";
 }
