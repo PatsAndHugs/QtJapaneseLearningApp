@@ -140,7 +140,7 @@ ApplicationWindow {
         anchors.rightMargin: 10
         anchors.bottomMargin: 10
         columns: 4
-        AppBaseBtn{
+        AppButton{
             id: _selectAllBtn
             text:qsTr("Select Alll")
             Layout.preferredHeight: 100
@@ -150,7 +150,7 @@ ApplicationWindow {
             font.pointSize: 15
             onClicked: kanjiList.updateAllItemsIsSelected()
         }
-        AppBaseBtn{
+        AppButton{
             id: _selectLast5Btn
             text: qsTr("Select Last 5")
             Layout.preferredHeight: 100
@@ -160,7 +160,7 @@ ApplicationWindow {
             font.pointSize: 15
             onClicked:kanjiList.updateLastItemIsSelected(5)
         }
-        AppBaseBtn{
+        AppButton{
             id: _selectTodayItemsBtn
             text: qsTr("Items For Today")
             Layout.preferredHeight: 100
@@ -170,7 +170,7 @@ ApplicationWindow {
             font.pointSize: 15
             onClicked:kanjiList.updateAllCurrentDateItemsIsSelected()
         }
-        AppBaseBtn{
+        AppButton{
             id: _confirmBtn
             text: qsTr("Confirm")
             Layout.preferredHeight: 100
@@ -184,6 +184,7 @@ ApplicationWindow {
                     var component = Qt.createComponent("views/KanjiTestWindow.qml")
                     if(component.status === Component.Ready){
                         var newWindow = component.createObject(_mainAppWindow);
+                        console.log("confirm")
                         newWindow.show()
                         _mainAppWindow.hide()
                     }
