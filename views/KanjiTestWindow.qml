@@ -41,24 +41,26 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.top: parent.top
         //anchors.bottom: _canvasGrid.top
-        anchors.topMargin: 200
+        anchors.topMargin: 100
+        anchors.rightMargin: 20
         columns: 2
         rowSpacing: 20
 
         Label{
             id:_lblKanji
             color: "black"
-            font.pointSize: 50
+            font.pointSize: 100
             horizontalAlignment: Text.AlignHCenter
             Layout.alignment: Qt.AlignCenter
             text:kanjiQuiz.kanjiTxt
             Layout.columnSpan: 2
+            Layout.fillWidth: true
         }
 
         Label{
             id:_lblEnglishMeaning
             color: "black"
-            font.pointSize: 30
+            font.pointSize: 50
             Layout.preferredHeight: 50
             Layout.preferredWidth: parent.width / parent.columns
             horizontalAlignment: Text.AlignHCenter
@@ -66,6 +68,7 @@ ApplicationWindow {
             text:kanjiQuiz.englishNameTxt
             Layout.columnSpan: 2
             Layout.row: 2
+            Layout.topMargin: 30
         }
 
         TextField{
@@ -78,6 +81,7 @@ ApplicationWindow {
             Layout.alignment: Qt.AlignHCenter
             Layout.columnSpan: 2
             Layout.row: 3
+            Layout.topMargin: 30
         }
 
         TextField{
@@ -92,12 +96,12 @@ ApplicationWindow {
             Layout.row: 4
         }
 
-        Button{
+        AppButton{
             id: _confirmBtn
             text: qsTr("Confirm")
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: 60
             Layout.preferredWidth: parent.width / parent.columns
-            //color: _confirmBtn.hovered ? "white" : "#ffff66"
+            btnBgColor: _confirmBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             Layout.row: 5
             Layout.leftMargin: 10
@@ -128,12 +132,12 @@ ApplicationWindow {
 
             }
         }
-        Button{
+        AppButton{
             id: _skipBtn
             text: qsTr("Skip")
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: 60
             Layout.preferredWidth: parent.width / parent.columns
-            //color: _confirmBtn.hovered ? "white" : "#ffff66"
+            btnBgColor: _skipBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             Layout.rightMargin: 10
             property string skipItemResult
@@ -163,7 +167,6 @@ ApplicationWindow {
                 }
             }
         }
-
     }
 
     GridLayout{
@@ -174,10 +177,12 @@ ApplicationWindow {
         anchors.topMargin: 50
         anchors.bottom:parent.bottom
         anchors.left: parent.left
+        anchors.rightMargin: 10
         columns:5
-        Button{
+        AppButton{
             id:_drawBtn
             text:qsTr("DRAW")
+            btnBgColor: _drawBtn.hovered ? "#ffff66" : "white"
             Layout.preferredHeight: 50
             Layout.preferredWidth: 100
             Layout.column: 3
@@ -187,9 +192,10 @@ ApplicationWindow {
                 _canvas.penLineWidth = 3
             }
         }
-        Button{
+        AppButton{
             id:_eraseBtn
             text:qsTr("ERASE")
+            btnBgColor: _eraseBtn.hovered ? "#ffff66" : "white"
             Layout.preferredHeight: 50
             Layout.preferredWidth: 100
             Layout.column: 4
