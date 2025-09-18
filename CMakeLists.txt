@@ -23,7 +23,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         RESOURCES AppResources.qrc
         SOURCES dbconnectionclass.h dbconnectionclass.cpp
         QML_FILES ListItemCard.qml
-        QML_FILES AppBaseBtn.qml
+        QML_FILES
         SOURCES kanjilistmodel.h kanjilistmodel.cpp
         SOURCES kanjilist.h kanjilist.cpp
         QML_FILES
@@ -40,6 +40,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/RegisterPopUp.qml
         SOURCES filterkanjilistmodel.h filterkanjilistmodel.cpp
         QML_FILES
+        QML_FILES views/AppButton.qml
 )
 
 # add resource items here
