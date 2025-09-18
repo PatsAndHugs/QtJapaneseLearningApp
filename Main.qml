@@ -75,22 +75,6 @@ ApplicationWindow {
         }
     }
 
-    Gradient{
-        id:_itemGradSelected
-
-        GradientStop { position: 0.0; color: "#94DEA5" }
-
-        GradientStop { position: 1.0; color: "#afedcc" }
-    }
-
-    Gradient{
-        id:_itemGrad
-
-        GradientStop { position: 0.0; color: "#ffff66" }
-
-        GradientStop { position: 1.0; color: "#e3ffbf" }
-    }
-
     FilterKanjiListModel{
         id:_filterModel
         sourceModel: KanjiListModel{
@@ -106,7 +90,10 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: _btnGrid.top
-        anchors.bottomMargin: 100
+        anchors.bottomMargin: 95
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
+        anchors.topMargin: 20
         spacing:10
         model: _filterModel
 
@@ -115,10 +102,11 @@ ApplicationWindow {
                                 englishMeaningText: model.kanjiEnglishName
                                 kunyomiText: model.kunyomi
                                 onyomiText: model.onyomi
-                                lblTextColor: ListView.isCurrentItem ? "black" : "black"
+                                lblTextColor: "#023D54"
                                 width: myListView.width
                                 height: 100
-                                gradient: model.isSelected ? _itemGradSelected : _itemGrad
+                                color: "white"
+                                radioBtnChecked: model.isSelected
                                 MouseArea{anchors.fill: parent;
                                     onClicked: {
                                         myListView.currentIndex = index
@@ -138,6 +126,8 @@ ApplicationWindow {
         placeholderText: "Search..."
         font.pointSize: 15
         onTextChanged: _filterModel.searchText = _searchInput.text
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
     }
 
     GridLayout{
@@ -146,13 +136,17 @@ ApplicationWindow {
         anchors.bottom:parent.bottom
         anchors.left:parent.left
         anchors.right:parent.right
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        anchors.bottomMargin: 10
         columns: 4
         AppBaseBtn{
             id: _selectAllBtn
             text:qsTr("Select Alll")
             Layout.preferredHeight: 100
-            Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _selectAllBtn.hovered ? "white" : "#ffff66"
+            //Layout.preferredWidth: parent.width / parent.columns
+            Layout.fillWidth: true
+            btnBgColor: _selectAllBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked: kanjiList.updateAllItemsIsSelected()
         }
@@ -160,8 +154,9 @@ ApplicationWindow {
             id: _selectLast5Btn
             text: qsTr("Select Last 5")
             Layout.preferredHeight: 100
-            Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _selectLast5Btn.hovered ? "white" : "#ffff66"
+            //Layout.preferredWidth: parent.width / parent.columns
+            Layout.fillWidth: true
+            btnBgColor: _selectLast5Btn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked:kanjiList.updateLastItemIsSelected(5)
         }
@@ -169,8 +164,9 @@ ApplicationWindow {
             id: _selectTodayItemsBtn
             text: qsTr("Items For Today")
             Layout.preferredHeight: 100
-            Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _selectTodayItemsBtn.hovered ? "white" : "#ffff66"
+            //Layout.preferredWidth: parent.width / parent.columns
+            Layout.fillWidth: true
+            btnBgColor: _selectTodayItemsBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked:kanjiList.updateAllCurrentDateItemsIsSelected()
         }
@@ -178,8 +174,9 @@ ApplicationWindow {
             id: _confirmBtn
             text: qsTr("Confirm")
             Layout.preferredHeight: 100
-            Layout.preferredWidth: parent.width / parent.columns
-            btnBgColor: _confirmBtn.hovered ? "white" : "#ffff66"
+            //Layout.preferredWidth: parent.width / parent.
+            Layout.fillWidth: true
+            btnBgColor: _confirmBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked:{
                 if(kanjiList.getSelectedItemsCount() > 0){
@@ -198,14 +195,24 @@ ApplicationWindow {
 
     RoundButton{
         id:_addBtn
-        text: "\u002B"
-        font.pointSize: 30
+        //text: "\u002B"
+
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.bottomMargin: 200
         anchors.rightMargin: 20
         width:100; height: 100
         onClicked: kanjiList.addNewListItems()
+        opacity: 0.9
+
+        Text{
+            anchors.fill: parent
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: "#023D54"
+            text: "\u002B"
+            font.pointSize: 30
+        }
     }
 }
 

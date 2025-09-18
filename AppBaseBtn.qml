@@ -9,12 +9,13 @@ Button {
         id: _text
         text: _baseBtn.text
         font: _baseBtn.font
-        color: _baseBtn.hovered ? "black" : "black"
+        color: "#023D54"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
 
     background: Rectangle{
         id:_rect
+        radius: 8
     }
 }

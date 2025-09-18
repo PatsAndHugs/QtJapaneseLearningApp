@@ -1,15 +1,19 @@
 import QtQuick
+import QtQuick.Controls.Basic
+import "views"
 
 Rectangle {
     id:_cardBase
     color: "white"
     radius: 8
     //property alias mouseAreaOnclick: _mouseArea.onClicked
-    property alias lblTextColor: _textKunyomi.color
+    property alias lblTextColor:_textKunyomi.color
+
     property alias kanjiText: _textKanji.text
     property alias kunyomiText: _textKunyomi.text
     property alias onyomiText: _textOnyomi.text
     property alias englishMeaningText: _textEnglishMeaning.text
+    property alias radioBtnChecked: _isSelectedRadioBtn.checked
 
     // Image {
     //     id: _img
@@ -20,7 +24,7 @@ Rectangle {
     // }
     Text{
         id:_textKanji
-        color: "black"
+        color: _cardBase.lblTextColor
         font.pointSize: 36
         horizontalAlignment: Text.AlignHCenter
         anchors.left: parent.left
@@ -32,7 +36,7 @@ Rectangle {
 
     Text{
         id:_textEnglishMeaning
-        color: "black"
+        color: _cardBase.lblTextColor
         font.pointSize: 15
         horizontalAlignment: Text.AlignJustify
         anchors.left: parent.left
@@ -43,7 +47,7 @@ Rectangle {
 
     Text{
         id:_textKunyomi
-        color: "black"
+        color: _cardBase.lblTextColor
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right
         anchors.left: parent.left
@@ -54,7 +58,7 @@ Rectangle {
 
     Text{
         id:_textOnyomi
-        color: "black"
+        color: _cardBase.lblTextColor
         horizontalAlignment: Text.AlignHCenter
         anchors.right: parent.right
         anchors.left: parent.left
@@ -66,6 +70,31 @@ Rectangle {
     MouseArea{
         id:_mouseArea
         //anchors.fill: parent
+    }
+
+    RadioButton{
+        id:_isSelectedRadioBtn
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 30
+        anchors.rightMargin: 10
+
+        indicator: Rectangle {
+                implicitWidth: 20
+                implicitHeight: 40
+                radius: 10 // Makes it circular
+                border.color: _isSelectedRadioBtn.checked ? "#e6e657" : "#023D54"// Border color based on checked state
+                border.width: 2
+
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: parent.width * 0.6
+                    height: parent.height - 10
+                    radius: width / 2
+                    color: _isSelectedRadioBtn.checked ? "#e6e657" : "#023D54" // Inner circle color when checked
+                    //visible: _isSelectedRadioBtn.checked // Only visible when checked
+                }
+            }
     }
 
 }
