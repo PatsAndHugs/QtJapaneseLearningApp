@@ -146,7 +146,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
-            btnBgColor: _selectAllBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked: kanjiList.updateAllItemsIsSelected()
         }
@@ -156,7 +155,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
-            btnBgColor: _selectLast5Btn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked:kanjiList.updateLastItemIsSelected(5)
         }
@@ -166,7 +164,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
-            btnBgColor: _selectTodayItemsBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             onClicked:kanjiList.updateAllCurrentDateItemsIsSelected()
         }
@@ -176,28 +173,14 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.
             Layout.fillWidth: true
-            btnBgColor: _confirmBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
-            onClicked:{
-                if(kanjiList.getSelectedItemsCount() > 0){
-                    kanjiList.addSelectedItemsToList()
-                    var component = Qt.createComponent("views/KanjiTestWindow.qml")
-                    if(component.status === Component.Ready){
-                        var newWindow = component.createObject(_mainAppWindow);
-                        console.log("confirm")
-                        newWindow.show()
-                        _mainAppWindow.hide()
-                    }
-                    kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
-                }
-            }
+            onClicked:_mainConfirmMsgDialog.open()
         }
     }
 
     RoundButton{
         id:_addBtn
         //text: "\u002B"
-
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         anchors.bottomMargin: 200
@@ -214,6 +197,30 @@ ApplicationWindow {
             text: "\u002B"
             font.pointSize: 30
         }
+    }
+
+    AppMsgDialog
+    {
+        id: _mainConfirmMsgDialog
+        anchors.centerIn: parent
+        message:"Confirm Selection?"
+        acceptButtonText: "Confirm"
+        cancelButtonText: "Cancel"
+
+        onAccepted: {
+            if(kanjiList.getSelectedItemsCount() > 0){
+                kanjiList.addSelectedItemsToList()
+                var component = Qt.createComponent("views/KanjiTestWindow.qml")
+                if(component.status === Component.Ready){
+                    var newWindow = component.createObject(_mainAppWindow);
+                    console.log("confirm")
+                    newWindow.show()
+                    _mainAppWindow.hide()
+                }
+                kanjiQuiz.getKanjiList(kanjiList.getSelectedItemsList())
+            }
+        }
+        onRejected: console.log("rejected");
     }
 }
 
