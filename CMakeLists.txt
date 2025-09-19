@@ -42,6 +42,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES
         QML_FILES views/AppButton.qml
         QML_FILES views/AppMsgDialog.qml
+        QML_FILES views/AppSwitchCtrl.qml
 )
 
 # add resource items here
