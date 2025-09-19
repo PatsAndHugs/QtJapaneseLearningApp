@@ -5,10 +5,16 @@
 #include "kanjiquiz.h"
 #include "dbconnectionclass.h"
 
+
 KanjiQuiz::KanjiQuiz(QObject *parent)
 {
     qDebug()<<"kanji quiz constructor";
     dbConnClass = new DbConnectionClass;
+    xmlReader = new XMLReaderClass;
+
+    //get user id
+    xmlReader->loadDocument("Config.xml");
+    userId = xmlReader->getSavedUserInfo().at(0);
 }
 
 void KanjiQuiz::setEnglishNameTxt(QString newVal)
@@ -85,6 +91,18 @@ QString KanjiQuiz::getNextItem()
 
             });
 
+            kanjiListToUpdate.append({
+                kanjiList.at(currentListIndex).kanjiId,
+                kanjiList.at(currentListIndex).kanji,
+                kanjiList.at(currentListIndex).onyomi,
+                kanjiList.at(currentListIndex).kunyomi,
+                kanjiList.at(currentListIndex).kanjiEnglishName,
+                QDate::currentDate().toString("yyyy-MM-dd"),
+                nextDate.toString("yyyy-MM-dd"),
+                ++currentCorrectCounter,
+                true
+            });
+
             if(currentListIndex < kanjiList.count() -1)
             {
                 currentListIndex++;
@@ -92,7 +110,7 @@ QString KanjiQuiz::getNextItem()
             }
             else
             {
-                dbConnClass->UpdateDbItems(kanjiQuizItemList);
+                dbConnClass->UpdateDbItems(kanjiQuizItemList, userId);
                 return "finish";
             }
 
@@ -126,6 +144,18 @@ QString KanjiQuiz::skipItem()
             kanjiList.at(currentListIndex).kanjiEnglishName
         });
 
+        kanjiListToUpdate.append({
+            kanjiList.at(currentListIndex).kanjiId,
+            kanjiList.at(currentListIndex).kanji,
+            kanjiList.at(currentListIndex).onyomi,
+            kanjiList.at(currentListIndex).kunyomi,
+            kanjiList.at(currentListIndex).kanjiEnglishName,
+            QDate::currentDate().toString("yyyy-MM-dd"),
+            nextDate.toString("yyyy-MM-dd"),
+            currentCorrectCounter,
+            true
+        });
+
         if(currentListIndex < kanjiList.count() -1)
         {
             currentListIndex++;
@@ -133,7 +163,7 @@ QString KanjiQuiz::skipItem()
         }
         else
         {
-            dbConnClass->UpdateDbItems(kanjiQuizItemList);
+            dbConnClass->UpdateDbItems(kanjiQuizItemList, userId);
             return "finish";
         }
         return "get";

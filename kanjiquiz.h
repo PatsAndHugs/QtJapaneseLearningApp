@@ -6,6 +6,7 @@
 #include <QDateTime>
 
 #include "kanjilist.h"
+#include "xmlreaderclass.h"
 
 struct KanjiListStruct;
 
@@ -46,6 +47,7 @@ public:
     QString onyomiTxt(){return m_onyomiTxt;}
     void setOnyomiTxt(QString newVal);
 
+
 public slots:
 
     void getKanjiList(QList<KanjiListStruct> list);
@@ -56,6 +58,8 @@ public slots:
     QString skipItem();
 
     QList<KanjiQuizStruct> getResultList(){return kanjiQuizItemList;}
+
+    QList<KanjiListStruct> getKanjiListToUpdate(){return kanjiListToUpdate;}
 
     void clearQuizList();
 
@@ -71,6 +75,8 @@ private:
     KanjiList *kanjiListClass;
 
     QList<KanjiListStruct> kanjiList;
+
+    QList<KanjiListStruct> kanjiListToUpdate;
 
     void randomizeKanjiList();
 
@@ -92,6 +98,8 @@ private:
     QDate getDaysToAddToItem(int index);
 
     DbConnectionClass *dbConnClass;
+    XMLReaderClass *xmlReader;
+    QString userId;
 };
 
 #endif // KANJIQUIZ_H
