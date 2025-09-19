@@ -74,6 +74,7 @@ public slots:
     QList<KanjiListStruct> getSelectedItemsList(){return mSelectedItemsList;}
     int getSelectedItemsCount();
     void addNewListItems();
+    void updateListDatesAfteResult(QList<KanjiListStruct> list);
 
 private:
     QVector<KanjiListStruct> mItems;
@@ -81,7 +82,6 @@ private:
     QList<int> mSelectionList;
     QList<KanjiListStruct> mSelectedItemsList;
     XMLReaderClass *xmlReader;
-    void checkAndUpdateDateToAnswer();
 };
 
 #endif // KANJILIST_H

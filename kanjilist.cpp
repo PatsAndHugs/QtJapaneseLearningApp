@@ -13,7 +13,6 @@ KanjiList::KanjiList(QObject *parent)
         qDebug()<<"kanjilist constructor";
     }
 
-    checkAndUpdateDateToAnswer();
     //testdata
     // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
     //                ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
@@ -132,7 +131,7 @@ void KanjiList::updateAllCurrentDateItemsIsSelected()
         QDate itemNextDate = QDate::fromString(mItems.at(i).nextDateToAnswer,
                                 "yyyy-MM-dd");
 
-        if(itemNextDate == QDate::currentDate())
+        if(itemNextDate == QDate::currentDate() || itemNextDate < QDate::currentDate())
         {
             mItems[i].isSelected = true;
             mSelectionList.append(i);
@@ -190,18 +189,21 @@ void KanjiList::addNewListItems()
     }
 }
 
-void KanjiList::checkAndUpdateDateToAnswer()
+void KanjiList::updateListDatesAfteResult(QList<KanjiListStruct> list)
 {
-    if(mItems.isEmpty())
+    if(list.isEmpty())
         return;
 
-    for(int i = 0;i < mItems.count(); i++)
+    for(KanjiListStruct &item : list)
     {
-        QDate itemsDate = QDate::fromString(mItems.at(i).nextDateToAnswer,
-                                            "yyyy-MM-dd");
-
-        if(itemsDate < QDate::currentDate())
-            mItems[i].nextDateToAnswer = QDate::currentDate().toString("yyyy-MM-dd");
+        for(KanjiListStruct &localItem : mItems)
+        {
+            if(item.kanjiId == localItem.kanjiId)
+            {
+                localItem.lastDateAnswered = item.lastDateAnswered;
+                localItem.nextDateToAnswer = item.nextDateToAnswer;
+                localItem.correctStreak = item.correctStreak;
+            }
+        }
     }
-    qDebug()<<"checkAndUpdateDateToAnswer";
 }
