@@ -41,6 +41,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         SOURCES filterkanjilistmodel.h filterkanjilistmodel.cpp
         QML_FILES
         QML_FILES views/AppButton.qml
+        QML_FILES views/AppMsgDialog.qml
 )
 
 # add resource items here
