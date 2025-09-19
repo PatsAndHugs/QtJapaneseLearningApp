@@ -36,7 +36,7 @@ public:
 
     QList<KanjiListStruct> getAppendKanjiList(){return appendKanjiList;}
 
-    void UpdateDbItems(QList<KanjiQuizStruct> list);
+    void UpdateDbItems(QList<KanjiQuizStruct> list, QString userIdVal);
 
     void populateModelList(QString userIdVal);
     bool loginUser(QString usernameVal, QString passwordVal);

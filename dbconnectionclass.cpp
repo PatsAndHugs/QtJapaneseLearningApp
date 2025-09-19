@@ -70,7 +70,7 @@ void DbConnectionClass::setHasSavedPathFile(const bool &bState)
     bHasSavedPathFile = bState;
 }
 
-void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list)
+void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list, QString userIdVal)
 {
 
     qDebug()<<"DB update func called";
@@ -87,9 +87,15 @@ void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list)
         query.bindValue(":nextdatetoanswer", item.nextDateToAnswer.toString("yyyy-MM-dd"));
         query.bindValue(":correctcounter", item.correctCounter);
         query.bindValue(":kanjiid", item.kanjiId);
-        query.bindValue(":userid", userId);
+        query.bindValue(":userid", userIdVal);
         if(query.exec())
+        {
             qDebug()<<"update executed";
+            qDebug()<<"dateAnswered"<<item.dateAnswered;
+            qDebug()<<"nextdatetoanswr"<<item.nextDateToAnswer;
+            qDebug()<<"userid"<<userIdVal;
+        }
+
     }
 
 }
