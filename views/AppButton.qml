@@ -17,5 +17,6 @@ Button {
     background: Rectangle{
         id:_rect
         radius: 8
+        color: _baseBtn.hovered ? "#ffff66" : "white"
     }
 }
