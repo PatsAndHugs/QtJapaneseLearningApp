@@ -17,6 +17,8 @@ ApplicationWindow {
     title: qsTr("Kanji Test")
     color:"#023D54"
 
+    property bool kanjiTestSwitchState: false
+
     header: MenuBar{
         MenuBarItem{
             text: qsTr("Menu")
@@ -141,7 +143,27 @@ ApplicationWindow {
             font.pointSize: 15
             Layout.rightMargin: 10
 
-            onClicked:_kanjiTestConfirmMsgDialog.open()
+            onClicked:{
+                if(kanjiTestSwitchState === true)
+                    skipFunc()
+                else
+                    _kanjiTestConfirmMsgDialog.open()
+            }
+        }
+
+        AppSwitchCtrl{
+            id:_KanjiTestMsgDiagSwitch
+            switchText: "Disable Message Button on Skip"
+            switchChecked: false
+            Layout.column:1
+            Layout.alignment: Qt.AlignHCenter //| Qt.AlignVCenter
+            Layout.rightMargin: 100
+            Layout.row: 6
+            onToggle:{
+                kanjiTestSwitchState = !kanjiTestSwitchState
+                console.log("kappa")
+            }
+
         }
     }
 
@@ -228,30 +250,32 @@ ApplicationWindow {
         message:"Skip Item?"
         acceptButtonText: "Confirm"
         cancelButtonText: "Cancel"
-        property string skipItemResult
-        onAccepted:{
-            kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
-            kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
 
-            skipItemResult = kanjiQuiz.skipItem()
+        onAccepted:skipFunc()
+    }
+    property string skipItemResult
+    function skipFunc(){
+        kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
+        kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
 
-            if(skipItemResult === "next"){
-                _txtFieldKunyomi.text = "";
-                _txtFieldOnyomi.text = "";
+        skipItemResult = kanjiQuiz.skipItem()
+
+        if(skipItemResult === "next"){
+            _txtFieldKunyomi.text = "";
+            _txtFieldOnyomi.text = "";
+        }
+        else if(skipItemResult === "finish"){
+            console.log("skipped finished")
+            var component = Qt.createComponent("KanjiTallyWindow.qml")
+            if(component.status === Component.Ready){
+                var newWindow = component.createObject(_mainAppWindow);
+                if(newWindow){
+                    _testAppWindow.close()
+                    newWindow.show()
+                }
             }
-            else if(skipItemResult === "finish"){
-                console.log("skipped finished")
-                var component = Qt.createComponent("KanjiTallyWindow.qml")
-                if(component.status === Component.Ready){
-                    var newWindow = component.createObject(_mainAppWindow);
-                    if(newWindow){
-                        _testAppWindow.close()
-                        newWindow.show()
-                    }
-                }
-                else {
-                    console.log("Error loading component:", component.errorString());
-                }
+            else {
+                console.log("Error loading component:", component.errorString());
             }
         }
     }
