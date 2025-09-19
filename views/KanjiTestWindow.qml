@@ -140,32 +140,8 @@ ApplicationWindow {
             btnBgColor: _skipBtn.hovered ? "#ffff66" : "white"
             font.pointSize: 15
             Layout.rightMargin: 10
-            property string skipItemResult
-            onClicked:{
-                kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
-                kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
 
-                skipItemResult = kanjiQuiz.skipItem()
-
-                if(skipItemResult === "next"){
-                    _txtFieldKunyomi.text = "";
-                    _txtFieldOnyomi.text = "";
-                }
-                else if(skipItemResult === "finish"){
-                    console.log("skipped finished")
-                    var component = Qt.createComponent("KanjiTallyWindow.qml")
-                    if(component.status === Component.Ready){
-                        var newWindow = component.createObject(_mainAppWindow);
-                        if(newWindow){
-                            _testAppWindow.close()
-                            newWindow.show()
-                        }
-                    }
-                    else {
-                        console.log("Error loading component:", component.errorString());
-                    }
-                }
-            }
+            onClicked:_kanjiTestConfirmMsgDialog.open()
         }
     }
 
@@ -242,6 +218,41 @@ ApplicationWindow {
                 onClicked: console.log("canvas clicked")
             }
 
+        }
+    }
+
+    AppMsgDialog
+    {
+        id: _kanjiTestConfirmMsgDialog
+        anchors.centerIn: parent
+        message:"Skip Item?"
+        acceptButtonText: "Confirm"
+        cancelButtonText: "Cancel"
+        property string skipItemResult
+        onAccepted:{
+            kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
+            kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
+
+            skipItemResult = kanjiQuiz.skipItem()
+
+            if(skipItemResult === "next"){
+                _txtFieldKunyomi.text = "";
+                _txtFieldOnyomi.text = "";
+            }
+            else if(skipItemResult === "finish"){
+                console.log("skipped finished")
+                var component = Qt.createComponent("KanjiTallyWindow.qml")
+                if(component.status === Component.Ready){
+                    var newWindow = component.createObject(_mainAppWindow);
+                    if(newWindow){
+                        _testAppWindow.close()
+                        newWindow.show()
+                    }
+                }
+                else {
+                    console.log("Error loading component:", component.errorString());
+                }
+            }
         }
     }
 }
