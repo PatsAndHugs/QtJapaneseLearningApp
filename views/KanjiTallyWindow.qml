@@ -111,6 +111,7 @@ ApplicationWindow {
                 onClicked: {
                      _tallyAppWindow.close()
                     kanjiQuiz.clearQuizList()
+                    kanjiList.updateListDatesAfteResult(kanjiQuiz.getKanjiListToUpdate())
                     _mainAppWindow.show()
                 }
             }
