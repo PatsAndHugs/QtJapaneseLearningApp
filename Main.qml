@@ -97,7 +97,7 @@ ApplicationWindow {
         spacing:10
         model: _filterModel
 
-        delegate: ListItemCard{ id:_wrapper
+        delegate: KanjiListCard{ id:_wrapper
                                 kanjiText: model.kanji
                                 englishMeaningText: model.kanjiEnglishName
                                 kunyomiText: model.kunyomi
