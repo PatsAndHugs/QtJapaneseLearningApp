@@ -17,21 +17,6 @@ ApplicationWindow {
     title: qsTr("Kanji Test")
     color:"#023D54"
 
-    Gradient{
-        id:_itemCorrect
-
-        GradientStop { position: 0.0; color: "#076AF5" }
-
-        GradientStop { position: 1.0; color: "#B1CCF2" }
-    }
-
-    Gradient{
-        id:_itemWrong
-
-        GradientStop { position: 0.0; color: "#E35036" }
-
-        GradientStop { position: 1.0; color: "#F2CDB1" }
-    }
     ColumnLayout{
         id:_tallyColLayout
         anchors.fill: parent
@@ -88,8 +73,7 @@ ApplicationWindow {
                 lblTextColor: ListView.isCurrentItem ? "black" : "black"
                 width: _listView.width
                 height: 100
-                gradient: model.isAnswerCorrect ? _itemCorrect : _itemWrong
-
+                radioBtnColor: model.isAnswerCorrect ? "blue" : "red"
             }
         }
 
@@ -102,7 +86,7 @@ ApplicationWindow {
             Layout.rightMargin: 40
             Layout.leftMargin: 40
 
-            Button{
+            AppButton{
                 text:qsTr("Return To Main Menu")
                 Layout.preferredHeight: 100
                 Layout.fillWidth: true
