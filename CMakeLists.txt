@@ -43,12 +43,13 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/AppButton.qml
         QML_FILES views/AppMsgDialog.qml
         QML_FILES views/AppSwitchCtrl.qml
+        QML_FILES views/KanjiMainWindow.qml
 )
 
 # add resource items here
 qt_add_resources(appQtJapaneseLearningApp "images"
     PREFIX "/image"
-    FILES resources/silencesuzuka.png
+    FILES resources/silencesuzuka.png resources/Ryza_and_the_holy_tower_of_Pynnor.png
 )
 
 
