@@ -27,27 +27,55 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.topMargin: 50
-            Label{
-                text: qsTr("Correct: ")
-                font.pointSize: 20
-                Layout.alignment: Qt.AlignHCenter
-            }
-            Label{
-                text: qsTr("100")
-                font.pointSize: 20
-                Layout.alignment: Qt.AlignLeft
-            }
-            Label{
-                text: qsTr("Wrong: ")
-                font.pointSize: 20
-                Layout.alignment: Qt.AlignHCenter
-            }
-            Label{
-                text: qsTr("100")
-                font.pointSize: 20
-                Layout.alignment: Qt.AlignLeft
+            Rectangle{
+                id: _KanjiTallyCorrectContainer
+                color: "lightblue"
+                Layout.preferredHeight: 80
+                Layout.fillWidth: true
+                Layout.leftMargin: 10
+                radius: 8
+                Label{
+                    text: qsTr("Correct Answers: ")
+                    color: "#023D54"
+                    font.pointSize: 20
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Label{
+                    text: kanjiQuiz.getCorrectScore()
+                    color: "#023D54"
+                    font.pointSize: 20
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                }
             }
 
+            Rectangle{
+                id: _KanjiTallyIncorrectContainer
+                color: "#ff7057"
+                Layout.preferredHeight: 80
+                Layout.fillWidth: true
+                Layout.rightMargin: 10
+                radius: 8
+                Label{
+                    text: qsTr("Wrong Answers: ")
+                    color: "#023D54"
+                    font.pointSize: 20
+                    anchors.left: parent.left
+                    anchors.leftMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+                Label{
+                    text: kanjiQuiz.getIncorrectScore()
+                    color: "#023D54"
+                    font.pointSize: 20
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
         }
 
         ListView {
@@ -70,7 +98,7 @@ ApplicationWindow {
                 englishMeaningText: model.kanjiEnglishMeaning
                 kunyomiText: model.kunyomi
                 onyomiText: model.onyomi
-                lblTextColor: ListView.isCurrentItem ? "black" : "black"
+                lblTextColor: "#023D54"
                 width: _listView.width
                 height: 100
                 radioBtnColor: model.isAnswerCorrect ? "blue" : "red"
