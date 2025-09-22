@@ -63,6 +63,9 @@ public slots:
 
     void clearQuizList();
 
+    QString getCorrectScore();
+    QString getIncorrectScore();
+
 signals:
 
     void englishNameTxtChanged();

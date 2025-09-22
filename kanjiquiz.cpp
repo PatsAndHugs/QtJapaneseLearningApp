@@ -177,6 +177,28 @@ void KanjiQuiz::clearQuizList()
     kanjiQuizItemList.clear();
 }
 
+QString KanjiQuiz::getCorrectScore()
+{
+    int correctCtr = 0;
+    for(KanjiQuizStruct &item :kanjiQuizItemList)
+    {
+        if(item.correctCounter != 0)
+            ++correctCtr;
+    }
+    return QString::number(correctCtr);
+}
+
+QString KanjiQuiz::getIncorrectScore()
+{
+    int inCorrectCtr = 0;
+    for(KanjiQuizStruct &item :kanjiQuizItemList)
+    {
+        if(item.correctCounter == 0)
+            ++inCorrectCtr;
+    }
+    return QString::number(inCorrectCtr);
+}
+
 void KanjiQuiz::setItemsVal()
 {
     m_englishNameTxt = kanjiList.at(currentListIndex).kanjiEnglishName;
