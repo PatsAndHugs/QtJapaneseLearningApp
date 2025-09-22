@@ -124,7 +124,7 @@ ApplicationWindow {
                      _tallyAppWindow.close()
                     kanjiQuiz.clearQuizList()
                     kanjiList.updateListDatesAfteResult(kanjiQuiz.getKanjiListToUpdate())
-                    _mainAppWindow.show()
+                    _kanjiMainWindow.show()
                 }
             }
         }

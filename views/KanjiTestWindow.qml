@@ -27,7 +27,7 @@ ApplicationWindow {
                 MenuItem{
                     text:qsTr("Back To Main Menu")
                     onClicked:{
-                        _mainAppWindow.show()
+                        _kanjiMainWindow.show()
                         _testAppWindow.close()
                     }
                 }
@@ -121,7 +121,7 @@ ApplicationWindow {
                 else if(getItemResult === "finish"){
                     var component = Qt.createComponent("KanjiTallyWindow.qml")
                     if(component.status === Component.Ready){
-                        var newWindow = component.createObject(_mainAppWindow);
+                        var newWindow = component.createObject(_kanjiMainWindow);
                         if(newWindow){
                              _testAppWindow.close()
                             newWindow.show()
@@ -268,7 +268,7 @@ ApplicationWindow {
             console.log("skipped finished")
             var component = Qt.createComponent("KanjiTallyWindow.qml")
             if(component.status === Component.Ready){
-                var newWindow = component.createObject(_mainAppWindow);
+                var newWindow = component.createObject(_kanjiMainWindow);
                 if(newWindow){
                     _testAppWindow.close()
                     newWindow.show()
