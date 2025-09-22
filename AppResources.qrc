@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/image">
         <file>resources/silencesuzuka.png</file>
+        <file>resources/Ryza_and_the_holy_tower_of_Pynnor.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>
