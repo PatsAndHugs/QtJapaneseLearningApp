@@ -73,6 +73,17 @@ ApplicationWindow {
            Layout.preferredHeight: 100
            Layout.fillWidth: true
            font.pointSize: 15
+           onClicked:{
+               var component = Qt.createComponent("views/VocabMainWindow.qml")
+               if(component.status === Component.Ready){
+                   var newWindow = component.createObject(_mainAppWindow);
+                   if(newWindow){
+                       console.log("clicked")
+                        _mainAppWindow.close()
+                       newWindow.show()
+                   }
+               }
+           }
         }
     }
 
