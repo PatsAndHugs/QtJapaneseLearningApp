@@ -74,7 +74,7 @@ void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list, QString userI
 {
 
     qDebug()<<"DB update func called";
-    QSqlQuery query(db);
+    QSqlQuery query;
     query.prepare("UPDATE JapaneseLearningDb.UserDateTable "
                   "SET LastDateAnswered = :lastdateanswered, "
                   "NextDateToAnswer = :nextdatetoanswer, "
@@ -146,7 +146,7 @@ void DbConnectionClass::initializeUserInfo()
 
 void DbConnectionClass::populateModelList(QString userIdVal)
 {
-    QSqlQuery query(db);
+    QSqlQuery query;
 
     query.prepare("SELECT tKanji.KanjiId, Kanji, Kunyomi, Onyomi, KanjiMeaning, LastDateAnswered, NextDateToAnswer, CorrectStreak "
                   "FROM JapaneseLearningDb.KanjiTable as tKanji "
@@ -179,8 +179,45 @@ void DbConnectionClass::populateModelList(QString userIdVal)
         }
     }
 
-
     qDebug()<<"insertitems to model";
+
+    //db.close();
+}
+
+void DbConnectionClass::populateVocabModelList(QString userIdVal)
+{
+    QSqlQuery query;
+
+    query.prepare("SELECT tVocab.VocabId, VocabKanji, VocabMeaning, VocabReading, LastDateAnswered, NextDateToAnswer, CorrectStreak "
+                  "FROM JapaneseLearningDb.VocabTable as tVocab "
+                  "JOIN JapaneseLearningDb.UserVocabDateTable as tDate ON tDate.VocabId = tVocab.VocabId "
+                  "WHERE tDate.UserId = :userIdVal");
+
+    query.bindValue(":userIdVal", userIdVal);
+
+    if(query.exec())
+    {
+        qDebug()<<"populateVocabModelList db query exec successful";
+        while(query.next())
+        {
+            VocabListStruct vocabStruct(
+                query.value(0).toString(),//vocabid
+                query.value(1).toString(),//vocabkanji
+                query.value(2).toString(),//vocabMeaning
+                query.value(3).toString(),//vocabreading
+                query.value(4).toString(),//lastdateanswered
+                query.value(5).toString(),//nextdatetoanswer
+                query.value(6).toInt(),//correctstreak
+                false
+                );
+
+            qDebug()<<query.value(1).toString()<<query.value(2).toString()
+                     <<query.value(3).toString()<<query.value(4).toString();
+            dbVocabList.append(vocabStruct);
+        }
+    }
+
+    qDebug()<<"insertitems to vocabmodel";
 
     db.close();
 }
@@ -192,7 +229,7 @@ bool DbConnectionClass::loginUser(QString usernameVal, QString passwordVal)
 
     QString storePassword = encryptString(passwordVal);
 
-    QSqlQuery query(db);
+    QSqlQuery query;
     query.prepare("SELECT * FROM JapaneseLearningDb.UserTable "
                   "WHERE  UserName = :username && UserPassword = :password");
 
@@ -342,6 +379,73 @@ bool DbConnectionClass::insertKanjiItemForUser(QString userIdVal)
     return true;
 }
 
+bool DbConnectionClass::insertVocabItemForUser(QString userIdVal)
+{
+    QSqlQuery query;
+    query.prepare("SELECT VocabId, Id, UserId FROM JapaneseLearningDb.UserVocabDateTable "
+                  "WHERE UserId = :userid "
+                  "ORDER BY Id DESC "
+                  "LIMIT 1");
+
+    query.bindValue(":userid", userIdVal);
+
+    QString lastVocabId;
+    if (!query.exec())
+    {
+        qDebug() << "Error retrieving data:" << query.lastError().text();
+        return false;
+    }
+    else
+    {
+        if(query.next())
+        {
+            lastVocabId = query.value(0).toString();
+        }
+        else
+        {
+            lastVocabId = "VI-0";
+        }
+    }
+
+    QStringList vocabIdList;
+    //get vocabid number VI-1
+    if(lastVocabId !="")
+    {
+        QString newString = lastVocabId.remove(0,3);
+        int counterId = newString.toInt();
+
+        //increment and add to qstringlist
+        for(int i = counterId + 1; i <= counterId + 5; i++)
+        {
+            QString newVocabId = "VI-" + QString::number(i);
+            vocabIdList.append(newVocabId);
+        }
+    }
+
+    //insert values to UserVocabDateTable
+    query.prepare("INSERT INTO JapaneseLearningDb.UserVocabDateTable(UserId, VocabId) "
+                  "VALUES(:userid, :vocabid)");
+
+    for(const QString &item : vocabIdList)
+    {
+        query.bindValue(":userid", userIdVal);
+        query.bindValue(":vocabid", item);
+
+        if (!query.exec())
+        {
+            qDebug() << "Error inserting data:" << query.lastError().text();
+            return false;
+        }
+        else
+            qDebug() << "insertKanjiItemForUser";
+    }
+
+    if(!vocabIdList.isEmpty())
+        addNewItemsToDbVocabList(vocabIdList, userIdVal);
+
+    return true;
+}
+
 void DbConnectionClass::testFunc()
 {
     int counterId = 5;
@@ -359,6 +463,11 @@ void DbConnectionClass::clearDbKanjiList()
     dbKanjiList.clear();
 }
 
+void DbConnectionClass::clearDbVocabList()
+{
+    dbVocabList.clear();
+}
+
 
 QString DbConnectionClass::encryptString(QString stringVal)
 {
@@ -370,7 +479,7 @@ QString DbConnectionClass::encryptString(QString stringVal)
 
 void DbConnectionClass::addNewItemsToDbKanjiList(QStringList list, QString userIdVal)
 {
-    QSqlQuery query(db);
+    QSqlQuery query;
     appendKanjiList.clear();
 
     qDebug()<<"addNewItemsToDbKanjiList list count: "<<list.count();
@@ -405,6 +514,46 @@ void DbConnectionClass::addNewItemsToDbKanjiList(QStringList list, QString userI
                 appendKanjiList.append(kanjiStruct);
 
                 qDebug()<<"addNewItemsToDbKanjiList";
+            }
+        }
+    }
+}
+
+void DbConnectionClass::addNewItemsToDbVocabList(QStringList list, QString userIdVal)
+{
+    QSqlQuery query;
+    appendVocabList.clear();
+
+    qDebug()<<"addNewItemsToDbKanjiList list count: "<<list.count();
+
+    query.prepare("SELECT tVocab.VocabId, VocabKanji, VocabMeaning, VocabReading, LastDateAnswered, NextDateToAnswer, CorrectStreak "
+                  "FROM JapaneseLearningDb.VocabTable as tVocab "
+                  "JOIN JapaneseLearningDb.UserVocabDateTable as tDate ON tDate.VocabId = tVocab.VocabId "
+                  "WHERE tDate.UserId = :userIdVal && tVocab.VocabId = :vocabid");
+
+    for(QString &newId : list)
+    {
+        query.bindValue(":userIdVal", userIdVal);
+        query.bindValue(":vocabid", newId);
+        qDebug()<<"addNewItemsToDbKanjiList newid: "<<newId;
+        if(query.exec())
+        {
+            if(query.next())
+            {
+                VocabListStruct vocabStruct(
+                    query.value(0).toString(),//vocabid
+                    query.value(1).toString(),//vocabkanji
+                    query.value(2).toString(),//vocabMeaning
+                    query.value(3).toString(),//vocabreading
+                    query.value(4).toString(),//lastdateanswered
+                    query.value(5).toString(),//nextdatetoanswer
+                    query.value(6).toInt(),//correctstreak
+                    false
+                    );
+
+                qDebug()<<query.value(1).toString()<<query.value(2).toString()
+                         <<query.value(3).toString()<<query.value(4).toString();
+                appendVocabList.append(vocabStruct);
             }
         }
     }
