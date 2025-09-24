@@ -12,6 +12,8 @@
 #include <vocab/vocablist.h>
 #include <vocab/vocablistmodel.h>
 #include <vocab/filtervocablistmodel.h>
+#include <vocab/vocabquiz.h>
+#include <vocab/vocabquizresultmodel.h>
 
 int main(int argc, char *argv[])
 {
@@ -24,12 +26,14 @@ int main(int argc, char *argv[])
         QStringLiteral("KanjiList Should not be created in Qml"));
 
     qmlRegisterType<FilterVocabListModel>("VocabClass",1,0,"FilterVocabListModel");
+    qmlRegisterType<VocabQuizResultModel>("VocabClass",1,0,"VocabQuizResultModel");
     qmlRegisterType<VocabListModel>("VocabClass",1,0,"VocabListModel");
     qmlRegisterUncreatableType<VocabList>("VocabClass", 1, 0, "VocabList",
         QStringLiteral("VocabList Should not be created in Qml"));
 
 
     qmlRegisterType<KanjiQuiz>("KanjiClass",1,0,"KanjiQuiz");
+    qmlRegisterType<VocabQuiz>("VocabClass",1,0,"VocabQuiz");
 
     DbConnectionClass connClass;
     connClass.setupConn();
@@ -38,6 +42,7 @@ int main(int argc, char *argv[])
     KanjiQuiz kanjiQuiz;
     UserLoginClass loginClass;
     VocabList vocabList;
+    VocabQuiz vocabQuiz;
 
 
     QQmlApplicationEngine engine;
@@ -53,6 +58,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("userLogin"), &loginClass);
     engine.rootContext()->setContextProperty(QStringLiteral("dbConn"), &connClass);
     engine.rootContext()->setContextProperty(QStringLiteral("vocabList"), &vocabList);
+    engine.rootContext()->setContextProperty(QStringLiteral("vocabQuiz"), &vocabQuiz);
 
 
     engine.loadFromModule("QtJapaneseLearningApp", "Main");
