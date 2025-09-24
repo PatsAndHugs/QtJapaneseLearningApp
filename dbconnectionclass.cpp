@@ -95,9 +95,34 @@ void DbConnectionClass::UpdateDbItems(QList<KanjiQuizStruct> list, QString userI
             qDebug()<<"nextdatetoanswr"<<item.nextDateToAnswer;
             qDebug()<<"userid"<<userIdVal;
         }
-
     }
+}
 
+void DbConnectionClass::UpdateDbItems(QList<VocabQuizStruct> list, QString userIdVal)
+{
+    qDebug()<<"DB update vocab func called";
+    QSqlQuery query;
+    query.prepare("UPDATE JapaneseLearningDb.UserVocabDateTable "
+                  "SET LastDateAnswered = :lastdateanswered, "
+                  "NextDateToAnswer = :nextdatetoanswer, "
+                  "CorrectStreak = :correctcounter "
+                  "WHERE UserId = :userid && VocabId = :vocabid");
+
+    for(const VocabQuizStruct &item : list)
+    {
+        query.bindValue(":lastdateanswered", item.dateAnswered.toString("yyyy-MM-dd"));
+        query.bindValue(":nextdatetoanswer", item.nextDateToAnswer.toString("yyyy-MM-dd"));
+        query.bindValue(":correctcounter", item.correctCounter);
+        query.bindValue(":vocabid", item.vocabId);
+        query.bindValue(":userid", userIdVal);
+        if(query.exec())
+        {
+            qDebug()<<"update executed";
+            qDebug()<<"dateAnswered"<<item.dateAnswered;
+            qDebug()<<"nextdatetoanswr"<<item.nextDateToAnswer;
+            qDebug()<<"userid"<<userIdVal;
+        }
+    }
 }
 
 void DbConnectionClass::initializeSavedPathFile()

@@ -9,6 +9,7 @@
 #include "kanjilist.h"
 #include "kanjiquiz.h"
 #include "vocab/vocablist.h"
+#include "vocab/vocabquiz.h"
 
 class DbConnectionClass : public QObject
 {
@@ -41,6 +42,7 @@ public:
     QList<VocabListStruct> getAppendVocabList(){return appendVocabList;}
 
     void UpdateDbItems(QList<KanjiQuizStruct> list, QString userIdVal);
+    void UpdateDbItems(QList<VocabQuizStruct> list, QString userIdVal);
 
     void populateModelList(QString userIdVal);
     void populateVocabModelList(QString userIdVal);
