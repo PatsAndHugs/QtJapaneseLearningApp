@@ -48,6 +48,10 @@ qt_add_qml_module(appQtJapaneseLearningApp
         SOURCES vocab/vocablist.h vocab/vocablist.cpp
         SOURCES vocab/vocablistmodel.h vocab/vocablistmodel.cpp
         SOURCES vocab/filtervocablistmodel.h vocab/filtervocablistmodel.cpp
+        SOURCES vocab/vocabquiz.h vocab/vocabquiz.cpp
+        QML_FILES views/VocabTestWindow.qml
+        QML_FILES views/VocabTallyWindow.qml
+        SOURCES vocab/vocabquizresultmodel.h vocab/vocabquizresultmodel.cpp
 )
 
 # add resource items here
