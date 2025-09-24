@@ -199,14 +199,14 @@ ApplicationWindow {
         onAccepted: {
             if(vocabList.getSelectedItemsCount() > 0){
                 vocabList.addSelectedItemsToList()
-                var component = Qt.createComponent("KanjiTestWindow.qml")
+                var component = Qt.createComponent("VocabTestWindow.qml")
                 if(component.status === Component.Ready){
                     var newWindow = component.createObject(_vocabMainWindow);
                     console.log("confirm")
                     newWindow.show()
                     _vocabMainWindow.hide()
                 }
-                kanjiQuiz.getKanjiList(vocabList.getSelectedItemsList())
+                vocabQuiz.getVocabList(vocabList.getSelectedItemsList())
             }
         }
         onRejected: console.log("rejected");
