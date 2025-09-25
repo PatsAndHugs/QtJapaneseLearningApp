@@ -6,7 +6,7 @@ import QtQuick.Effects
 import "views"
 
 //import JapaneseLearningApp.DbConnectionClass
-import KanjiClass 1.0
+//import KanjiClass 1.0
 
 ApplicationWindow {
 
@@ -27,7 +27,7 @@ ApplicationWindow {
         anchors.topMargin: 20
         anchors.bottomMargin: 20
 
-        Image {
+        Image{
             id: _mainImg
             source: "qrc:/image/resources/Ryza_and_the_holy_tower_of_Pynnor.png"
             fillMode: Image.PreserveAspectCrop // Adjust as needed
@@ -35,55 +35,78 @@ ApplicationWindow {
             Layout.fillWidth: true
         }
 
-        Label{
+        RowLayout{
+            id:_mainUserStatsRow
+            Layout.fillWidth: true
+            Layout.preferredHeight: 50
+            //spacing:10
+            Label{
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+                text: userLogin.getUsername()
+                color:"white"
+                font.pointSize: 30
+                font.bold: true
+            }
+            Label{
+                Layout.fillWidth: true
+                text: qsTr("Kanji: 5")
+                color:"white"
+                font.pointSize: 20
+                font.bold: true
+            }
+            Label{
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+                text: qsTr("Vocab: 2")
+                color:"white"
+                font.pointSize: 20
+                font.bold: true
+            }
+        }
+
+        AppButton{
+            text: "Learn"
             Layout.preferredHeight: 100
             Layout.fillWidth: true
-            text: "Silence Suzuka"
-            font.pointSize: 30
-            font.bold: true
+            font.pointSize: 15
+
         }
 
         AppButton{
-           text: "Learn"
-           Layout.preferredHeight: 100
-           Layout.fillWidth: true
-           font.pointSize: 15
-
-        }
-        AppButton{
-           text: "Kanji Test"
-           Layout.preferredHeight: 100
-           Layout.fillWidth: true
-           font.pointSize: 15
-           onClicked:{
-               var component = Qt.createComponent("views/KanjiMainWindow.qml")
-               if(component.status === Component.Ready){
-                   var newWindow = component.createObject(_mainAppWindow);
-                   if(newWindow){
-                       console.log("clicked")
+            text: "Kanji Test"
+            Layout.preferredHeight: 100
+            Layout.fillWidth: true
+            font.pointSize: 15
+            onClicked:{
+                var component = Qt.createComponent("views/KanjiMainWindow.qml")
+                if(component.status === Component.Ready){
+                    var newWindow = component.createObject(_mainAppWindow);
+                    if(newWindow){
+                        console.log("clicked")
                         _mainAppWindow.close()
-                       newWindow.show()
-                   }
-               }
-           }
+                        newWindow.show()
+                    }
+                }
+            }
 
         }
         AppButton{
-           text: "Vocab Test"
-           Layout.preferredHeight: 100
-           Layout.fillWidth: true
-           font.pointSize: 15
-           onClicked:{
-               var component = Qt.createComponent("views/VocabMainWindow.qml")
-               if(component.status === Component.Ready){
-                   var newWindow = component.createObject(_mainAppWindow);
-                   if(newWindow){
-                       console.log("clicked")
+            text: "Vocab Test"
+            Layout.preferredHeight: 100
+            Layout.fillWidth: true
+            font.pointSize: 15
+            onClicked:{
+                var component = Qt.createComponent("views/VocabMainWindow.qml")
+                if(component.status === Component.Ready){
+                    var newWindow = component.createObject(_mainAppWindow);
+                    if(newWindow){
+                        console.log("clicked")
                         _mainAppWindow.close()
-                       newWindow.show()
-                   }
-               }
-           }
+                        newWindow.show()
+                    }
+                }
+            }
         }
     }
 
