@@ -40,28 +40,61 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.preferredHeight: 50
             //spacing:10
-            Label{
+
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                text: userLogin.getUsername()
-                color:"white"
-                font.pointSize: 30
-                font.bold: true
+                Layout.preferredHeight: 100
+                Layout.preferredWidth: 100
+                color: "white"
+                radius: 8
+                Label{
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    text: userLogin.getUsername()
+                    color:"#023D54"
+                    font.pointSize: 30
+                    font.bold: true
+                }
             }
-            Label{
-                Layout.fillWidth: true
-                text: qsTr("Kanji: 5")
-                color:"white"
-                font.pointSize: 20
-                font.bold: true
-            }
-            Label{
+
+            Rectangle {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                text: qsTr("Vocab: 2")
-                color:"white"
-                font.pointSize: 20
-                font.bold: true
+                Layout.preferredHeight: 100
+                Layout.preferredWidth: 100
+                color: "white"
+                radius: 8
+
+                Label{
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    Layout.fillWidth: true
+                    text: qsTr("Kanji: 5")
+                    color:"#023D54"
+                    font.pointSize: 20
+                    font.bold: true
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
+                Layout.preferredHeight: 100
+                Layout.preferredWidth: 100
+                color: "white"
+                radius: 8
+
+                Label{
+                    anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
+                    text: qsTr("Vocab: 2")
+                    color:"#023D54"
+                    font.pointSize: 20
+                    font.bold: true
+                }
             }
         }
 
@@ -69,7 +102,7 @@ ApplicationWindow {
             text: "Learn"
             Layout.preferredHeight: 100
             Layout.fillWidth: true
-            font.pointSize: 15
+            font.pointSize: 20
 
         }
 
@@ -77,7 +110,7 @@ ApplicationWindow {
             text: "Kanji Test"
             Layout.preferredHeight: 100
             Layout.fillWidth: true
-            font.pointSize: 15
+            font.pointSize: 20
             onClicked:{
                 var component = Qt.createComponent("views/KanjiMainWindow.qml")
                 if(component.status === Component.Ready){
@@ -95,7 +128,7 @@ ApplicationWindow {
             text: "Vocab Test"
             Layout.preferredHeight: 100
             Layout.fillWidth: true
-            font.pointSize: 15
+            font.pointSize: 20
             onClicked:{
                 var component = Qt.createComponent("views/VocabMainWindow.qml")
                 if(component.status === Component.Ready){
