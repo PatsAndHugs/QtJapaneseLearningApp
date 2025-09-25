@@ -31,6 +31,7 @@ public slots:
     void logout();
     bool registerUser();
     bool getLoginStatus();
+    QString getUsername();
 
 signals:
 

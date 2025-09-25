@@ -60,3 +60,11 @@ bool UserLoginClass::getLoginStatus()
         return false;
 }
 
+QString UserLoginClass::getUsername()
+{
+    XMLReaderClass *xmlReader = new XMLReaderClass;
+    xmlReader->loadDocument("Config.xml");
+
+    return xmlReader->getSavedUserInfo().at(1);
+}
+
