@@ -141,6 +141,18 @@ void KanjiList::updateAllItemsIsSelected()
     updateLastItemIsSelected(mItems.count());
 }
 
+void KanjiList::clearAllSelectedItems()
+{
+
+    for(int i = 0;i < mItems.count(); i++)
+    {
+        mItems[i].isSelected = false;
+        mSelectionList.append(i);
+        emit postIsSelectedChanged();
+        qDebug()<<"clearAllSelectedItems"<<mItems[i].isSelected;
+    }
+}
+
 void KanjiList::updateAllCurrentDateItemsIsSelected()
 {
     if(mItems.isEmpty())

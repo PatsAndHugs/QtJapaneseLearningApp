@@ -90,6 +90,7 @@ public slots:
     void clearItems();
     void updateLastItemIsSelected(int count);
     void updateAllItemsIsSelected();
+    void clearAllSelectedItems();
     void updateAllCurrentDateItemsIsSelected();
     void addSelectedItemsToList();
     QList<KanjiListStruct> getSelectedItemsList(){return mSelectedItemsList;}
