@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
 
-import KanjiClass 1.0
+//import KanjiClass 1.0
 
 ApplicationWindow {
 
@@ -31,12 +31,11 @@ ApplicationWindow {
 
     ColumnLayout{
         id:_learnKanjiCol
-        //anchors.fill: parent
-        // anchors.top: parent.top
-        // anchors.left: parent.left
-        // anchors.right: parent.right
-        // anchors.topMargin: 100
-        anchors.centerIn: parent
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.verticalCenter
+        anchors.topMargin: 100
         spacing: 10
         Rectangle {
             Layout.fillWidth: true
@@ -47,7 +46,7 @@ ApplicationWindow {
             Label{
                 id:_learnKanjiTxt
                 anchors.centerIn: parent
-                text:qsTr("月")
+                text:kanjiList.kanjiTxt
                 font.pointSize: 100
                 color:"white"
             }
@@ -62,7 +61,7 @@ ApplicationWindow {
             Label{
                 id:_learnEnglishMeaningTxt
                 anchors.centerIn: parent
-                text:qsTr("moon, month")
+                text:kanjiList.englishNameTxt
                 font.pointSize: 30
                 color:"white"
             }
@@ -76,7 +75,7 @@ ApplicationWindow {
             Label{
                 id:_learnKunyomiTxt
                 anchors.centerIn: parent
-                text:qsTr("がつ、げつ")
+                text:kanjiList.kunyomiTxt
                 font.pointSize: 30
                 color:"white"
             }
@@ -90,7 +89,7 @@ ApplicationWindow {
             Label{
                 id:_learnOnyomiTxt
                 anchors.centerIn: parent
-                text:qsTr("ツキ")
+                text:kanjiList.onyomiTxt
                 font.pointSize: 30
                 color:"white"
             }
@@ -99,9 +98,8 @@ ApplicationWindow {
 
     GridLayout{
         id: _canvasGrid
-        //anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
-        anchors.top: _learnKanjiCol.bottom
+        anchors.top: parent.verticalCenter
         anchors.bottom:parent.bottom
         anchors.left: parent.left
         anchors.topMargin: 50
