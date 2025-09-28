@@ -3,7 +3,7 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
 
-//import KanjiClass 1.0
+import KanjiClass 1.0
 
 ApplicationWindow {
 
@@ -24,6 +24,7 @@ ApplicationWindow {
         width: 150
         height: 50
         onClicked:{
+            kanjiList.clearAllSelectedItems()
             _learnKanjiWindow.close()
             _learnMainWindow.show()
         }
