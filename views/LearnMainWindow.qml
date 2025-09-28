@@ -74,9 +74,15 @@ ApplicationWindow {
                                     onClicked: {
                                         _learnListView.currentIndex = index
                                         model.isSelected = !model.isSelected
+                                        var component = Qt.createComponent("LearnKanjiWindow.qml")
+                                        if(component.status === Component.Ready){
+                                            var newWindow = component.createObject(_learnMainWindow);
+                                            kanjiList.setItemToShowInLearnWindow()
+                                            newWindow.show()
+                                            _learnMainWindow.hide()
+                                        }
                                     }
                                 }
-
         }
         focus: true
     }
