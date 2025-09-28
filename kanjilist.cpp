@@ -59,6 +59,26 @@ bool KanjiList::setItemAt(int index, const KanjiListStruct &item)
     return true;
 }
 
+void KanjiList::setEnglishNameTxt(QString newVal)
+{
+    m_englishNameTxt = newVal;
+}
+
+void KanjiList::setKanjiTxt(QString newVal)
+{
+    m_kanjiTxt = newVal;
+}
+
+void KanjiList::setKunyomiTxt(QString newVal)
+{
+    m_kunyomiTxt = newVal;
+}
+
+void KanjiList::setOnyomiTxt(QString newVal)
+{
+    m_onyomiTxt = newVal;
+}
+
 void KanjiList::appendItem()
 {
     emit preItemAppended();
@@ -204,6 +224,27 @@ void KanjiList::updateListDatesAfteResult(QList<KanjiListStruct> list)
                 localItem.nextDateToAnswer = item.nextDateToAnswer;
                 localItem.correctStreak = item.correctStreak;
             }
+        }
+    }
+}
+
+void KanjiList::setItemToShowInLearnWindow()
+{
+    for(KanjiListStruct &item : mItems)
+    {
+        if(item.isSelected == true)
+        {
+            qDebug()<<"setItemToShowInLearnWindow";
+            m_englishNameTxt = item.kanjiEnglishName;
+            qDebug()<<"m_englishNameTxt: "<<m_englishNameTxt;
+            m_kanjiTxt = item.kanji;
+            m_kunyomiTxt = item.kunyomi;
+            m_onyomiTxt = item.onyomi;
+            emit englishNameTxtChanged();
+            emit kanjiTxtChanged();
+            emit kunyomiTxtChanged();
+            emit onyomiTxtChanged();
+            return;
         }
     }
 }

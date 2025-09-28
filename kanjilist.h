@@ -45,6 +45,11 @@ class KanjiList : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString englishNameTxt READ englishNameTxt WRITE setEnglishNameTxt NOTIFY englishNameTxtChanged)
+    Q_PROPERTY(QString kanjiTxt READ kanjiTxt WRITE setKanjiTxt NOTIFY kanjiTxtChanged)
+    Q_PROPERTY(QString kunyomiTxt READ kunyomiTxt WRITE setKunyomiTxt NOTIFY kunyomiTxtChanged)
+    Q_PROPERTY(QString onyomiTxt READ onyomiTxt WRITE setOnyomiTxt NOTIFY onyomiTxtChanged)
+
 public:
 
     explicit KanjiList(QObject *parent = nullptr);
@@ -54,6 +59,18 @@ public:
     bool setItemAt(int index, const KanjiListStruct &item);
     QList<int> getSelectionList(){return mSelectionList;}
 
+    QString englishNameTxt(){return m_englishNameTxt;}
+    void setEnglishNameTxt(QString newVal);
+
+    QString kanjiTxt(){return m_kanjiTxt;}
+    void setKanjiTxt(QString newVal);
+
+    QString kunyomiTxt(){return m_kunyomiTxt;}
+    void setKunyomiTxt(QString newVal);
+
+    QString onyomiTxt(){return m_onyomiTxt;}
+    void setOnyomiTxt(QString newVal);
+
 signals:
     void preItemAppended();
     void postItemAppended();
@@ -62,6 +79,10 @@ signals:
     void postItemRemoved();
     void postIsSelectedChanged();
 
+    void englishNameTxtChanged();
+    void kanjiTxtChanged();
+    void kunyomiTxtChanged();
+    void onyomiTxtChanged();
 
 public slots:
     void appendItem();
@@ -76,12 +97,19 @@ public slots:
     void addNewListItems();
     void updateListDatesAfteResult(QList<KanjiListStruct> list);
 
+    void setItemToShowInLearnWindow();
+
 private:
     QVector<KanjiListStruct> mItems;
     DbConnectionClass *dbClass;
     QList<int> mSelectionList;
     QList<KanjiListStruct> mSelectedItemsList;
     XMLReaderClass *xmlReader;
+
+    QString m_englishNameTxt = "kappa";
+    QString m_kanjiTxt;
+    QString m_kunyomiTxt;
+    QString m_onyomiTxt;
 };
 
 #endif // KANJILIST_H
