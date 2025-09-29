@@ -48,15 +48,30 @@ ApplicationWindow {
         columns: 2
         rowSpacing: 20
 
-        Label{
-            id:_lblKanji
-            color: "black"
-            font.pointSize: 100
-            horizontalAlignment: Text.AlignHCenter
-            Layout.alignment: Qt.AlignCenter
-            text:kanjiQuiz.kanjiTxt
+        Rectangle{
             Layout.columnSpan: 2
             Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            AppButton{
+                id:_kanjiShowBtn
+                anchors.centerIn: parent
+                text: qsTr("Show Kanji")
+                onClicked:{
+                    _lblKanji.visible = true
+                    _kanjiShowBtn.visible = false
+                }
+            }
+            Label{
+                id:_lblKanji
+                color: "black"
+                font.pointSize: 100
+                horizontalAlignment: Text.AlignHCenter
+                text:kanjiQuiz.kanjiTxt
+                anchors.centerIn: parent
+                visible: false
+            }
+
+
         }
 
         Label{
@@ -111,7 +126,8 @@ ApplicationWindow {
             onClicked: {
                 kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
                 kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
-
+                _kanjiShowBtn.visible = true
+                _lblKanji.visible = false
                 getItemResult = kanjiQuiz.getNextItem()
 
                 if(getItemResult === "get"){
@@ -145,7 +161,11 @@ ApplicationWindow {
 
             onClicked:{
                 if(kanjiTestSwitchState === true)
+                {
                     skipFunc()
+                    _kanjiShowBtn.visible = true
+                    _lblKanji.visible = false
+                }
                 else
                     _kanjiTestConfirmMsgDialog.open()
             }
@@ -251,7 +271,11 @@ ApplicationWindow {
         acceptButtonText: "Confirm"
         cancelButtonText: "Cancel"
 
-        onAccepted:skipFunc()
+        onAccepted:{
+            skipFunc()
+            _kanjiShowBtn.visible = true
+            _lblKanji.visible = false
+        }
     }
     property string skipItemResult
     function skipFunc(){
