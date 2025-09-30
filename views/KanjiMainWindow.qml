@@ -59,7 +59,7 @@ ApplicationWindow {
                 MenuItem{
                     text:"Edit Connection"
                     onClicked:{
-                        var component = Qt.createComponent("DbConnWindow.qml")
+                        var component = Qt.createComponent("DbConnectionWindow.qml")
                         if(component.status === Component.Ready){
                             var newWindow = component.createObject(_kanjiMainWindow);
                             newWindow.show()
