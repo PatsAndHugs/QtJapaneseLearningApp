@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<VocabQuiz>("VocabClass",1,0,"VocabQuiz");
 
     DbConnectionClass connClass;
-    connClass.setupConn();
+    //connClass.setupConn();
 
     KanjiList kanjiList;
     KanjiQuiz kanjiQuiz;
