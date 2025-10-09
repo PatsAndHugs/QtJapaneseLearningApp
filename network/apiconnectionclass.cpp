@@ -12,6 +12,7 @@ void ApiConnectionClass::fetchKanjiListForUser()
 
     //query
     QJsonObject userData;
+    //CHANGE LATER
     userData["userid"] = "USR-1";
     QJsonDocument userDoc(userData);
     QByteArray userJsonData = userDoc.toJson();
@@ -58,6 +59,7 @@ void ApiConnectionClass::fetchKanjiListForUser()
                                 kanjiOutputList.append(listStruct);
                             }
                             emit kanjiOutputListChanged();
+                            reply->deleteLater();
                         }
                     }
                 }
