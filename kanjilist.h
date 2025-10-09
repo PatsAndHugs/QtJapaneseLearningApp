@@ -8,6 +8,7 @@
 
 
 class DbConnectionClass;
+class ApiConnectionClass;
 
 
 struct KanjiListStruct
@@ -106,6 +107,7 @@ private:
     QList<int> mSelectionList;
     QList<KanjiListStruct> mSelectedItemsList;
     XMLReaderClass *xmlReader;
+    ApiConnectionClass *apiConnClass;
 
     QString m_englishNameTxt = "kappa";
     QString m_kanjiTxt;

@@ -1,18 +1,19 @@
 #include "kanjilist.h"
 #include "dbconnectionclass.h"
 #include <qforeach.h>
+#include "network/apiconnectionclass.h"
 
 KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
-
+    apiConnClass = new ApiConnectionClass;
     xmlReader = new XMLReaderClass;
+
     if(xmlReader->getLoggedinStatus() == "true")
     {
         addItems();
         qDebug()<<"kanjilist constructor";
     }
-
     //testdata
     // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
     //                ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
@@ -91,23 +92,22 @@ void KanjiList::appendItem()
 
 void KanjiList::addItems()
 {
-    xmlReader->loadDocument("Config.xml");
-    QString userId = xmlReader->getSavedUserInfo().at(0);
-    dbClass->populateModelList(userId);
-    qDebug()<<"addItems userid "<<userId;
-    QList<KanjiListStruct> itemList = dbClass->getDbKanjiList();
+    apiConnClass->fetchKanjiListForUser();
 
-    for(int i = 0;i < itemList.count(); i++)
-    {
-        emit preItemAppended();
+    connect(apiConnClass, &ApiConnectionClass::kanjiOutputListChanged,this, [this](){
+        QList<KanjiListStruct> itemList = apiConnClass->getKanjiOutputList();
 
-        mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
-                       itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
-                       itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
-                       itemList[i].isSelected});
+        for(int i = 0;i < itemList.count(); i++)
+        {
+            emit preItemAppended();
+            mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
+                           itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
+                           itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
+                           itemList[i].isSelected});
 
-        emit postItemAppended();
-    }
+            emit postItemAppended();
+        }
+    });
 }
 
 void KanjiList::clearItems()
