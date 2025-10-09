@@ -142,7 +142,7 @@ ApplicationWindow {
         columns: 4
         AppButton{
             id: _selectAllBtn
-            text:qsTr("Select Alll")
+            text:qsTr("Select All")
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
