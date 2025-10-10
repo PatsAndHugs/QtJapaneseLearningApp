@@ -56,6 +56,8 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/LearnKanjiWindow.qml
         QML_FILES views/DbConnectionWindow.qml
         SOURCES network/apiconnectionclass.h network/apiconnectionclass.cpp
+        SOURCES
+        SOURCES
 )
 
 # add resource items here
