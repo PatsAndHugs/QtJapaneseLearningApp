@@ -85,6 +85,8 @@ signals:
     void kunyomiTxtChanged();
     void onyomiTxtChanged();
 
+    void fetchedKanjiListFromApi();
+
 public slots:
     void appendItem();
     void addItems();

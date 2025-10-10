@@ -11,7 +11,7 @@ KanjiList::KanjiList(QObject *parent)
 
     if(xmlReader->getLoggedinStatus() == "true")
     {
-        addItems();
+        //addItems();
         qDebug()<<"kanjilist constructor";
     }
     //testdata
@@ -107,6 +107,7 @@ void KanjiList::addItems()
 
             emit postItemAppended();
         }
+        emit fetchedKanjiListFromApi();
     });
 }
 
