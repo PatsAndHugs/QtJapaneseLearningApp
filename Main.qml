@@ -122,14 +122,18 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             Layout.fillWidth: true
             font.pointSize: 20
-            onClicked:{
-                var component = Qt.createComponent("views/KanjiMainWindow.qml")
-                if(component.status === Component.Ready){
-                    var newWindow = component.createObject(_mainAppWindow);
-                    if(newWindow){
-                        console.log("clicked")
-                        _mainAppWindow.hide()
-                        newWindow.show()
+            onClicked: kanjiList.addItems()
+            Connections{
+                target: kanjiList
+                function onFetchedKanjiListFromApi(){
+                    var component = Qt.createComponent("views/LearnMainWindow.qml")
+                    if(component.status === Component.Ready){
+                        var newWindow = component.createObject(_mainAppWindow);
+                        if(newWindow){
+                            console.log("clicked")
+                            _mainAppWindow.hide()
+                            newWindow.show()
+                        }
                     }
                 }
             }
