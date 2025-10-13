@@ -19,12 +19,14 @@ public:
     explicit ApiConnectionClass(QObject *parent = nullptr);
 
     void fetchKanjiListForUser();
+    void fetchAdditionalKanjiListForUser();
     QList<KanjiListStruct> getKanjiOutputList(){return kanjiOutputList;}
 
 private:
 
     QList<KanjiListStruct> kanjiOutputList;
     QJsonObject rootObject;
+    void insertNewKanjiForUser(QJsonArray arrayToInsert);
 
 signals:
 
