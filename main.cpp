@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QSettings>
 
 #include <dbconnectionclass.h>
 #include <kanjilistmodel.h>
@@ -18,6 +19,10 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+
+    app.setOrganizationName("MyCompnay");
+    app.setApplicationName("JapaneseLearningApp");
+
     qmlRegisterType<DbConnectionClass>("JapaneseLearningApp.DbConnectionClass",1,0,"DbConnClass");
     qmlRegisterType<KanjiListModel>("KanjiClass",1,0,"KanjiListModel");
     qmlRegisterType<FilterKanjiListModel>("KanjiClass",1,0,"FilterKanjiListModel");
@@ -61,7 +66,14 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("vocabQuiz"), &vocabQuiz);
 
 
-    engine.loadFromModule("QtJapaneseLearningApp", "Main");
+    QSettings settings;
+    QString windowToOpen;
+    if(settings.value("loginstate").toBool() == true)
+        windowToOpen = "Main";
+    else
+        windowToOpen = "LoginWindow";
+
+    engine.loadFromModule("QtJapaneseLearningApp", windowToOpen);
 
     return app.exec();
 }
