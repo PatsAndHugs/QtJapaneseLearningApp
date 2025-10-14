@@ -137,13 +137,80 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
             reply->abort();
         }
     });
+}
+
+void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
+{
+    QJsonObject userCredObj;
+    userCredObj["username"] = usernameVal;
+    userCredObj["password"] = encryptString(passwordVal);
+    QJsonDocument userDoc(userCredObj);
+    QByteArray userCredData = userDoc.toJson();
+    //API
+    QUrl checkUserUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource");
+    QNetworkRequest request(checkUserUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QNetworkReply *reply = manager->post(request, userCredData);
 
 
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+
+                for (QJsonObject::iterator it = rootObject.begin(); it != rootObject.end(); ++it) {
+                    //qDebug() << "Key:" << it.key() << "Value:" << it.value();
+                    if(it.key() == "statusCode")
+                    {
+                        if(it.value() == 200)
+                        {
+                            qDebug() << "Login successful:" << it.value().toInt();
+                            m_loginResult = true;
+
+                        }
+                        else if(it.value() == 401)
+                        {
+                            qDebug() << "Login Failed: Invalid Username or Password" << it.value().toInt();
+                            m_loginResult = false;
+                        }
+                        else
+                        {
+                            qDebug() << "Login Failed " << it.value().toInt();
+                            m_loginResult = false;
+                        }
+                    }
+
+                    if(it.key() == "body")
+                    {
+                        QString newString = it.value().toString();
+                        newString.remove("\"");
+                        m_userId = newString;
+                    }
+                }
+            }
+
+            emit loginResultReceived();
+
+            reply->abort();
+        }
+        else{
+            qDebug() << "Login failed: " << reply->errorString();
+            reply->abort();
+            m_loginResult = false;
+            emit loginResultReceived();
+        }
+        reply->abort();
+    });
 }
 
 void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
 {
-    //TODO api query to insert items
     QUrl dbInsertUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/insert_kanji"); // Replace with your actual login endpoint
     QNetworkRequest request(dbInsertUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
@@ -152,8 +219,9 @@ void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
     insertData["UserId"] =  "USR-2";
     QJsonDocument userDoc(insertData);
     QByteArray dataToInsert = userDoc.toJson();
-    //TODO fix body send array to body
+
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    //TODO Change to post
     QNetworkReply *reply = manager->put(request, dataToInsert);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {
@@ -170,10 +238,19 @@ void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
                 reply->abort();
             }
             qDebug()<<"Insert Successful";
+            reply->abort();
         }
         else{
             qDebug() << "Error: " << reply->errorString();
             reply->abort();
         }
     });
+}
+
+QString ApiConnectionClass::encryptString(QString stringVal)
+{
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    hash.addData(stringVal.toUtf8());
+    QByteArray resultHash = hash.result();
+    return resultHash.toHex();
 }
