@@ -58,6 +58,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         SOURCES network/apiconnectionclass.h network/apiconnectionclass.cpp
         SOURCES
         SOURCES
+        QML_FILES views/LoginWindow.qml
 )
 
 # add resource items here
