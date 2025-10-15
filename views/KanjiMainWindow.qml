@@ -23,58 +23,6 @@ ApplicationWindow {
         id:_loginPopup
     }
 
-    header: MenuBar{
-        MenuBarItem{
-            text: qsTr("User")
-            onTriggered:{
-                console.log("triggered");
-                if(userLogin.getLoginStatus() === true)
-                    _userMenuItem.text ="Logout"
-                else
-                    _userMenuItem.text ="Login"
-            }
-            menu:Menu{
-                MenuItem{
-                    id:_userMenuItem
-                    text: qsTr("Login")
-                    onClicked:{
-
-                        if(userLogin.getLoginStatus() === true){
-                            kanjiList.clearItems()
-                            dbConn.logoutUser()
-                        }
-                        else{
-                            _loginPopup.open()
-                        }
-                    }
-                }
-                MenuItem{text:"Exit"}
-            }
-        }
-
-        MenuBarItem{
-            text: qsTr("Connection Config")
-            menu:Menu {
-                id:_menu
-                MenuItem{
-                    text:"Edit Connection"
-                    onClicked:{
-                        var component = Qt.createComponent("DbConnectionWindow.qml")
-                        if(component.status === Component.Ready){
-                            var newWindow = component.createObject(_kanjiMainWindow);
-                            newWindow.show()
-                        }
-                        else
-                            console.log("Error loading component:",component.errorString())
-                    }
-                }
-
-                MenuItem{text:"Exit"}
-            }
-
-        }
-    }
-
     FilterKanjiListModel{
         id:_filterModel
         sourceModel: KanjiListModel{
