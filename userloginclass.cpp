@@ -34,10 +34,10 @@ void UserLoginClass::checkLoginResult()
     if(m_username != "" && m_password != "")
     {
         apiConnClass->loginUser(newUsername, newPassword);
-        connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, [=](){
+        QObject::connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, [=](){
             m_loginResult = apiConnClass->getLoginResult();
-            emit loginResultReceived();
-
+            emit userLoginResultReceived();
+            qDebug()<<"loginResultReceived "<<m_loginResult;
             if(m_checkboxState)
             {
                 settings.setValue("username", newUsername);
@@ -48,25 +48,28 @@ void UserLoginClass::checkLoginResult()
                 settings.clear();
 
         });
+        //connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, &UserLoginClass::userLoginResultReceived);
     }
 }
 
 void UserLoginClass::logout()
 {
-    m_username = "";
-    m_password = "";
+    settings.clear();
 }
 
-bool UserLoginClass::registerUser()
+void UserLoginClass::registerUser()
 {
     QString newUsername = m_username.simplified();
     QString newPassword = m_password.simplified();
     QString newEmail = m_email.simplified();
-
     if(m_username != "" && m_password != "" && m_email != "")
-        return dbConnClass->insertUser(newUsername, newPassword, newEmail);
-
-    return false;
+    {
+        apiConnClass->registerNewUser(newUsername,newPassword,newEmail);
+        connect(apiConnClass, &ApiConnectionClass::registerFinished, this, [=](){
+            m_registerResult = apiConnClass->getRegisterResult();
+            emit registerFinished();
+        });
+    }
 }
 
 bool UserLoginClass::getLoginStatus()

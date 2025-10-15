@@ -37,16 +37,19 @@ public slots:
     void checkLoginResult();
     bool getLoginResult(){return m_loginResult;}
     void logout();
-    bool registerUser();
+    void registerUser();
     bool getLoginStatus();
     QString getUsername();
+
+    bool getRegisterResult(){return m_registerResult;}
 
 signals:
 
     void usernameChanged();
     void passwordChanged();
     void emailChanged();
-    void loginResultReceived();
+    void userLoginResultReceived();
+    void registerFinished();
     void checkboxStateChanged();
 
 private:
@@ -57,8 +60,9 @@ private:
     QString m_username;
     QString m_password;
     QString m_email;
-    bool m_loginResult;
+    bool m_loginResult = false;
     bool m_checkboxState = false;
+    bool m_registerResult;
 
 };
 
