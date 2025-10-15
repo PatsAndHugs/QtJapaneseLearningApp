@@ -110,8 +110,8 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                 //get kanjiid number Kj-1
                 if(lastKanjiId !="")
                 {
-                    QString newString = lastKanjiId.remove(0,4);
-                    newString = newString.remove(1,2);
+                    QString newString = lastKanjiId.remove("\"");
+                    newString = newString.remove("KI-");
                     int counterId = newString.toInt();
                     qDebug()<<"newString"<<newString;
                     //increment and add to qstringlist
@@ -129,7 +129,6 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                 outputArr.append(QJsonArray::fromStringList(kanjiIdList));
 
                 insertNewKanjiForUser(outputArr);
-                //qDebug()<<"To InsertData"<< toInsertData;
             }
         }
         else{
@@ -147,14 +146,88 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
     QJsonDocument userDoc(userCredObj);
     QByteArray userCredData = userDoc.toJson();
     //API
-    QUrl checkUserUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource");
+    QUrl checkUserUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource/current_user");
     QNetworkRequest request(checkUserUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QNetworkAccessManager *loginManager = new QNetworkAccessManager(this);
+    QNetworkReply *loginReply = loginManager->post(request, userCredData);
+
+    qDebug()<<"usercreddata"<<userCredData;
+    QObject::connect(loginReply, &QNetworkReply::finished, this, [=]() {
+        if (loginReply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = loginReply->readAll();
+            loginReply->deleteLater();
+            loginManager->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+                qDebug()<<"Root obj"<<rootObject.value("statusCode").toInt();
+                if(rootObject.value("statusCode") == 200)
+                {
+                    qDebug() << "Login successful:";
+                    m_loginResult = true;
+                    emit loginResultReceived();
+                }
+                else if(rootObject.value("statusCode") == 401)
+                {
+                    qDebug() << "Login Failed: Invalid Username or Password";
+                    m_loginResult = false;
+                    loginReply->abort();
+                    //emit loginResultReceived();
+
+                }
+                else
+                {
+                    qDebug() << "Login Failed " << loginReply->errorString();
+                    m_loginResult = false;
+                   // emit loginResultReceived();
+
+                }
+
+                QString newString = rootObject.value("body").toString();
+                newString.remove("\"");
+                m_userId = newString;
+
+            }
+            //emit loginResultReceived();
+            //reply->abort();
+        }
+        else{
+            qDebug() << "Login failed: " << loginReply->errorString();
+            m_loginResult = false;
+            //reply->abort();
+            //emit loginResultReceived();
+
+        }
+        //emit loginResultReceived();
+        loginReply->deleteLater();
+    });
+
+    //loginManager->deleteLater();
+
+}
+
+void ApiConnectionClass::registerNewUser(QString usernameVal, QString passwordVal, QString emailVal)
+{
+    QString encryptedPassword = encryptString(passwordVal);
+
+    QUrl dbInsertUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource/new_user");
+    QNetworkRequest request(dbInsertUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QJsonObject insertData;
+    insertData["username"] = usernameVal;
+    insertData["password"] = encryptedPassword;
+    insertData["email"] = emailVal;
+    QJsonDocument userDoc(insertData);
+    QByteArray dataToInsert = userDoc.toJson();
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    QNetworkReply *reply = manager->post(request, userCredData);
+    //TODO Change to post
+    QNetworkReply *reply = manager->post(request, dataToInsert);
 
-
+    //check if username is not already taken
     connect(reply, &QNetworkReply::finished, this, [=]() {
         if (reply->error() == QNetworkReply::NoError)
         {
@@ -170,40 +243,31 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
                     {
                         if(it.value() == 200)
                         {
-                            qDebug() << "Login successful:" << it.value().toInt();
-                            m_loginResult = true;
-
+                            qDebug() << "Username is Valid";
+                            insertNewUser(insertData);
                         }
                         else if(it.value() == 401)
                         {
-                            qDebug() << "Login Failed: Invalid Username or Password" << it.value().toInt();
-                            m_loginResult = false;
+                            qDebug() << "Username is Already Taken";
+                            m_registerResult = false;
+                            emit registerFinished();
                         }
                         else
                         {
-                            qDebug() << "Login Failed " << it.value().toInt();
-                            m_loginResult = false;
+                            qDebug() << "Error";
+                            m_registerResult = false;
+                            emit registerFinished();
                         }
-                    }
-
-                    if(it.key() == "body")
-                    {
-                        QString newString = it.value().toString();
-                        newString.remove("\"");
-                        m_userId = newString;
                     }
                 }
             }
-
-            emit loginResultReceived();
-
             reply->abort();
         }
         else{
-            qDebug() << "Login failed: " << reply->errorString();
+            m_registerResult = false;
+            emit registerFinished();
+            qDebug() << "Error: " << reply->errorString();
             reply->abort();
-            m_loginResult = false;
-            emit loginResultReceived();
         }
         reply->abort();
     });
@@ -254,3 +318,32 @@ QString ApiConnectionClass::encryptString(QString stringVal)
     QByteArray resultHash = hash.result();
     return resultHash.toHex();
 }
+
+void ApiConnectionClass::insertNewUser(QJsonObject userDataVal)
+{
+    QUrl dbInsertUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource/new_user"); // Replace with your actual login endpoint
+    QNetworkRequest request(dbInsertUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QJsonDocument userDoc(userDataVal);
+    QByteArray dataToInsert = userDoc.toJson();
+
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+    QNetworkReply *reply = manager->put(request, dataToInsert);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            m_registerResult = true;
+            emit registerFinished();
+            qDebug()<<"Insert Successful";
+        }
+        else{
+            m_registerResult = false;
+            emit registerFinished();
+            qDebug() << "Error: " << reply->errorString();
+        }
+        reply->abort();
+    });
+}
+

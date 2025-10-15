@@ -25,6 +25,9 @@ public:
     bool getLoginResult(){return m_loginResult;}
     QString getUserId(){return m_userId;}
 
+    void registerNewUser(QString usernameVal, QString passwordVal, QString emailVal);
+    bool getRegisterResult(){return m_registerResult;}
+
 private:
 
     QList<KanjiListStruct> kanjiOutputList;
@@ -32,12 +35,16 @@ private:
     void insertNewKanjiForUser(QJsonArray arrayToInsert);
     QString encryptString(QString stringVal);
     bool m_loginResult;
+    bool m_registerResult = false;
     QString m_userId;
+    void insertNewUser(QJsonObject userDataVal);
 
 signals:
 
     void kanjiOutputListChanged();
     void loginResultReceived();
+    void registerFinished();
+
 };
 
 #endif // APICONNECTIONCLASS_H
