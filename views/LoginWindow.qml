@@ -16,7 +16,6 @@ ApplicationWindow {
     color:"#023D54"
 
     property bool loginSwitchState: false
-
     GridLayout{
         anchors.centerIn: parent
         columns: 2
@@ -74,7 +73,9 @@ ApplicationWindow {
                 userLogin.checkboxState = loginSwitchState
             }
         }
+
         Button{
+            id:_loginBtn
             text: qsTr("Login")
             Layout.preferredHeight: 50
             Layout.fillWidth: true
@@ -82,25 +83,32 @@ ApplicationWindow {
             onClicked:{
                 userLogin.username = _usernameTxtField.text
                 userLogin.password = _passwordTxtField.text
-                userLogin.checkLoginResult()
+                if(_usernameTxtField.text !== "" && _passwordTxtField.text !== "")
+                {
+                    _loginBtn.enabled = false
+                    userLogin.checkLoginResult()
+                }
             }
             Connections{
                 target:userLogin
-                function onLoginResultReceived(){
+                function onUserLoginResultReceived(){
                     if(userLogin.getLoginResult() === true)
                     {
                         console.log("Login Successful")
-                        var component = Qt.createComponent("../Main.qml")
-                        if(component.status === Component.Ready){
-                            var newWindow = component.createObject(_loginWindow);
-                            if(newWindow){
+                        var componentMain = Qt.createComponent("../Main.qml")
+                        if(componentMain.status === Component.Ready){
+                            var newWindowMain = componentMain.createObject(_loginWindow);
+                            if(newWindowMain){
                                 _loginWindow.close()
-                                newWindow.show()
+                                newWindowMain.show()
                             }
                         }
                     }
                     else
+                    {
+                        _loginBtn.enabled = true
                         console.log("Login Failed")
+                    }
                 }
             }
         }
@@ -111,10 +119,15 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.columnSpan: 2
             onClicked: {
-                //_registerPopup.open()
-                //_loginPopup.close()
+                var component = Qt.createComponent("RegisterWindow.qml")
+                if(component.status === Component.Ready){
+                    var newWindow = component.createObject(_loginWindow);
+                    if(newWindow){
+                        _loginWindow.close()
+                        newWindow.show()
+                    }
+                }
             }
         }
     }
-
 }
