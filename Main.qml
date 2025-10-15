@@ -20,6 +20,29 @@ ApplicationWindow {
     title: qsTr("Japanese Learning App")
     color:"#023D54"
 
+    header: MenuBar{
+        MenuBarItem{
+            text: qsTr("Menu")
+            menu:Menu{
+                MenuItem{
+                    id:_userMenuItem
+                    text: qsTr("Logout")
+                    onClicked:{
+                        userLogin.logout()
+                        var component = Qt.createComponent("views/LoginWindow.qml")
+                        if(component.status === Component.Ready){
+                            var newWindow = component.createObject(_mainAppWindow);
+                            if(newWindow){
+                                _mainAppWindow.close()
+                                newWindow.show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     ColumnLayout{
         anchors.fill: parent
         anchors.rightMargin: 20
