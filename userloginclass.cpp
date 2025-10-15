@@ -4,7 +4,6 @@
 UserLoginClass::UserLoginClass(QObject *parent)
 {
     dbConnClass = new DbConnectionClass;
-    apiConnClass = new ApiConnectionClass;
 }
 
 void UserLoginClass::setUsername(QString usernameVal)
@@ -33,6 +32,7 @@ void UserLoginClass::checkLoginResult()
     QString newPassword = m_password.simplified();
     if(m_username != "" && m_password != "")
     {
+        ApiConnectionClass *apiConnClass = new ApiConnectionClass;
         apiConnClass->loginUser(newUsername, newPassword);
         QObject::connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, [=](){
             m_loginResult = apiConnClass->getLoginResult();
@@ -48,7 +48,6 @@ void UserLoginClass::checkLoginResult()
                 settings.clear();
 
         });
-        //connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, &UserLoginClass::userLoginResultReceived);
     }
 }
 
@@ -64,6 +63,7 @@ void UserLoginClass::registerUser()
     QString newEmail = m_email.simplified();
     if(m_username != "" && m_password != "" && m_email != "")
     {
+        ApiConnectionClass *apiConnClass = new ApiConnectionClass;
         apiConnClass->registerNewUser(newUsername,newPassword,newEmail);
         connect(apiConnClass, &ApiConnectionClass::registerFinished, this, [=](){
             m_registerResult = apiConnClass->getRegisterResult();

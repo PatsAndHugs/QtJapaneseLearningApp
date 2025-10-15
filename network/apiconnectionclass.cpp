@@ -168,45 +168,31 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
                 {
                     qDebug() << "Login successful:";
                     m_loginResult = true;
-                    emit loginResultReceived();
                 }
                 else if(rootObject.value("statusCode") == 401)
                 {
                     qDebug() << "Login Failed: Invalid Username or Password";
                     m_loginResult = false;
-                    loginReply->abort();
-                    //emit loginResultReceived();
-
                 }
                 else
                 {
                     qDebug() << "Login Failed " << loginReply->errorString();
                     m_loginResult = false;
-                   // emit loginResultReceived();
-
                 }
 
                 QString newString = rootObject.value("body").toString();
                 newString.remove("\"");
                 m_userId = newString;
-
             }
-            //emit loginResultReceived();
-            //reply->abort();
+
         }
         else{
             qDebug() << "Login failed: " << loginReply->errorString();
             m_loginResult = false;
-            //reply->abort();
-            //emit loginResultReceived();
-
         }
-        //emit loginResultReceived();
+        emit loginResultReceived();
         loginReply->deleteLater();
     });
-
-    //loginManager->deleteLater();
-
 }
 
 void ApiConnectionClass::registerNewUser(QString usernameVal, QString passwordVal, QString emailVal)

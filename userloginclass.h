@@ -56,7 +56,6 @@ private:
 
     QSettings settings;
     DbConnectionClass *dbConnClass;
-    ApiConnectionClass *apiConnClass;
     QString m_username;
     QString m_password;
     QString m_email;
