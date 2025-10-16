@@ -30,7 +30,6 @@ ApplicationWindow {
                     text: qsTr("Logout")
                     onClicked:{
                         userLogin.logout()
-                        _loginWindow.show()
                         var component = Qt.createComponent("views/LoginWindow.qml")
                         if(component.status === Component.Ready){
                             var newWindow = component.createObject(_mainAppWindow);
