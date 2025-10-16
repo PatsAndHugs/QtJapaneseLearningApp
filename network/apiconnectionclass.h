@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QSettings>
 
 #include "kanjilist.h"
 
@@ -28,8 +29,11 @@ public:
     void registerNewUser(QString usernameVal, QString passwordVal, QString emailVal);
     bool getRegisterResult(){return m_registerResult;}
 
+    QList<KanjiListStruct> getNewKanjiListToAdd(){return newKanjiListToadd;}
+
 private:
 
+    QSettings settings;
     QList<KanjiListStruct> kanjiOutputList;
     QJsonObject rootObject;
     void insertNewKanjiForUser(QJsonArray arrayToInsert);
@@ -39,11 +43,16 @@ private:
     QString m_userId;
     void insertNewUser(QJsonObject userDataVal);
 
+    void addNewItemsToKanjiList();
+    QList<KanjiListStruct> newKanjiListToadd;
+    QNetworkAccessManager *manager;
+
 signals:
 
     void kanjiOutputListChanged();
     void loginResultReceived();
     void registerFinished();
+    void newKanjiListChanged();
 
 };
 

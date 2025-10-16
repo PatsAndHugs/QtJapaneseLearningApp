@@ -3,17 +3,18 @@
 
 ApiConnectionClass::ApiConnectionClass(QObject *parent) {
     qDebug()<<"APi Constructor";
+    manager = new QNetworkAccessManager(this);
+    settings.sync();
 }
 
 void ApiConnectionClass::fetchKanjiListForUser()
 {
     //clears everything each call
     //kanjiOutputList.clear();
-
     //query
     QJsonObject userData;
     //CHANGE LATER
-    userData["userid"] = "USR-1";
+    userData["userid"] = settings.value("userid").toString();
     QJsonDocument userDoc(userData);
     QByteArray userJsonData = userDoc.toJson();
 
@@ -21,56 +22,65 @@ void ApiConnectionClass::fetchKanjiListForUser()
     QNetworkRequest request(serviceUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     QNetworkReply *reply = manager->post(request, userJsonData);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {
+        qDebug()<<"network replied";
         if (reply->error() == QNetworkReply::NoError)
         {
             QByteArray responseData = reply->readAll();
             // Process the responseData (e.g., parse JSON)
+            reply->deleteLater();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
             {
                 rootObject = jsonDoc.object();
                 QString jsonText;
-                for (QJsonObject::iterator it = rootObject.begin(); it != rootObject.end(); ++it) {
-                    if(it.key() == "body")
-                    {
-                        jsonText = it.value().toString();
-                        QByteArray jsonData = jsonText.toUtf8();
-                        QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+                if(rootObject.value("statusCode") == 200)
+                {
+                    jsonText = rootObject.value("body").toString();
+                    QByteArray jsonData = jsonText.toUtf8();
+                    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
 
-                        if(!doc.isNull() && doc.isArray())
-                        {
-                            QJsonArray jsonArray = doc.array();
-                            for (const QJsonValue &value : std::as_const(jsonArray)) {
-                                KanjiListStruct listStruct(
-                                    value["KanjiId"].toString(),
-                                    value["Kanji"].toString(),
-                                    value["Kunyomi"].toString(),
-                                    value["Onyomi"].toString(),
-                                    value["KanjiMeaning"].toString(),
-                                    value["LastDateAnswered"].toString(),
-                                    value["NextDateAnswered"].toString(),
-                                    value["CorrectStreak"].toInt(),
-                                    false
-                                    );
-                                kanjiOutputList.append(listStruct);
-                            }
-                            emit kanjiOutputListChanged();
-                            //reply->deleteLater();
-                            reply->abort();
+                    if(!doc.isNull() && doc.isArray())
+                    {
+                        QJsonArray jsonArray = doc.array();
+                        for (const QJsonValue &value : std::as_const(jsonArray)) {
+                            KanjiListStruct listStruct(
+                                value["KanjiId"].toString(),
+                                value["Kanji"].toString(),
+                                value["Kunyomi"].toString(),
+                                value["Onyomi"].toString(),
+                                value["KanjiMeaning"].toString(),
+                                value["LastDateAnswered"].toString(),
+                                value["NextDateAnswered"].toString(),
+                                value["CorrectStreak"].toInt(),
+                                false
+                                );
+                            kanjiOutputList.append(listStruct);
                         }
+                        //reply->deleteLater();
+                        reply->abort();
+                        emit kanjiOutputListChanged();
+
                     }
+                }
+                else if(rootObject.value("statusCode") == 401)
+                {
+                    emit kanjiOutputListChanged();
+                }
+                else
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
                 }
             }
         }
         else{
             qDebug() << "Error: " << reply->errorString();
         }
+        manager->clearConnectionCache();
         //reply->deleteLater();
-        reply->abort();
+        //reply->abort();
     });
 }
 
@@ -79,7 +89,7 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
     //query
     QJsonObject userData;
     //CHANGE LATER
-    userData["userid"] = "USR-2";
+    userData["userid"] = settings.value("userid").toString();
     QJsonDocument userDoc(userData);
     QByteArray userJsonData = userDoc.toJson();
 
@@ -88,15 +98,16 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
     QNetworkRequest request(serviceUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     QNetworkReply *reply = manager->post(request, userJsonData);
-    QString lastKanjiId;
 
-    QStringList kanjiIdList;
-    connect(reply, &QNetworkReply::finished, this, [=, &lastKanjiId, &kanjiIdList]() {
+    connect(reply, &QNetworkReply::finished, this, [=]() {
         if (reply->error() == QNetworkReply::NoError)
         {
+            QString lastKanjiId;
+            QStringList kanjiIdList;
+
             QByteArray responseData = reply->readAll();
+            reply->deleteLater();
             // Process the responseData (e.g., parse JSON)
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
@@ -105,7 +116,7 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                 rootObject = jsonDoc.object();
                 lastKanjiId = rootObject.value("body").toString();
                 qDebug()<<"LastKanji"<<lastKanjiId;
-                reply->abort();
+                //reply->abort();
 
                 //get kanjiid number Kj-1
                 if(lastKanjiId !="")
@@ -113,9 +124,9 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                     QString newString = lastKanjiId.remove("\"");
                     newString = newString.remove("KI-");
                     int counterId = newString.toInt();
-                    qDebug()<<"newString"<<newString;
+                    qDebug()<<"newString"<<counterId;
                     //increment and add to qstringlist
-                    for(int i = counterId + 1; i <= counterId + 5; i++)
+                    for(int i = (counterId + 1); i <= (counterId + 5); i++)
                     {
                         QString newKanjiId = "KI-" + QString::number(i);
                         kanjiIdList.append(newKanjiId);
@@ -127,13 +138,13 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                 //then kanjiids of kanjis to add follows
                 QJsonArray outputArr;
                 outputArr.append(QJsonArray::fromStringList(kanjiIdList));
-
+                //insert kanjiids in dbuserdatetable
                 insertNewKanjiForUser(outputArr);
             }
         }
         else{
             qDebug() << "Error: " << reply->errorString();
-            reply->abort();
+            //reply->abort();
         }
     });
 }
@@ -149,8 +160,7 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
     QUrl checkUserUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource/current_user");
     QNetworkRequest request(checkUserUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    QNetworkAccessManager *loginManager = new QNetworkAccessManager(this);
-    QNetworkReply *loginReply = loginManager->post(request, userCredData);
+    QNetworkReply *loginReply = manager->post(request, userCredData);
 
     qDebug()<<"usercreddata"<<userCredData;
     QObject::connect(loginReply, &QNetworkReply::finished, this, [=]() {
@@ -158,7 +168,7 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
         {
             QByteArray responseData = loginReply->readAll();
             loginReply->deleteLater();
-            loginManager->deleteLater();
+            manager->deleteLater();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
             {
@@ -209,7 +219,6 @@ void ApiConnectionClass::registerNewUser(QString usernameVal, QString passwordVa
     QJsonDocument userDoc(insertData);
     QByteArray dataToInsert = userDoc.toJson();
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     //TODO Change to post
     QNetworkReply *reply = manager->post(request, dataToInsert);
 
@@ -266,18 +275,17 @@ void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QJsonObject insertData;
     insertData["KanjiIdList"] = arrayToInsert;
-    insertData["UserId"] =  "USR-2";
+    insertData["UserId"] =  settings.value("userid").toString();
     QJsonDocument userDoc(insertData);
     QByteArray dataToInsert = userDoc.toJson();
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-    //TODO Change to post
     QNetworkReply *reply = manager->put(request, dataToInsert);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {
         if (reply->error() == QNetworkReply::NoError)
         {
             QByteArray responseData = reply->readAll();
+            reply->deleteLater();
             // Process the responseData (e.g., parse JSON)
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
@@ -285,14 +293,14 @@ void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
                 rootObject = jsonDoc.object();
                 qDebug()<<"insert return"<<rootObject.value("body").toString();
                 //QString jsonText;
-                reply->abort();
             }
             qDebug()<<"Insert Successful";
-            reply->abort();
+            //to pass to qml list
+            addNewItemsToKanjiList();
         }
         else{
             qDebug() << "Error: " << reply->errorString();
-            reply->abort();
+
         }
     });
 }
@@ -313,8 +321,6 @@ void ApiConnectionClass::insertNewUser(QJsonObject userDataVal)
     QJsonDocument userDoc(userDataVal);
     QByteArray dataToInsert = userDoc.toJson();
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-
     QNetworkReply *reply = manager->put(request, dataToInsert);
 
     connect(reply, &QNetworkReply::finished, this, [=]() {
@@ -330,6 +336,74 @@ void ApiConnectionClass::insertNewUser(QJsonObject userDataVal)
             qDebug() << "Error: " << reply->errorString();
         }
         reply->abort();
+    });
+}
+
+void ApiConnectionClass::addNewItemsToKanjiList()
+{
+    //clears everything each call
+    newKanjiListToadd.clear();
+
+    //query
+    QJsonObject userData;
+    //CHANGE LATER
+    userData["userid"] = settings.value("userid").toString();
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->post(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            reply->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                qDebug()<<"not null is obj";
+                rootObject = jsonDoc.object();
+                QString jsonText = rootObject.value("body").toString();
+                qDebug()<<"body"<<rootObject.value("body").toString();
+
+                QByteArray jsonData = jsonText.toUtf8();
+                QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+
+                if(!doc.isNull() && doc.isArray())
+                {
+                    QJsonArray jsonArray = doc.array();
+                    int counter = 0;
+                    if(jsonArray.count() != 0)
+                        counter = jsonArray.count() - 5;
+
+                    for(int i = counter; i < jsonArray.count(); i++)
+                    {
+                        QJsonValue value = jsonArray.at(i);
+                        KanjiListStruct listStruct(
+                            value["KanjiId"].toString(),
+                            value["Kanji"].toString(),
+                            value["Kunyomi"].toString(),
+                            value["Onyomi"].toString(),
+                            value["KanjiMeaning"].toString(),
+                            value["LastDateAnswered"].toString(),
+                            value["NextDateAnswered"].toString(),
+                            value["CorrectStreak"].toInt(),
+                            false
+                            );
+                        newKanjiListToadd.append(listStruct);
+                    }
+                    qDebug()<<"newkanjilist count"<<newKanjiListToadd.count();
+                    emit newKanjiListChanged();
+                }
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+        }
     });
 }
 
