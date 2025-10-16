@@ -45,7 +45,7 @@ private:
 
     void addNewItemsToKanjiList();
     QList<KanjiListStruct> newKanjiListToadd;
-    QNetworkAccessManager *manager;
+    std::unique_ptr<QNetworkAccessManager> manager;
 
 signals:
 

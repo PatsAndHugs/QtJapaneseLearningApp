@@ -3,7 +3,7 @@
 
 ApiConnectionClass::ApiConnectionClass(QObject *parent) {
     qDebug()<<"APi Constructor";
-    manager = new QNetworkAccessManager(this);
+    manager = std::make_unique<QNetworkAccessManager>();
     settings.sync();
 }
 
@@ -161,7 +161,6 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
     QNetworkRequest request(checkUserUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *loginReply = manager->post(request, userCredData);
-
     qDebug()<<"usercreddata"<<userCredData;
     QObject::connect(loginReply, &QNetworkReply::finished, this, [=]() {
         if (loginReply->error() == QNetworkReply::NoError)
