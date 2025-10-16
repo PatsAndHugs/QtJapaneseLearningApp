@@ -3,7 +3,8 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
 import QtQuick.Effects
-import "views"
+import Qt.labs.settings 1.0
+import QtCore
 
 //import JapaneseLearningApp.DbConnectionClass
 //import KanjiClass 1.0
@@ -29,6 +30,7 @@ ApplicationWindow {
                     text: qsTr("Logout")
                     onClicked:{
                         userLogin.logout()
+                        _loginWindow.show()
                         var component = Qt.createComponent("views/LoginWindow.qml")
                         if(component.status === Component.Ready){
                             var newWindow = component.createObject(_mainAppWindow);
@@ -74,7 +76,7 @@ ApplicationWindow {
                 Label{
                     anchors.centerIn: parent
                     horizontalAlignment: Text.AlignHCenter
-                    text: userLogin.getUsername()
+                    text: userLogin.getSavedUsername()
                     color:"#023D54"
                     font.pointSize: 30
                     font.bold: true
@@ -149,7 +151,7 @@ ApplicationWindow {
             Connections{
                 target: kanjiList
                 function onFetchedKanjiListFromApi(){
-                    var component = Qt.createComponent("views/LearnMainWindow.qml")
+                    var component = Qt.createComponent("views/KanjiMainWindow.qml")
                     if(component.status === Component.Ready){
                         var newWindow = component.createObject(_mainAppWindow);
                         if(newWindow){
