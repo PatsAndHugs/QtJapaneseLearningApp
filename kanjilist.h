@@ -86,6 +86,7 @@ signals:
     void onyomiTxtChanged();
 
     void fetchedKanjiListFromApi();
+    void fetchedNewKanjiListFromApi();
 
 public slots:
     void appendItem();
@@ -109,12 +110,11 @@ private:
     QList<int> mSelectionList;
     QList<KanjiListStruct> mSelectedItemsList;
     XMLReaderClass *xmlReader;
-    ApiConnectionClass *apiConnClass;
-
     QString m_englishNameTxt = "kappa";
     QString m_kanjiTxt;
     QString m_kunyomiTxt;
     QString m_onyomiTxt;
+    ApiConnectionClass *addApiConnClass;
 };
 
 #endif // KANJILIST_H

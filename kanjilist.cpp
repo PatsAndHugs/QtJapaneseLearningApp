@@ -6,7 +6,6 @@
 KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
-    apiConnClass = new ApiConnectionClass;
     xmlReader = new XMLReaderClass;
 
     if(xmlReader->getLoggedinStatus() == "true")
@@ -14,23 +13,7 @@ KanjiList::KanjiList(QObject *parent)
         //addItems();
         qDebug()<<"kanjilist constructor";
     }
-    //testdata
-    // mItems.append({QStringLiteral("KJ-1"),QStringLiteral("月"), QStringLiteral("げつ、がつ")
-    //                ,QStringLiteral("ツキ"),QStringLiteral("moon"), QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),1,false});
-    // mItems.append({QStringLiteral("KJ-2"),QStringLiteral("日"), QStringLiteral("ひ、よう")
-    //                ,QStringLiteral("ニチ、ジツ"),QStringLiteral("sun"),QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),4,false});
-    // mItems.append({QStringLiteral("KJ-3"),QStringLiteral("妹"), QStringLiteral("いもうと")
-    //                ,QStringLiteral("マイ"),QStringLiteral("younger sister"),QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),10,false});
-    // mItems.append({QStringLiteral("KJ-4"),QStringLiteral("姉"), QStringLiteral("あね、はは")
-    //                ,QStringLiteral("シ"),QStringLiteral("elder sister"), QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),14,false});
-    // mItems.append({QStringLiteral("KJ-5"),QStringLiteral("星"), QStringLiteral("ほし")
-    //                ,QStringLiteral("セイ、ショウ"),QStringLiteral("star"), QStringLiteral("09/06/25")
-    //                ,QStringLiteral("09/06/25"),13,false});
-
+    addApiConnClass = new ApiConnectionClass(this);
 }
 
 QVector<KanjiListStruct> KanjiList::items() const
@@ -92,11 +75,11 @@ void KanjiList::appendItem()
 
 void KanjiList::addItems()
 {
-    apiConnClass->fetchKanjiListForUser();
+    //ApiConnectionClass *apiConnClass = new ApiConnectionClass(this);
+    addApiConnClass->fetchKanjiListForUser();
 
-    connect(apiConnClass, &ApiConnectionClass::kanjiOutputListChanged,this, [this](){
-        QList<KanjiListStruct> itemList = apiConnClass->getKanjiOutputList();
-
+    connect(addApiConnClass, &ApiConnectionClass::kanjiOutputListChanged,this, [=](){
+        QList<KanjiListStruct> itemList = addApiConnClass->getKanjiOutputList();
         for(int i = 0;i < itemList.count(); i++)
         {
             emit preItemAppended();
@@ -108,6 +91,12 @@ void KanjiList::addItems()
             emit postItemAppended();
         }
         emit fetchedKanjiListFromApi();
+
+    });
+
+    connect(this, &KanjiList::fetchedNewKanjiListFromApi, this, [this](){
+        delete addApiConnClass;
+        addApiConnClass = nullptr;
     });
 }
 
@@ -203,23 +192,33 @@ int KanjiList::getSelectedItemsCount()
 
 void KanjiList::addNewListItems()
 {
-    xmlReader->loadDocument("Config.xml");
-    QString userId = xmlReader->getSavedUserInfo().at(0);
-    dbClass->insertKanjiItemForUser(userId);
-    qDebug()<<"addItems userid "<<userId;
-    QList<KanjiListStruct> itemList = dbClass->getAppendKanjiList();
+    // xmlReader->loadDocument("Config.xml");
+    // QString userId = xmlReader->getSavedUserInfo().at(0);
+    // dbClass->insertKanjiItemForUser(userId);
+    // qDebug()<<"addItems userid "<<userId;
+    // QList<KanjiListStruct> itemList = dbClass->getAppendKanjiList();
+    ApiConnectionClass *apiConnClass = new ApiConnectionClass;
+    apiConnClass->fetchAdditionalKanjiListForUser();
+    connect(apiConnClass, &ApiConnectionClass::newKanjiListChanged,this, [=](){
+        QList<KanjiListStruct> itemList = apiConnClass->getNewKanjiListToAdd();
+        qDebug()<<"addnewlistItems"<<itemList.count();
 
-    for(int i = 0;i < itemList.count(); i++)
-    {
-        emit preItemAppended();
+        for(int i = 0;i < itemList.count(); i++)
+        {
+            qDebug()<<"insert to qml list";
+            emit preItemAppended();
 
-        mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
-                       itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
-                       itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
-                       itemList[i].isSelected});
+            mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
+                           itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
+                           itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
+                           itemList[i].isSelected});
 
-        emit postItemAppended();
-    }
+            emit postItemAppended();
+        }
+        emit fetchedNewKanjiListFromApi();
+        //delete apiConnClass;
+
+    });
 }
 
 void KanjiList::updateListDatesAfteResult(QList<KanjiListStruct> list)
