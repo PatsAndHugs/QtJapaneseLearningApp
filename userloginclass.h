@@ -32,14 +32,14 @@ public:
     bool checkboxState(){return m_checkboxState;}
     void setCheckboxState(bool checkboxstateVal);
 
+    Q_INVOKABLE QString getSavedUsername();
+
 public slots:
 
     void checkLoginResult();
     bool getLoginResult(){return m_loginResult;}
     void logout();
     void registerUser();
-    bool getLoginStatus();
-    QString getUsername();
 
     bool getRegisterResult(){return m_registerResult;}
 
@@ -51,7 +51,7 @@ signals:
     void userLoginResultReceived();
     void registerFinished();
     void checkboxStateChanged();
-
+    void registerWindowNotNeeded();
 private:
 
     QSettings settings;

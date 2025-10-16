@@ -1,7 +1,7 @@
 #include "userloginclass.h"
 #include "xmlreaderclass.h"
 
-UserLoginClass::UserLoginClass(QObject *parent)
+UserLoginClass::    UserLoginClass(QObject *parent)
 {
     dbConnClass = new DbConnectionClass;
 }
@@ -26,6 +26,14 @@ void UserLoginClass::setCheckboxState(bool checkboxstateVal)
     m_checkboxState = checkboxstateVal;
 }
 
+QString UserLoginClass::getSavedUsername()
+{
+    if(settings.value("username").toString() != "")
+        return settings.value("username").toString();
+    else
+        return m_username;
+}
+
 void UserLoginClass::checkLoginResult()
 {
     QString newUsername = m_username.simplified();
@@ -36,17 +44,14 @@ void UserLoginClass::checkLoginResult()
         apiConnClass->loginUser(newUsername, newPassword);
         QObject::connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, [=](){
             m_loginResult = apiConnClass->getLoginResult();
-            emit userLoginResultReceived();
             qDebug()<<"loginResultReceived "<<m_loginResult;
-            if(m_checkboxState)
-            {
-                settings.setValue("username", newUsername);
-                settings.setValue("userid",apiConnClass->getUserId());
-                settings.setValue("loginstate", true);
-            }
-            else
-                settings.clear();
 
+            settings.setValue("username", newUsername);
+            settings.setValue("userid",apiConnClass->getUserId());
+            settings.setValue("loginstate", true);
+            settings.sync();
+            emit userLoginResultReceived();
+            delete apiConnClass;
         });
     }
 }
@@ -70,23 +75,5 @@ void UserLoginClass::registerUser()
             emit registerFinished();
         });
     }
-}
-
-bool UserLoginClass::getLoginStatus()
-{
-    XMLReaderClass *xmlReader = new XMLReaderClass;
-
-    if(xmlReader->getLoggedinStatus() == "true")
-        return true;
-    else
-        return false;
-}
-
-QString UserLoginClass::getUsername()
-{
-    XMLReaderClass *xmlReader = new XMLReaderClass;
-    xmlReader->loadDocument("Config.xml");
-
-    return xmlReader->getSavedUserInfo().at(1);
 }
 
