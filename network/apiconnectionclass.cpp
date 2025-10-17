@@ -3,7 +3,7 @@
 
 ApiConnectionClass::ApiConnectionClass(QObject *parent) {
     qDebug()<<"APi Constructor";
-    manager = std::make_unique<QNetworkAccessManager>();
+    manager = std::make_unique<QNetworkAccessManager>(this);
     settings.sync();
 }
 
@@ -167,7 +167,6 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
         {
             QByteArray responseData = loginReply->readAll();
             loginReply->deleteLater();
-            manager->deleteLater();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
             {
@@ -226,6 +225,7 @@ void ApiConnectionClass::registerNewUser(QString usernameVal, QString passwordVa
         if (reply->error() == QNetworkReply::NoError)
         {
             QByteArray responseData = reply->readAll();
+            reply->deleteLater();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
             {
@@ -334,7 +334,7 @@ void ApiConnectionClass::insertNewUser(QJsonObject userDataVal)
             emit registerFinished();
             qDebug() << "Error: " << reply->errorString();
         }
-        reply->abort();
+        reply->deleteLater();
     });
 }
 

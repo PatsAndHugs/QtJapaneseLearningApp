@@ -54,6 +54,7 @@ class KanjiList : public QObject
 public:
 
     explicit KanjiList(QObject *parent = nullptr);
+    ~KanjiList() override;
 
     QVector<KanjiListStruct> items() const;
 
@@ -114,7 +115,7 @@ private:
     QString m_kanjiTxt;
     QString m_kunyomiTxt;
     QString m_onyomiTxt;
-    ApiConnectionClass *addApiConnClass;
+    std::unique_ptr<ApiConnectionClass> apiConnClass;
 };
 
 #endif // KANJILIST_H

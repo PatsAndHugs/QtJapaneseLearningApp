@@ -27,8 +27,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<KanjiListModel>("KanjiClass",1,0,"KanjiListModel");
     qmlRegisterType<FilterKanjiListModel>("KanjiClass",1,0,"FilterKanjiListModel");
     qmlRegisterType<KanjiQuizResultModel>("KanjiClass",1,0,"KanjiQuizResultModel");
-    qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "KanjiList",
-        QStringLiteral("KanjiList Should not be created in Qml"));
+    // qmlRegisterUncreatableType<KanjiList>("KanjiClass", 1, 0, "KanjiList",
+    //     QStringLiteral("KanjiList Should not be created in Qml"));
 
     qmlRegisterType<FilterVocabListModel>("VocabClass",1,0,"FilterVocabListModel");
     qmlRegisterType<VocabQuizResultModel>("VocabClass",1,0,"VocabQuizResultModel");

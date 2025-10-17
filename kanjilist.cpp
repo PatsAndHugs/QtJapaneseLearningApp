@@ -13,7 +13,12 @@ KanjiList::KanjiList(QObject *parent)
         //addItems();
         qDebug()<<"kanjilist constructor";
     }
-    addApiConnClass = new ApiConnectionClass(this);
+    apiConnClass = std::make_unique<ApiConnectionClass>(this);
+}
+
+KanjiList::~KanjiList()
+{
+    qDebug()<<"kanjilist deconstructor";
 }
 
 QVector<KanjiListStruct> KanjiList::items() const
@@ -75,11 +80,11 @@ void KanjiList::appendItem()
 
 void KanjiList::addItems()
 {
-    //ApiConnectionClass *apiConnClass = new ApiConnectionClass(this);
-    addApiConnClass->fetchKanjiListForUser();
+    //std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    apiConnClass->fetchKanjiListForUser();
 
-    connect(addApiConnClass, &ApiConnectionClass::kanjiOutputListChanged,this, [=](){
-        QList<KanjiListStruct> itemList = addApiConnClass->getKanjiOutputList();
+    connect(apiConnClass.get(), &ApiConnectionClass::kanjiOutputListChanged,this, [&](){
+        QList<KanjiListStruct> itemList = apiConnClass->getKanjiOutputList();
         for(int i = 0;i < itemList.count(); i++)
         {
             emit preItemAppended();
@@ -92,11 +97,6 @@ void KanjiList::addItems()
         }
         emit fetchedKanjiListFromApi();
 
-    });
-
-    connect(this, &KanjiList::fetchedNewKanjiListFromApi, this, [this](){
-        delete addApiConnClass;
-        addApiConnClass = nullptr;
     });
 }
 
@@ -197,9 +197,9 @@ void KanjiList::addNewListItems()
     // dbClass->insertKanjiItemForUser(userId);
     // qDebug()<<"addItems userid "<<userId;
     // QList<KanjiListStruct> itemList = dbClass->getAppendKanjiList();
-    ApiConnectionClass *apiConnClass = new ApiConnectionClass;
+    //ApiConnectionClass *apiConnClass = new ApiConnectionClass;
     apiConnClass->fetchAdditionalKanjiListForUser();
-    connect(apiConnClass, &ApiConnectionClass::newKanjiListChanged,this, [=](){
+    connect(apiConnClass.get(), &ApiConnectionClass::newKanjiListChanged,this, [=](){
         QList<KanjiListStruct> itemList = apiConnClass->getNewKanjiListToAdd();
         qDebug()<<"addnewlistItems"<<itemList.count();
 
@@ -216,7 +216,6 @@ void KanjiList::addNewListItems()
             emit postItemAppended();
         }
         emit fetchedNewKanjiListFromApi();
-        //delete apiConnClass;
 
     });
 }
@@ -260,3 +259,4 @@ void KanjiList::setItemToShowInLearnWindow()
         }
     }
 }
+

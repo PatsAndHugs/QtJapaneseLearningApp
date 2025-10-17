@@ -23,6 +23,23 @@ ApplicationWindow {
         id:_loginPopup
     }
 
+    header: MenuBar{
+        MenuBarItem{
+            text: qsTr("Menu")
+            menu:Menu{
+                MenuItem{
+                    id:_userMenuItem
+                    text: qsTr("Return To Main Menu")
+                    onClicked:{
+                        _mainAppWindow.show()
+                        _kanjiMainWindow.close()
+                    }
+                }
+                MenuItem{text:"Exit"}
+            }
+        }
+    }
+
     FilterKanjiListModel{
         id:_filterModel
         sourceModel: KanjiListModel{
