@@ -66,14 +66,16 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty(QStringLiteral("vocabQuiz"), &vocabQuiz);
 
 
-    QSettings settings;
-    QString windowToOpen;
-    if(settings.value("loginstate").toBool() == true)
-        windowToOpen = "Main";
-    else
-        windowToOpen = "LoginWindow";
+    // QSettings settings;
+    // QString windowToOpen;
+    // if(settings.value("loginstate").toBool() == true)
+    //     windowToOpen = "Main";
+    // else
+    //     windowToOpen = "LoginWindow";
 
-    engine.loadFromModule("QtJapaneseLearningApp", windowToOpen);
+    // engine.loadFromModule("QtJapaneseLearningApp", windowToOpen);
+    engine.loadFromModule("QtJapaneseLearningApp", "Main");
+
 
     return app.exec();
 }
