@@ -34,11 +34,24 @@ ApplicationWindow {
                         if(component.status === Component.Ready){
                             var newWindow = component.createObject(_mainAppWindow);
                             if(newWindow){
-                                _mainAppWindow.close()
                                 newWindow.show()
+                                _mainAppWindow.hide()
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        if(userLogin.getSavedLoginState() !== true){
+            var component = Qt.createComponent("views/LoginWindow.qml")
+            if(component.status === Component.Ready){
+                var newWindow = component.createObject(_mainAppWindow);
+                if(newWindow){
+                    newWindow.show()
+                    _mainAppWindow.hide()
                 }
             }
         }
