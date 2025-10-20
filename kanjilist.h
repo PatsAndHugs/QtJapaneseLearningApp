@@ -115,7 +115,6 @@ private:
     QString m_kanjiTxt;
     QString m_kunyomiTxt;
     QString m_onyomiTxt;
-    std::unique_ptr<ApiConnectionClass> apiConnClass;
 };
 
 #endif // KANJILIST_H

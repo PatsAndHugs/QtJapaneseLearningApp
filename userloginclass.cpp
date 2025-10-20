@@ -34,15 +34,24 @@ QString UserLoginClass::getSavedUsername()
         return m_username;
 }
 
+bool UserLoginClass::getSavedLoginState()
+{
+    return settings.value("loginstate").toBool();
+}
+
 void UserLoginClass::checkLoginResult()
 {
     QString newUsername = m_username.simplified();
     QString newPassword = m_password.simplified();
     if(m_username != "" && m_password != "")
     {
-        ApiConnectionClass *apiConnClass = new ApiConnectionClass;
+        std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
         apiConnClass->loginUser(newUsername, newPassword);
-        QObject::connect(apiConnClass, &ApiConnectionClass::loginResultReceived, this, [=](){
+
+        QEventLoop loop;
+        connect(apiConnClass.get(), &ApiConnectionClass::loginResultReceived, &loop, &QEventLoop::quit);
+
+        QObject::connect(apiConnClass.get(), &ApiConnectionClass::loginResultReceived, this, [&](){
             m_loginResult = apiConnClass->getLoginResult();
             qDebug()<<"loginResultReceived "<<m_loginResult;
 
@@ -51,8 +60,9 @@ void UserLoginClass::checkLoginResult()
             settings.setValue("loginstate", true);
             settings.sync();
             emit userLoginResultReceived();
-            delete apiConnClass;
         });
+
+        loop.exec();
     }
 }
 
@@ -68,12 +78,17 @@ void UserLoginClass::registerUser()
     QString newEmail = m_email.simplified();
     if(m_username != "" && m_password != "" && m_email != "")
     {
-        ApiConnectionClass *apiConnClass = new ApiConnectionClass;
+        std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
         apiConnClass->registerNewUser(newUsername,newPassword,newEmail);
-        connect(apiConnClass, &ApiConnectionClass::registerFinished, this, [=](){
+
+        QEventLoop loop;
+        connect(apiConnClass.get(), &ApiConnectionClass::registerFinished, &loop, &QEventLoop::quit);
+
+        connect(apiConnClass.get(), &ApiConnectionClass::registerFinished, this, [&](){
             m_registerResult = apiConnClass->getRegisterResult();
             emit registerFinished();
         });
+        loop.exec();
     }
 }
 

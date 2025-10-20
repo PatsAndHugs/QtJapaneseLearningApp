@@ -60,14 +60,14 @@ void ApiConnectionClass::fetchKanjiListForUser()
                             kanjiOutputList.append(listStruct);
                         }
                         //reply->deleteLater();
-                        reply->abort();
-                        emit kanjiOutputListChanged();
+                        //reply->abort();
+                        //emit kanjiOutputListChanged();
 
                     }
                 }
                 else if(rootObject.value("statusCode") == 401)
                 {
-                    emit kanjiOutputListChanged();
+                    //emit kanjiOutputListChanged();
                 }
                 else
                 {
@@ -78,9 +78,10 @@ void ApiConnectionClass::fetchKanjiListForUser()
         else{
             qDebug() << "Error: " << reply->errorString();
         }
-        manager->clearConnectionCache();
+        //manager->clearConnectionCache();
         //reply->deleteLater();
         //reply->abort();
+        emit kanjiOutputListChanged();
     });
 }
 

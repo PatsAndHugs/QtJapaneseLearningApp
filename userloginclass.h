@@ -34,6 +34,8 @@ public:
 
     Q_INVOKABLE QString getSavedUsername();
 
+    Q_INVOKABLE bool getSavedLoginState();
+
 public slots:
 
     void checkLoginResult();

@@ -7,13 +7,6 @@ KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
     xmlReader = new XMLReaderClass;
-
-    if(xmlReader->getLoggedinStatus() == "true")
-    {
-        //addItems();
-        qDebug()<<"kanjilist constructor";
-    }
-    apiConnClass = std::make_unique<ApiConnectionClass>(this);
 }
 
 KanjiList::~KanjiList()
@@ -80,8 +73,11 @@ void KanjiList::appendItem()
 
 void KanjiList::addItems()
 {
-    //std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
     apiConnClass->fetchKanjiListForUser();
+
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::kanjiOutputListChanged, &loop, &QEventLoop::quit);
 
     connect(apiConnClass.get(), &ApiConnectionClass::kanjiOutputListChanged,this, [&](){
         QList<KanjiListStruct> itemList = apiConnClass->getKanjiOutputList();
@@ -96,8 +92,9 @@ void KanjiList::addItems()
             emit postItemAppended();
         }
         emit fetchedKanjiListFromApi();
-
     });
+
+    loop.exec();
 }
 
 void KanjiList::clearItems()
@@ -198,8 +195,13 @@ void KanjiList::addNewListItems()
     // qDebug()<<"addItems userid "<<userId;
     // QList<KanjiListStruct> itemList = dbClass->getAppendKanjiList();
     //ApiConnectionClass *apiConnClass = new ApiConnectionClass;
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
     apiConnClass->fetchAdditionalKanjiListForUser();
-    connect(apiConnClass.get(), &ApiConnectionClass::newKanjiListChanged,this, [=](){
+
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::newKanjiListChanged, &loop, &QEventLoop::quit);
+
+    connect(apiConnClass.get(), &ApiConnectionClass::newKanjiListChanged,this, [&](){
         QList<KanjiListStruct> itemList = apiConnClass->getNewKanjiListToAdd();
         qDebug()<<"addnewlistItems"<<itemList.count();
 
@@ -218,6 +220,8 @@ void KanjiList::addNewListItems()
         emit fetchedNewKanjiListFromApi();
 
     });
+
+    loop.exec();
 }
 
 void KanjiList::updateListDatesAfteResult(QList<KanjiListStruct> list)
