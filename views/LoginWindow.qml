@@ -95,14 +95,9 @@ ApplicationWindow {
                     if(userLogin.getLoginResult() === true)
                     {
                         console.log("Login Successful")
-                        var componentMain = Qt.createComponent("../Main.qml")
-                        if(componentMain.status === Component.Ready){
-                            var newWindowMain = componentMain.createObject(_loginWindow);
-                            if(newWindowMain){
-                                _loginWindow.close()
-                                newWindowMain.show()
-                            }
-                        }
+                        _mainAppWindow.show()
+                        _loginWindow.destroy()
+
                     }
                     else
                     {
@@ -123,7 +118,7 @@ ApplicationWindow {
                 if(component.status === Component.Ready){
                     var newWindow = component.createObject(_loginWindow);
                     if(newWindow){
-                        _loginWindow.close()
+                        _loginWindow.hide()
                         newWindow.show()
                     }
                 }

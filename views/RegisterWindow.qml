@@ -96,14 +96,8 @@ ApplicationWindow {
                     if(userLogin.getRegisterResult() === true)
                     {
                         console.log("Register Successful")
-                        var component = Qt.createComponent("LoginWindow.qml")
-                        if(component.status === Component.Ready){
-                            var newWindow = component.createObject(_registerWindow);
-                            if(newWindow){
-                                _registerWindow.close()
-                                newWindow.show()
-                            }
-                        }
+                        _loginWindow.show()
+                        _registerWindow.destroy()
                     }
                     else
                         console.log("Register Failed")
@@ -117,11 +111,8 @@ ApplicationWindow {
             Layout.fillWidth: true
             Layout.columnSpan: 2
             onClicked: {
-                //_registerPopup.open()
-                //_loginPopup.close()
-                // userLogin.username = _usernameTxtField.text
-                // userLogin.password = _passwordTxtField.text
-                // userLogin.registerUser();
+                _loginWindow.show()
+                _registerWindow.destroy()
             }
         }
     }

@@ -32,7 +32,7 @@ ApplicationWindow {
                     text: qsTr("Return To Main Menu")
                     onClicked:{
                         _mainAppWindow.show()
-                        _kanjiMainWindow.close()
+                        _kanjiMainWindow.destroy()
                     }
                 }
                 MenuItem{text:"Exit"}
