@@ -10,6 +10,7 @@
 #include <QSettings>
 
 #include "kanjilist.h"
+#include "kanjiquiz.h"
 
 class ApiConnectionClass : public QObject
 {
@@ -30,6 +31,8 @@ public:
     bool getRegisterResult(){return m_registerResult;}
 
     QList<KanjiListStruct> getNewKanjiListToAdd(){return newKanjiListToadd;}
+
+    void UpdateKanjiDbItemsForUser(QList<KanjiQuizStruct> list);
 
 private:
 
@@ -53,6 +56,7 @@ signals:
     void loginResultReceived();
     void registerFinished();
     void newKanjiListChanged();
+    void updateKanjiDateFinished();
 
 };
 

@@ -269,6 +269,64 @@ void ApiConnectionClass::registerNewUser(QString usernameVal, QString passwordVa
     });
 }
 
+void ApiConnectionClass::UpdateKanjiDbItemsForUser(QList<KanjiQuizStruct> list)
+{
+    QJsonArray outputArr;
+    for(KanjiQuizStruct &item : list)
+    {
+        QJsonObject objItem;
+        objItem["kanjiId"] = item.kanjiId;
+        objItem["lastDateAnswered"] = item.dateAnswered.toString("yyyy-MM-dd");
+        objItem["nextDateToAnswer"] = item.nextDateToAnswer.toString("yyyy-MM-dd");
+        objItem["correctStreak"] = item.correctCounter;
+        outputArr.append(objItem);
+    }
+    //query
+    QJsonObject userData;
+    //CHANGE LATER
+    userData["userId"] = settings.value("userid").toString();
+    userData["kanjiList"] = outputArr;
+
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource/user_kanji_date");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->put(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        qDebug()<<"network replied";
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            // Process the responseData (e.g., parse JSON)
+            reply->abort();
+            reply->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+                QString jsonText;
+                if(rootObject.value("statusCode") == 200)
+                {
+                    jsonText = rootObject.value("body").toString();
+
+                }
+                else
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
+                }
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+        }
+        emit updateKanjiDateFinished();
+    });
+}
+
 void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
 {
     QUrl dbInsertUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/insert_kanji"); // Replace with your actual login endpoint
@@ -397,7 +455,6 @@ void ApiConnectionClass::addNewItemsToKanjiList()
                             );
                         newKanjiListToadd.append(listStruct);
                     }
-                    qDebug()<<"newkanjilist count"<<newKanjiListToadd.count();
                     emit newKanjiListChanged();
                 }
             }
