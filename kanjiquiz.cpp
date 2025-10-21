@@ -3,18 +3,11 @@
 #include <algorithm>
 
 #include "kanjiquiz.h"
-#include "dbconnectionclass.h"
-
+#include "network/apiconnectionclass.h"
 
 KanjiQuiz::KanjiQuiz(QObject *parent)
 {
     qDebug()<<"kanji quiz constructor";
-    dbConnClass = new DbConnectionClass;
-    xmlReader = new XMLReaderClass;
-
-    //get user id
-    xmlReader->loadDocument("Config.xml");
-    userId = xmlReader->getSavedUserInfo().at(0);
 }
 
 void KanjiQuiz::setEnglishNameTxt(QString newVal)
@@ -47,12 +40,6 @@ void KanjiQuiz::getKanjiList(QList<KanjiListStruct> list)
     randomizeKanjiList();
 }
 
-void KanjiQuiz::testFunc()
-{
-   // QDateTime dt = QDateTime::currentDateTime();
-    qDebug()<<"current date time: "<<kanjiList.at(currentListIndex).nextDateToAnswer;
-}
-
 void KanjiQuiz::randomizeKanjiList()
 {
     std::random_device rd;
@@ -67,7 +54,7 @@ void KanjiQuiz::randomizeKanjiList()
     }
 }
 
-QString KanjiQuiz::getNextItem()
+void KanjiQuiz::getNextItem()
 {
     if(checkIfStringMatches(m_kunyomiTxt, kanjiList.at(currentListIndex).kunyomi) &&
         checkIfStringMatches(m_onyomiTxt, kanjiList.at(currentListIndex).onyomi))
@@ -110,19 +97,23 @@ QString KanjiQuiz::getNextItem()
             }
             else
             {
-                dbConnClass->UpdateDbItems(kanjiQuizItemList, userId);
-                return "finish";
+                std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+                apiConnClass->UpdateKanjiDbItemsForUser(kanjiQuizItemList);
+
+                QEventLoop loop;
+                connect(apiConnClass.get(), &ApiConnectionClass::updateKanjiDateFinished, &loop, &QEventLoop::quit);
+                connect(apiConnClass.get(), &ApiConnectionClass::updateKanjiDateFinished,this, [&](){
+                    emit quizFinished();
+                });
+
+                loop.exec();
             }
-
-            qDebug()<<"nextdate is: "<<nextDate;
-            return "get";
         }
+        emit getNextItemTriggered();
     }
-
-    return "pause";
 }
 
-QString KanjiQuiz::skipItem()
+void KanjiQuiz::skipItem()
 {
     qDebug()<<"skipped Item";
 
@@ -163,13 +154,20 @@ QString KanjiQuiz::skipItem()
         }
         else
         {
-            dbConnClass->UpdateDbItems(kanjiQuizItemList, userId);
-            return "finish";
-        }
-        return "get";
-    }
+            //dbConnClass->UpdateDbItems(kanjiQuizItemList, userId);
+            std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+            apiConnClass->UpdateKanjiDbItemsForUser(kanjiQuizItemList);
 
-    return "pause";
+            QEventLoop loop;
+            connect(apiConnClass.get(), &ApiConnectionClass::updateKanjiDateFinished, &loop, &QEventLoop::quit);
+            connect(apiConnClass.get(), &ApiConnectionClass::updateKanjiDateFinished,this, [&](){
+                emit quizFinished();
+            });
+
+            loop.exec();
+        }
+        emit getNextItemTriggered();
+    }
 }
 
 void KanjiQuiz::clearQuizList()
