@@ -73,6 +73,7 @@ void KanjiList::appendItem()
 
 void KanjiList::addItems()
 {
+    mItems.clear();
     std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
     apiConnClass->fetchKanjiListForUser();
 
