@@ -10,7 +10,7 @@ ApiConnectionClass::ApiConnectionClass(QObject *parent) {
 void ApiConnectionClass::fetchKanjiListForUser()
 {
     //clears everything each call
-    //kanjiOutputList.clear();
+    kanjiOutputList.clear();
     //query
     QJsonObject userData;
     //CHANGE LATER
@@ -30,6 +30,7 @@ void ApiConnectionClass::fetchKanjiListForUser()
         {
             QByteArray responseData = reply->readAll();
             // Process the responseData (e.g., parse JSON)
+            reply->abort();
             reply->deleteLater();
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
