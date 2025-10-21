@@ -122,33 +122,14 @@ ApplicationWindow {
             font.pointSize: 15
             Layout.row: 5
             Layout.leftMargin: 10
-            property string getItemResult
             onClicked: {
                 kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
                 kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
                 _kanjiShowBtn.visible = true
                 _lblKanji.visible = false
-                getItemResult = kanjiQuiz.getNextItem()
-
-                if(getItemResult === "get"){
-                    _txtFieldKunyomi.text = "";
-                    _txtFieldOnyomi.text = "";
-                }
-                else if(getItemResult === "finish"){
-                    var component = Qt.createComponent("KanjiTallyWindow.qml")
-                    if(component.status === Component.Ready){
-                        var newWindow = component.createObject(_kanjiMainWindow);
-                        if(newWindow){
-                             _testAppWindow.close()
-                            newWindow.show()
-                        }
-                    }
-                    else {
-                        console.log("Error loading component:", component.errorString());
-                    }
-                }
-
+                kanjiQuiz.getNextItem()
             }
+
         }
         AppButton{
             id: _skipBtn
@@ -162,7 +143,9 @@ ApplicationWindow {
             onClicked:{
                 if(kanjiTestSwitchState === true)
                 {
-                    skipFunc()
+                    kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
+                    kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
+                    kanjiQuiz.skipItem()
                     _kanjiShowBtn.visible = true
                     _lblKanji.visible = false
                 }
@@ -272,23 +255,21 @@ ApplicationWindow {
         cancelButtonText: "Cancel"
 
         onAccepted:{
-            skipFunc()
+            kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
+            kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
+            kanjiQuiz.skipItem()
             _kanjiShowBtn.visible = true
             _lblKanji.visible = false
         }
     }
-    property string skipItemResult
-    function skipFunc(){
-        kanjiQuiz.kunyomiTxt = _txtFieldKunyomi.text
-        kanjiQuiz.onyomiTxt = _txtFieldOnyomi.text
 
-        skipItemResult = kanjiQuiz.skipItem()
-
-        if(skipItemResult === "next"){
+    Connections{
+        target: kanjiQuiz
+        function onGetNextItemTriggered(){
             _txtFieldKunyomi.text = "";
             _txtFieldOnyomi.text = "";
         }
-        else if(skipItemResult === "finish"){
+        function onQuizFinished(){
             console.log("skipped finished")
             var component = Qt.createComponent("KanjiTallyWindow.qml")
             if(component.status === Component.Ready){
