@@ -1,17 +1,10 @@
 #include "vocabquiz.h"
 #include <random>
 #include <algorithm>
-#include "dbconnectionclass.h"
+#include "network/apiconnectionclass.h"
 
 VocabQuiz::VocabQuiz(QObject *parent)
 {
-    qDebug()<<"vocab quiz constructor";
-    dbConnClass = new DbConnectionClass;
-    xmlReader = new XMLReaderClass;
-
-    //get user id
-    xmlReader->loadDocument("Config.xml");
-    userId = xmlReader->getSavedUserInfo().at(0);
 }
 
 void VocabQuiz::setVocabMeaningTxt(QString newVal)
@@ -38,7 +31,7 @@ void VocabQuiz::getVocabList(QList<VocabListStruct> list)
     randomizeVocabList();
 }
 
-QString VocabQuiz::getNextItem()
+void VocabQuiz::getNextItem()
 {
     qDebug()<<"vocablist.reading: "<<vocabList.at(currentListIndex).vocabReading;
     qDebug()<<"textfield reading: "<<m_vocabReadingTxt;
@@ -79,19 +72,24 @@ QString VocabQuiz::getNextItem()
             }
             else
             {
-                dbConnClass->UpdateDbItems(vocabQuizItemList, userId);
-                return "finish";
+                std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+                apiConnClass->updateVocabDbItemsForUser(vocabQuizItemList);
+
+                QEventLoop loop;
+                connect(apiConnClass.get(), &ApiConnectionClass::updateVocabDateFinished, &loop, &QEventLoop::quit);
+                connect(apiConnClass.get(), &ApiConnectionClass::updateVocabDateFinished,this, [&](){
+                    emit quizFinished();
+                });
+
+                loop.exec();
             }
-
-            qDebug()<<"nextdate is: "<<nextDate;
-            return "get";
         }
-    }
+        emit getNextItemTriggered();
 
-    return "pause";
+    }
 }
 
-QString VocabQuiz::skipItem()
+void VocabQuiz::skipItem()
 {
     qDebug()<<"skipped Item";
 
@@ -130,13 +128,19 @@ QString VocabQuiz::skipItem()
         }
         else
         {
-            dbConnClass->UpdateDbItems(vocabQuizItemList, userId);
-            return "finish";
-        }
-        return "get";
-    }
+            std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+            apiConnClass->updateVocabDbItemsForUser(vocabQuizItemList);
 
-    return "pause";
+            QEventLoop loop;
+            connect(apiConnClass.get(), &ApiConnectionClass::updateVocabDateFinished, &loop, &QEventLoop::quit);
+            connect(apiConnClass.get(), &ApiConnectionClass::updateVocabDateFinished,this, [&](){
+                emit quizFinished();
+            });
+
+            loop.exec();
+        }
+        emit getNextItemTriggered();
+    }
 }
 
 void VocabQuiz::clearQuizList()

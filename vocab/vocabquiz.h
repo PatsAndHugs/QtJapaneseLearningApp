@@ -6,7 +6,6 @@
 #include <QDateTime>
 
 #include "vocablist.h"
-#include "xmlreaderclass.h"
 
 struct VocabListStruct;
 
@@ -46,9 +45,9 @@ public slots:
 
     void getVocabList(QList<VocabListStruct> list);
     //get = get next; pause = do nothing; finish = end of items reached
-    QString getNextItem();
+    void getNextItem();
     //get = get next; pause = do nothing; finish = end of items reached
-    QString skipItem();
+    void skipItem();
 
     QList<VocabQuizStruct> getResultList(){return vocabQuizItemList;}
 
@@ -64,6 +63,8 @@ signals:
     void vocabMeaningTxtChanged();
     void vocabKanjiTxtChanged();
     void vocabReadingTxtChanged();
+    void getNextItemTriggered();
+    void quizFinished();
 
 private:
 
@@ -90,10 +91,6 @@ private:
     QList<VocabQuizStruct> vocabQuizItemList;
 
     QDate getDaysToAddToItem(int index);
-
-    DbConnectionClass *dbConnClass;
-    XMLReaderClass *xmlReader;
-    QString userId;
 };
 
 #endif // VOCABQUIZ_H
