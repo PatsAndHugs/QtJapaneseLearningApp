@@ -18,7 +18,7 @@ void ApiConnectionClass::fetchKanjiListForUser()
     QJsonDocument userDoc(userData);
     QByteArray userJsonData = userDoc.toJson();
 
-    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user"); // Replace with your actual login endpoint
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/fetch_list");
     QNetworkRequest request(serviceUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -60,15 +60,11 @@ void ApiConnectionClass::fetchKanjiListForUser()
                                 );
                             kanjiOutputList.append(listStruct);
                         }
-                        //reply->deleteLater();
-                        //reply->abort();
-                        //emit kanjiOutputListChanged();
-
                     }
                 }
                 else if(rootObject.value("statusCode") == 401)
                 {
-                    //emit kanjiOutputListChanged();
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
                 }
                 else
                 {
@@ -79,9 +75,6 @@ void ApiConnectionClass::fetchKanjiListForUser()
         else{
             qDebug() << "Error: " << reply->errorString();
         }
-        //manager->clearConnectionCache();
-        //reply->deleteLater();
-        //reply->abort();
         emit kanjiOutputListChanged();
     });
 }
@@ -110,15 +103,13 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
 
             QByteArray responseData = reply->readAll();
             reply->deleteLater();
-            // Process the responseData (e.g., parse JSON)
+            // Process the responseData
             QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
             if (!jsonDoc.isNull() && jsonDoc.isObject())
             {
                 //QString jsonText;
                 rootObject = jsonDoc.object();
                 lastKanjiId = rootObject.value("body").toString();
-                qDebug()<<"LastKanji"<<lastKanjiId;
-                //reply->abort();
 
                 //get kanjiid number Kj-1
                 if(lastKanjiId !="")
@@ -126,13 +117,11 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                     QString newString = lastKanjiId.remove("\"");
                     newString = newString.remove("KI-");
                     int counterId = newString.toInt();
-                    qDebug()<<"newString"<<counterId;
                     //increment and add to qstringlist
                     for(int i = (counterId + 1); i <= (counterId + 5); i++)
                     {
                         QString newKanjiId = "KI-" + QString::number(i);
                         kanjiIdList.append(newKanjiId);
-                        qDebug()<<"new kanji"<< newKanjiId;
                     }
                 }
 
@@ -146,7 +135,63 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
         }
         else{
             qDebug() << "Error: " << reply->errorString();
-            //reply->abort();
+        }
+    });
+}
+
+void ApiConnectionClass::fetchAdditionalVocabListForUser()
+{
+
+    QJsonObject userData;
+
+    userData["userid"] = settings.value("userid").toString();
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/insert_kanji");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->post(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QString lastVocabId;
+            QStringList vocabIdList;
+
+            QByteArray responseData = reply->readAll();
+            reply->deleteLater();
+            // Process the responseData
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                //QString jsonText;
+                rootObject = jsonDoc.object();
+                lastVocabId = rootObject.value("body").toString();
+
+                //get kanjiid number VI-1
+                if(lastVocabId !="")
+                {
+                    QString newString = lastVocabId.remove("\"");
+                    newString = newString.remove("VI-");
+                    int counterId = newString.toInt();
+                    //increment and add to qstringlist
+                    for(int i = (counterId + 1); i <= (counterId + 5); i++)
+                    {
+                        QString newVocabId = "VI-" + QString::number(i);
+                        vocabIdList.append(newVocabId);
+                    }
+                }
+
+                QJsonArray outputArr;
+                outputArr.append(QJsonArray::fromStringList(vocabIdList));
+
+                insertNewVocabForUser(outputArr);
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
         }
     });
 }
@@ -327,13 +372,143 @@ void ApiConnectionClass::UpdateKanjiDbItemsForUser(QList<KanjiQuizStruct> list)
     });
 }
 
+void ApiConnectionClass::updateVocabDbItemsForUser(QList<VocabQuizStruct> list)
+{
+    QJsonArray outputArr;
+    for(VocabQuizStruct &item : list)
+    {
+        QJsonObject objItem;
+        objItem["VocabId"] = item.vocabId;
+        objItem["LastDateAnswered"] = item.dateAnswered.toString("yyyy-MM-dd");
+        objItem["NextDateToAnswer"] = item.nextDateToAnswer.toString("yyyy-MM-dd");
+        objItem["CorrectStreak"] = item.correctCounter;
+        outputArr.append(objItem);
+    }
+    //query
+    QJsonObject userData;
+    //CHANGE LATER
+    userData["UserId"] = settings.value("userid").toString();
+    userData["VocabList"] = outputArr;
+
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/user_resource/user_vocab_date");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->put(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        qDebug()<<"network replied";
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            // Process the responseData (e.g., parse JSON)
+            reply->abort();
+            reply->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+                QString jsonText;
+                if(rootObject.value("statusCode") == 200)
+                {
+                    jsonText = rootObject.value("body").toString();
+
+                }
+                else
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
+                }
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+        }
+        emit updateVocabDateFinished();
+    });
+}
+
+void ApiConnectionClass::fetchVocabListForUser()
+{
+    //clears everything each call
+    kanjiOutputList.clear();
+    //query
+    QJsonObject userData;
+    //CHANGE LATER
+    userData["userid"] = settings.value("userid").toString();
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/vocab_resource/per_user/fetch_list");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->post(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        qDebug()<<"network replied";
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+
+            reply->abort();
+            reply->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+                QString jsonText;
+                if(rootObject.value("statusCode") == 200)
+                {
+                    jsonText = rootObject.value("body").toString();
+                    QByteArray jsonData = jsonText.toUtf8();
+                    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+
+                    if(!doc.isNull() && doc.isArray())
+                    {
+                        QJsonArray jsonArray = doc.array();
+                        for (const QJsonValue &value : std::as_const(jsonArray)) {
+                            VocabListStruct listStruct(
+                                value["VocabId"].toString(),
+                                value["VocabKanji"].toString(),
+                                value["VocabMeaning"].toString(),
+                                value["VocabReading"].toString(),
+                                value["LastDateAnswered"].toString(),
+                                value["NextDateAnswered"].toString(),
+                                value["CorrectStreak"].toInt(),
+                                false
+                                );
+                            vocabOutputList.append(listStruct);
+                        }
+                    }
+                }
+                else if(rootObject.value("statusCode") == 401)
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
+                }
+                else
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
+                }
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+        }
+
+        emit vocabOutputListChanged();
+    });
+}
+
 void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
 {
     QUrl dbInsertUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/insert_kanji"); // Replace with your actual login endpoint
     QNetworkRequest request(dbInsertUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QJsonObject insertData;
-    insertData["KanjiIdList"] = arrayToInsert;
+    insertData["VocabIdList"] = arrayToInsert;
     insertData["UserId"] =  settings.value("userid").toString();
     QJsonDocument userDoc(insertData);
     QByteArray dataToInsert = userDoc.toJson();
@@ -356,6 +531,42 @@ void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
             qDebug()<<"Insert Successful";
             //to pass to qml list
             addNewItemsToKanjiList();
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+
+        }
+    });
+}
+
+void ApiConnectionClass::insertNewVocabForUser(QJsonArray arrayToInsert)
+{
+    QUrl dbInsertUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/vocab_resource/per_user/insert");
+    QNetworkRequest request(dbInsertUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QJsonObject insertData;
+    insertData["VocabIdList"] = arrayToInsert;
+    insertData["UserId"] =  settings.value("userid").toString();
+    QJsonDocument userDoc(insertData);
+    QByteArray dataToInsert = userDoc.toJson();
+
+    QNetworkReply *reply = manager->put(request, dataToInsert);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            reply->deleteLater();
+            // Process the responseData (e.g., parse JSON)
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+                qDebug()<<"insert return"<<rootObject.value("body").toString();
+            }
+            qDebug()<<"Insert Successful";
+            //to pass to qml list
+            addNewItemsToVocabList();
         }
         else{
             qDebug() << "Error: " << reply->errorString();
@@ -400,17 +611,14 @@ void ApiConnectionClass::insertNewUser(QJsonObject userDataVal)
 
 void ApiConnectionClass::addNewItemsToKanjiList()
 {
-    //clears everything each call
     newKanjiListToadd.clear();
 
-    //query
     QJsonObject userData;
-    //CHANGE LATER
     userData["userid"] = settings.value("userid").toString();
     QJsonDocument userDoc(userData);
     QByteArray userJsonData = userDoc.toJson();
 
-    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user");
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/fetch_list");
     QNetworkRequest request(serviceUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -456,6 +664,69 @@ void ApiConnectionClass::addNewItemsToKanjiList()
                         newKanjiListToadd.append(listStruct);
                     }
                     emit newKanjiListChanged();
+                }
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+        }
+    });
+}
+
+void ApiConnectionClass::addNewItemsToVocabList()
+{
+    newKanjiListToadd.clear();
+
+    QJsonObject userData;
+    userData["userid"] = settings.value("userid").toString();
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/vocab_resource/per_user/fetch_list");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->post(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            reply->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                qDebug()<<"not null is obj";
+                rootObject = jsonDoc.object();
+                QString jsonText = rootObject.value("body").toString();
+                qDebug()<<"body"<<rootObject.value("body").toString();
+
+                QByteArray jsonData = jsonText.toUtf8();
+                QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+
+                if(!doc.isNull() && doc.isArray())
+                {
+                    QJsonArray jsonArray = doc.array();
+                    int counter = 0;
+                    if(jsonArray.count() != 0)
+                        counter = jsonArray.count() - 5;
+
+                    for(int i = counter; i < jsonArray.count(); i++)
+                    {
+                        QJsonValue value = jsonArray.at(i);
+                        VocabListStruct listStruct(
+                            value["VocabId"].toString(),
+                            value["VocabKanji"].toString(),
+                            value["VocabMeaning"].toString(),
+                            value["VocabReading"].toString(),
+                            value["LastDateAnswered"].toString(),
+                            value["NextDateAnswered"].toString(),
+                            value["CorrectStreak"].toInt(),
+                            false
+                            );
+                        newVocabListToadd.append(listStruct);
+                    }
+                    emit newVocabListChanged();
                 }
             }
         }

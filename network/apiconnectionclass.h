@@ -11,6 +11,8 @@
 
 #include "kanjilist.h"
 #include "kanjiquiz.h"
+#include "vocab/vocablist.h"
+#include "vocab/vocabquiz.h"
 
 class ApiConnectionClass : public QObject
 {
@@ -33,6 +35,12 @@ public:
     QList<KanjiListStruct> getNewKanjiListToAdd(){return newKanjiListToadd;}
 
     void UpdateKanjiDbItemsForUser(QList<KanjiQuizStruct> list);
+    void updateVocabDbItemsForUser(QList<VocabQuizStruct> list);
+
+    void fetchVocabListForUser();
+    void fetchAdditionalVocabListForUser();
+    QList<VocabListStruct> getVocabOutputList(){return vocabOutputList;}
+    QList<VocabListStruct> getNewVocabListToAdd(){return newVocabListToadd;}
 
 private:
 
@@ -48,7 +56,13 @@ private:
 
     void addNewItemsToKanjiList();
     QList<KanjiListStruct> newKanjiListToadd;
+
     std::unique_ptr<QNetworkAccessManager> manager;
+
+    QList<VocabListStruct> vocabOutputList;
+    void insertNewVocabForUser(QJsonArray arrayToInsert);
+    void addNewItemsToVocabList();
+    QList<VocabListStruct> newVocabListToadd;
 
 signals:
 
@@ -57,6 +71,10 @@ signals:
     void registerFinished();
     void newKanjiListChanged();
     void updateKanjiDateFinished();
+
+    void vocabOutputListChanged();
+    void newVocabListChanged();
+    void updateVocabDateFinished();
 
 };
 
