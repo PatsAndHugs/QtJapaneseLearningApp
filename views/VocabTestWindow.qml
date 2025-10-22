@@ -96,25 +96,7 @@ ApplicationWindow {
             property string getItemResult
             onClicked: {
                 vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
-                getItemResult = vocabQuiz.getNextItem()
-
-                if(getItemResult === "get"){
-                    _txtFieldVocabReading.text = "";
-                }
-                else if(getItemResult === "finish"){
-                    var component = Qt.createComponent("VocabTallyWindow.qml")
-                    if(component.status === Component.Ready){
-                        var newWindow = component.createObject(_vocabMainWindow);
-                        if(newWindow){
-                             _vocabTestAppWindow.close()
-                            newWindow.show()
-                        }
-                    }
-                    else {
-                        console.log("Error loading component:", component.errorString());
-                    }
-                }
-
+                vocabQuiz.getNextItem()
             }
         }
         AppButton{
@@ -127,8 +109,10 @@ ApplicationWindow {
             Layout.rightMargin: 10
 
             onClicked:{
-                if(vocabTestSwitchState === true)
-                    skipFunc()
+                if(vocabTestSwitchState === true){
+                    vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
+                    vocabQuiz.skipItem()
+                }
                 else
                     _vocabTestConfirmMsgDialog.open()
             }
@@ -233,18 +217,18 @@ ApplicationWindow {
         acceptButtonText: "Confirm"
         cancelButtonText: "Cancel"
 
-        onAccepted:skipFunc()
+        onAccepted:{
+            vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
+            vocabQuiz.skipItem()
+        }
     }
-    property string skipItemResult
-    function skipFunc(){
-        vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
 
-        skipItemResult = vocabQuiz.skipItem()
-
-        if(skipItemResult === "next"){
+    Connections{
+        target: vocabQuiz
+        function onGetNextItemTriggered(){
             _txtFieldVocabReading.text = "";
         }
-        else if(skipItemResult === "finish"){
+        function onQuizFinished(){
             console.log("skipped finished")
             var component = Qt.createComponent("VocabTallyWindow.qml")
             if(component.status === Component.Ready){
