@@ -1,16 +1,8 @@
 #include "vocablist.h"
-#include "dbconnectionclass.h"
+#include "network/apiconnectionclass.h"
 
 VocabList::VocabList(QObject *parent)
 {
-    dbClass = new DbConnectionClass;
-
-    xmlReader = new XMLReaderClass;
-    if(xmlReader->getLoggedinStatus() == "true")
-    {
-        addItems();
-        qDebug()<<"vocablist constructor";
-    }
 }
 
 QVector<VocabListStruct> VocabList::items() const
@@ -50,33 +42,30 @@ void VocabList::appendItem()
 
 void VocabList::addItems()
 {
-    xmlReader->loadDocument("Config.xml");
-    QString userId = xmlReader->getSavedUserInfo().at(0);
-    dbClass->populateVocabModelList(userId);
-    qDebug()<<"addItems userid "<<userId;
-    QList<VocabListStruct> itemList = dbClass->getDbVocabList();
-
-    for(int i = 0;i < itemList.count(); i++)
-    {
-        emit preVocabItemAppended();
-
-        mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
-                       itemList[i].vocabReading,itemList[i].lastDateAnswered,
-                       itemList[i].nextDateToAnswer,itemList[i].correctStreak,
-                       itemList[i].isSelected});
-
-        emit postVocabItemAppended();
-    }
-}
-
-void VocabList::clearItems()
-{
-    dbClass->clearDbVocabList();
-    emit preVocabItemRemoved();
     mItems.clear();
-    emit postVocabItemRemoved();
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    apiConnClass->fetchVocabListForUser();
 
-    qDebug()<<"clear "<<mItems.count();
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::vocabOutputListChanged, &loop, &QEventLoop::quit);
+
+    connect(apiConnClass.get(), &ApiConnectionClass::vocabOutputListChanged,this, [&](){
+        QList<VocabListStruct> itemList = apiConnClass->getVocabOutputList();
+        for(int i = 0;i < itemList.count(); i++)
+        {
+            emit preVocabItemAppended();
+
+            mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
+                           itemList[i].vocabReading,itemList[i].lastDateAnswered,
+                           itemList[i].nextDateToAnswer,itemList[i].correctStreak,
+                           itemList[i].isSelected});
+
+            emit postVocabItemAppended();
+        }
+        emit fetchedVocabListFromApi();
+    });
+
+    loop.exec();
 }
 
 void VocabList::updateLastItemIsSelected(int count)
@@ -149,23 +138,28 @@ int VocabList::getSelectedItemsCount()
 
 void VocabList::addNewListItems()
 {
-    xmlReader->loadDocument("Config.xml");
-    QString userId = xmlReader->getSavedUserInfo().at(0);
-    dbClass->insertVocabItemForUser(userId);
-    qDebug()<<"addItems userid "<<userId;
-    QList<VocabListStruct> itemList = dbClass->getAppendVocabList();
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    apiConnClass->fetchAdditionalVocabListForUser();
 
-    for(int i = 0;i < itemList.count(); i++)
-    {
-        emit preVocabItemAppended();
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::newVocabListChanged, &loop, &QEventLoop::quit);
 
-        mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
-                       itemList[i].vocabReading,itemList[i].lastDateAnswered,
-                       itemList[i].nextDateToAnswer,itemList[i].correctStreak,
-                       itemList[i].isSelected});
+    connect(apiConnClass.get(), &ApiConnectionClass::newVocabListChanged,this, [&](){
+        QList<VocabListStruct> itemList = apiConnClass->getNewVocabListToAdd();
+        for(int i = 0;i < itemList.count(); i++)
+        {
+            emit preVocabItemAppended();
 
-        emit postVocabItemAppended();
-    }
+            mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
+                           itemList[i].vocabReading,itemList[i].lastDateAnswered,
+                           itemList[i].nextDateToAnswer,itemList[i].correctStreak,
+                           itemList[i].isSelected});
+
+            emit postVocabItemAppended();
+        }
+    });
+
+    loop.exec();
 }
 
 void VocabList::updateListDatesAfteResult(QList<VocabListStruct> list)

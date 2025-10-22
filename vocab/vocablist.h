@@ -6,8 +6,6 @@
 
 #include "xmlreaderclass.h"
 
-class DbConnectionClass;
-
 struct VocabListStruct
 {
     QString vocabId;
@@ -59,10 +57,12 @@ signals:
     void postVocabItemRemoved();
     void postVocabIsSelectedChanged();
 
+    void fetchedVocabListFromApi();
+    void fetchedNewVocabListFromApi();
+
 public slots:
     void appendItem();
     void addItems();
-    void clearItems();
     void updateLastItemIsSelected(int count);
     void updateAllItemsIsSelected();
     void updateAllCurrentDateItemsIsSelected();
@@ -74,7 +74,6 @@ public slots:
 
 private:
     QVector<VocabListStruct> mItems;
-    DbConnectionClass *dbClass;
     QList<int> mSelectionList;
     QList<VocabListStruct> mSelectedItemsList;
     XMLReaderClass *xmlReader;
