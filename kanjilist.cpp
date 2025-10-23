@@ -2,11 +2,14 @@
 #include "dbconnectionclass.h"
 #include <qforeach.h>
 #include "network/apiconnectionclass.h"
+#include <QSslSocket>
 
 KanjiList::KanjiList(QObject *parent)
 {
     dbClass = new DbConnectionClass;
     xmlReader = new XMLReaderClass;
+    qDebug() << "Device supports OpenSSL: " << QSslSocket::supportsSsl();
+
 }
 
 KanjiList::~KanjiList()
