@@ -55,6 +55,11 @@ ApplicationWindow {
                 }
             }
         }
+
+        if (Qt.platform.os === "android") {
+            appWindow.width = Screen.width
+            appWindow.height = Screen.height
+        }
     }
 
     ColumnLayout{
@@ -75,14 +80,14 @@ ApplicationWindow {
         RowLayout{
             id:_mainUserStatsRow
             Layout.fillWidth: true
-            Layout.preferredHeight: 50
+            Layout.preferredHeight: parent.height / 15
             //spacing:10
 
             Rectangle {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                Layout.preferredHeight: 100
-                Layout.preferredWidth: 100
+                Layout.preferredHeight: parent.height
+                Layout.preferredWidth: parent.width / 3
                 color: "white"
                 radius: 8
                 Label{
@@ -90,7 +95,7 @@ ApplicationWindow {
                     horizontalAlignment: Text.AlignHCenter
                     text: userLogin.getSavedUsername()
                     color:"#023D54"
-                    font.pointSize: 30
+                    font.pixelSize: parent.width / 10
                     font.bold: true
                 }
             }
@@ -98,8 +103,8 @@ ApplicationWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                Layout.preferredHeight: 100
-                Layout.preferredWidth: 100
+                Layout.preferredHeight: parent.height
+                Layout.preferredWidth: parent.width / 3
                 color: "white"
                 radius: 8
 
@@ -109,7 +114,7 @@ ApplicationWindow {
                     Layout.fillWidth: true
                     text: qsTr("Kanji: 5")
                     color:"#023D54"
-                    font.pointSize: 20
+                    font.pixelSize: parent.width / 10
                     font.bold: true
                 }
             }
@@ -117,8 +122,8 @@ ApplicationWindow {
             Rectangle {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
-                Layout.preferredHeight: 100
-                Layout.preferredWidth: 100
+                Layout.preferredHeight: parent.height
+                Layout.preferredWidth: parent.width / 3
                 color: "white"
                 radius: 8
 
@@ -129,7 +134,7 @@ ApplicationWindow {
                     Layout.alignment: Qt.AlignVCenter
                     text: qsTr("Vocab: 2")
                     color:"#023D54"
-                    font.pointSize: 20
+                    font.pixelSize: parent.width / 10
                     font.bold: true
                 }
             }
@@ -137,9 +142,8 @@ ApplicationWindow {
 
         AppButton{
             text: "Learn"
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            font.pointSize: 20
             onClicked:{
                 var component = Qt.createComponent("views/LearnMainWindow.qml")
                 if(component.status === Component.Ready){
@@ -156,17 +160,15 @@ ApplicationWindow {
 
         AppButton{
             text: "Kanji Test"
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            font.pointSize: 20
             onClicked: kanjiList.addItems()
         }
 
         AppButton{
             text: "Vocab Test"
-            Layout.preferredHeight: 100
+            Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            font.pointSize: 20
             onClicked: vocabList.addItems()
         }
     }

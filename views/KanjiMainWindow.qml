@@ -111,7 +111,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
-            font.pointSize: 15
             onClicked: kanjiList.updateAllItemsIsSelected()
         }
         AppButton{
@@ -120,7 +119,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
-            font.pointSize: 15
             onClicked:kanjiList.updateLastItemIsSelected(5)
         }
         AppButton{
@@ -129,7 +127,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.columns
             Layout.fillWidth: true
-            font.pointSize: 15
             onClicked:kanjiList.updateAllCurrentDateItemsIsSelected()
         }
         AppButton{
@@ -138,7 +135,6 @@ ApplicationWindow {
             Layout.preferredHeight: 100
             //Layout.preferredWidth: parent.width / parent.
             Layout.fillWidth: true
-            font.pointSize: 15
             onClicked:_mainConfirmMsgDialog.open()
         }
     }

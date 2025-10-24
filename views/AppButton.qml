@@ -4,7 +4,7 @@ import QtQuick.Controls.Basic
 Button {
     id: _baseBtn
     property alias btnBgColor: _rect.color
-
+    font.pixelSize: parent.width / 20
     contentItem:Text {
         id: _text
         text: _baseBtn.text
@@ -12,6 +12,9 @@ Button {
         color: "#023D54"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
+        fontSizeMode: Text.Fit
+        width: parent.width // Important for fontSizeMode to work
+        height: parent.height // Important for fontSizeMode to work
     }
 
     background: Rectangle{
