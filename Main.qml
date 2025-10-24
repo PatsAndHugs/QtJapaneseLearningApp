@@ -57,8 +57,8 @@ ApplicationWindow {
         }
 
         if (Qt.platform.os === "android") {
-            appWindow.width = Screen.width
-            appWindow.height = Screen.height
+            _mainAppWindow.width = Screen.width
+            _mainAppWindow.height = Screen.height
         }
     }
 
@@ -87,7 +87,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.width / 3
+                //Layout.preferredWidth: parent.width / 3
                 color: "white"
                 radius: 8
                 Label{
@@ -104,7 +104,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.width / 3
+                //Layout.preferredWidth: parent.width / 3
                 color: "white"
                 radius: 8
 
@@ -123,7 +123,7 @@ ApplicationWindow {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
                 Layout.preferredHeight: parent.height
-                Layout.preferredWidth: parent.width / 3
+                //Layout.preferredWidth: parent.width / 3
                 color: "white"
                 radius: 8
 

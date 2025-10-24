@@ -23,6 +23,13 @@ ApplicationWindow {
         id:_loginPopup
     }
 
+    Component.onCompleted: {
+        if (Qt.platform.os === "android") {
+            _kanjiMainWindow.width = Screen.width
+            _kanjiMainWindow.height = Screen.height
+        }
+    }
+
     header: MenuBar{
         MenuBarItem{
             text: qsTr("Menu")
@@ -89,13 +96,13 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.left: parent.left
         placeholderText: "Search..."
-        font.pointSize: 15
+        font.pixelSize: parent.width / 20
         onTextChanged: _filterModel.searchText = _searchInput.text
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
     }
 
-    GridLayout{
+    RowLayout{
         id:_btnGrid
         //anchors.fill: parent
         anchors.bottom:parent.bottom
@@ -104,37 +111,37 @@ ApplicationWindow {
         anchors.leftMargin: 10
         anchors.rightMargin: 10
         anchors.bottomMargin: 10
-        columns: 4
+        height: parent.height / 10
         AppButton{
             id: _selectAllBtn
             text:qsTr("Select All")
-            Layout.preferredHeight: 100
-            //Layout.preferredWidth: parent.width / parent.columns
-            Layout.fillWidth: true
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: parent.width / 4.2
+            //Layout.fillWidth: true
             onClicked: kanjiList.updateAllItemsIsSelected()
         }
         AppButton{
             id: _selectLast5Btn
             text: qsTr("Select Last 5")
-            Layout.preferredHeight: 100
-            //Layout.preferredWidth: parent.width / parent.columns
-            Layout.fillWidth: true
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: parent.width / 4.2
+            //Layout.fillWidth: true
             onClicked:kanjiList.updateLastItemIsSelected(5)
         }
         AppButton{
             id: _selectTodayItemsBtn
             text: qsTr("Items For Today")
-            Layout.preferredHeight: 100
-            //Layout.preferredWidth: parent.width / parent.columns
-            Layout.fillWidth: true
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: parent.width / 4.2
+            //Layout.fillWidth: true
             onClicked:kanjiList.updateAllCurrentDateItemsIsSelected()
         }
         AppButton{
             id: _confirmBtn
             text: qsTr("Confirm")
-            Layout.preferredHeight: 100
-            //Layout.preferredWidth: parent.width / parent.
-            Layout.fillWidth: true
+            Layout.preferredHeight: parent.height
+            Layout.preferredWidth: parent.width / 4.2
+            //Layout.fillWidth: true
             onClicked:_mainConfirmMsgDialog.open()
         }
     }
@@ -146,7 +153,8 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.bottomMargin: 200
         anchors.rightMargin: 20
-        width:100; height: 100
+        width: parent.width / 10
+        height: parent.width / 10
         onClicked: kanjiList.addNewListItems()
         opacity: 0.9
 
@@ -156,7 +164,7 @@ ApplicationWindow {
             verticalAlignment: Text.AlignVCenter
             color: "#023D54"
             text: "\u002B"
-            font.pointSize: 30
+            font.pixelSize: parent.width / 10
         }
     }
 

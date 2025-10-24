@@ -75,7 +75,7 @@ QString XMLReaderClass::readElement(QString tagName)
 
 void XMLReaderClass::replaceElementVal(QString xmlPath, QString tagName, QString newText)
 {
-    QFile file = QString(xmlPath);
+    QFile file(xmlPath);
 
     if(!file.open(QFile::ReadOnly | QFile::Text))
     {
