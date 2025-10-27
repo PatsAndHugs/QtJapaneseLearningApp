@@ -61,12 +61,12 @@ ApplicationWindow {
         anchors.top:_searchInput.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.bottom: _btnGrid.top
         anchors.bottomMargin: 95
         anchors.leftMargin: 20
         anchors.rightMargin: 20
         anchors.topMargin: 20
         spacing:10
+        height: Qt.platform.os === "android" ? parent.height * .50 : parent.height * .75//parent.height * .75
         model: _filterModel
 
         delegate: KanjiListCard{ id:_wrapper
@@ -90,7 +90,7 @@ ApplicationWindow {
         focus: true
     }
 
-    TextField {
+    SearchTextField {
         id: _searchInput
         anchors.top: parent.top
         anchors.right: parent.right
@@ -98,8 +98,8 @@ ApplicationWindow {
         placeholderText: "Search..."
         font.pixelSize: parent.width / 20
         onTextChanged: _filterModel.searchText = _searchInput.text
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+        height: parent.height * .05
+        backgroundColor: "white"
     }
 
     RowLayout{
@@ -110,7 +110,7 @@ ApplicationWindow {
         anchors.right:parent.right
         anchors.leftMargin: 10
         anchors.rightMargin: 10
-        anchors.bottomMargin: 10
+        anchors.bottomMargin: Qt.platform.os === "android" ? parent.height * .10 : 10
         height: parent.height / 10
         AppButton{
             id: _selectAllBtn
