@@ -26,7 +26,8 @@ Rectangle {
     Text{
         id:_textKanji
         color: _cardBase.lblTextColor
-        font.pointSize: 36
+        //font.pointSize: 36
+        font.pixelSize: Qt.platform.os === "android" ? parent.width / 15 : parent.width / 15
         horizontalAlignment: Text.AlignHCenter
         anchors.left: parent.left
         anchors.leftMargin: 50
@@ -38,7 +39,8 @@ Rectangle {
     Text{
         id:_textEnglishMeaning
         color: _cardBase.lblTextColor
-        font.pointSize: 15
+        //font.pointSize: 15
+        font.pixelSize: parent.width / 20
         horizontalAlignment: Text.AlignJustify
         anchors.left: parent.left
         anchors.leftMargin: 50
@@ -53,8 +55,9 @@ Rectangle {
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.top: parent.top
-        anchors.topMargin: 5
-        font.pointSize: 20
+        anchors.topMargin: parent.height * 0.20
+        //font.pointSize: 20
+        font.pixelSize: Qt.platform.os === "android" ? parent.width / 25 : parent.width / 30
     }
 
     Text{
@@ -64,8 +67,9 @@ Rectangle {
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 10
-        font.pointSize: 20
+        anchors.bottomMargin: parent.height * 0.20
+        //font.pointSize: 20
+        font.pixelSize: Qt.platform.os === "android" ? parent.width / 25 : parent.width / 30
     }
 
     MouseArea{
@@ -77,12 +81,12 @@ Rectangle {
         id:_isSelectedRadioBtn
         anchors.right: parent.right
         anchors.top: parent.top
-        anchors.topMargin: 30
-        anchors.rightMargin: 10
+        anchors.topMargin: _cardBase.height * 0.3
+        anchors.rightMargin: _cardBase.height * 0.1
 
         indicator: Rectangle {
-                implicitWidth: 20
-                implicitHeight: 40
+                implicitWidth: _cardBase.height / 5
+                implicitHeight: _cardBase.height / 2.5
                 radius: 10 // Makes it circular
                 border.color: _isSelectedRadioBtn.checked ? "#e6e657" : "#023D54"// Border color based on checked state
                 border.width: 2
@@ -91,7 +95,7 @@ Rectangle {
                     id:_kanjiListCardRadioBtnCenter
                     anchors.centerIn: parent
                     width: parent.width * 0.6
-                    height: parent.height - 10
+                    height: parent.height * 0.8
                     radius: width / 2
                     color: _isSelectedRadioBtn.checked ? "#e6e657" : "#023D54" // Inner circle color when checked
                     //visible: _isSelectedRadioBtn.checked // Only visible when checked

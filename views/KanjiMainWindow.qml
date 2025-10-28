@@ -66,7 +66,7 @@ ApplicationWindow {
         anchors.rightMargin: 20
         anchors.topMargin: 20
         spacing:10
-        height: Qt.platform.os === "android" ? parent.height * .50 : parent.height * .75//parent.height * .75
+        height: Qt.platform.os === "android" ? parent.height * 0.50 : parent.height * 0.75//parent.height * .75
         model: _filterModel
 
         delegate: KanjiListCard{ id:_wrapper
@@ -76,7 +76,7 @@ ApplicationWindow {
                                 onyomiText: model.onyomi
                                 lblTextColor: "#023D54"
                                 width: myListView.width
-                                height: 100
+                                height: Qt.platform.os === "android" ? myListView.height * 0.20 : myListView.height * 0.12
                                 color: "white"
                                 radioBtnChecked: model.isSelected
                                 MouseArea{anchors.fill: parent;
@@ -164,7 +164,7 @@ ApplicationWindow {
             verticalAlignment: Text.AlignVCenter
             color: "#023D54"
             text: "\u002B"
-            font.pixelSize: parent.width / 10
+            font.pixelSize: parent.width * 0.5
         }
     }
 
