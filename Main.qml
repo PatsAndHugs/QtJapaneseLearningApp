@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Effects
 import Qt.labs.settings 1.0
 import QtCore
+import QtGraphs
 
 //import JapaneseLearningApp.DbConnectionClass
 //import KanjiClass 1.0
@@ -69,12 +70,69 @@ ApplicationWindow {
         anchors.topMargin: 20
         anchors.bottomMargin: 20
 
-        Image{
-            id: _mainImg
-            source: "qrc:/image/resources/Ryza_and_the_holy_tower_of_Pynnor.png"
-            fillMode: Image.PreserveAspectCrop // Adjust as needed
+        // Image{
+        //     id: _mainImg
+        //     source: "qrc:/image/resources/Ryza_and_the_holy_tower_of_Pynnor.png"
+        //     fillMode: Image.PreserveAspectCrop // Adjust as needed
+        //     Layout.preferredHeight: parent.height / 2
+        //     Layout.fillWidth: true
+        // }
+
+        GraphsView {
             Layout.preferredHeight: parent.height / 2
             Layout.fillWidth: true
+
+            theme: GraphsTheme {
+                readonly property color c1: "white"
+                readonly property color c2: "transparent"
+                //colorScheme: GraphsTheme.ColorScheme.Light
+                theme: GraphsTheme.Theme.UserDefined
+                colorStyle: "Uniform"
+                backgroundColor: "lightblue"
+                backgroundVisible: false
+                seriesColors: ["#2CDE85", "#DBEB00"]
+                axisX.mainColor: c2
+                axisY.mainColor: c2
+                axisX.subColor: c2
+                axisY.subColor: c2
+                axisX.labelTextColor: c1
+                axisY.labelTextColor: c1
+                gridVisible: false
+
+            }
+            axisX: ValueAxis {
+                max: 5
+                tickInterval: 1
+                subTickCount: 9
+                labelDecimals: 1
+            }
+            axisY: ValueAxis {
+                max: 10
+                tickInterval: 1
+                subTickCount: 4
+                labelDecimals: 1
+            }
+
+            component Marker : Rectangle {
+                width: 16
+                height: 16
+                color: "#ffffff"
+                radius: width * 0.5
+                border.width: 4
+                border.color: "#000000"
+            }
+
+            LineSeries{
+                id: lineSeries
+                width: 4
+                pointDelegate: Marker{}
+            }
+
+            Component.onCompleted:{
+                for(var i = 0; i < userLogin.lineSeries.count;i++){
+                    lineSeries.append(userLogin.lineSeries.at(i).x, userLogin.lineSeries.at(i).y)
+                }
+            }
         }
 
         RowLayout{
