@@ -1,9 +1,10 @@
 #include "userloginclass.h"
 #include "xmlreaderclass.h"
 
-UserLoginClass::    UserLoginClass(QObject *parent)
+UserLoginClass::UserLoginClass(QObject *parent)
 {
     dbConnClass = new DbConnectionClass;
+    initLineSeries();
 }
 
 void UserLoginClass::setUsername(QString usernameVal)
@@ -90,5 +91,16 @@ void UserLoginClass::registerUser()
         });
         loop.exec();
     }
+}
+
+void UserLoginClass::initLineSeries()
+{
+    m_lineSeries = std::make_unique<QLineSeries>(this);
+    m_lineSeries->append(0, 0);
+    m_lineSeries->append(1, 2.1);
+    m_lineSeries->append(2, 3.3);
+    m_lineSeries->append(3, 2.1);
+    m_lineSeries->append(4, 4.9);
+    m_lineSeries->append(5, 3.0);
 }
 

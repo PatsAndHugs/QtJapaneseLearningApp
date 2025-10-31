@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlProperty>
 #include <QSettings>
+#include <QLineSeries>
 
 #include "dbconnectionclass.h"
 #include "network/apiconnectionclass.h"
@@ -15,10 +16,11 @@ class UserLoginClass : public QObject
     Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
     Q_PROPERTY(QString email READ email WRITE setEmail NOTIFY emailChanged)
     Q_PROPERTY(bool checkboxState READ checkboxState WRITE setCheckboxState NOTIFY checkboxStateChanged)
+    Q_PROPERTY(QLineSeries* lineSeries READ lineSeries NOTIFY lineSeriesChanged)
 
 public:
-    explicit UserLoginClass(QObject *parent = nullptr);
 
+    explicit UserLoginClass(QObject *parent = nullptr);
 
     QString username(){return m_username;}
     void setUsername(QString usernameVal);
@@ -35,6 +37,7 @@ public:
     Q_INVOKABLE QString getSavedUsername();
 
     Q_INVOKABLE bool getSavedLoginState();
+    QLineSeries* lineSeries()const {return m_lineSeries.get();}
 
 public slots:
 
@@ -45,6 +48,7 @@ public slots:
 
     bool getRegisterResult(){return m_registerResult;}
 
+
 signals:
 
     void usernameChanged();
@@ -54,6 +58,8 @@ signals:
     void registerFinished();
     void checkboxStateChanged();
     void registerWindowNotNeeded();
+    void lineSeriesChanged();
+
 private:
 
     QSettings settings;
@@ -64,6 +70,8 @@ private:
     bool m_loginResult = false;
     bool m_checkboxState = false;
     bool m_registerResult;
+    std::unique_ptr<QLineSeries> m_lineSeries;
+    void initLineSeries();
 
 };
 
