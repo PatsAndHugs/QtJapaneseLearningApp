@@ -1,10 +1,8 @@
 #include "userloginclass.h"
-#include "xmlreaderclass.h"
 
 UserLoginClass::UserLoginClass(QObject *parent)
 {
-    dbConnClass = new DbConnectionClass;
-    initLineSeries();
+    initBarGraphValues();
 }
 
 void UserLoginClass::setUsername(QString usernameVal)
@@ -38,6 +36,16 @@ QString UserLoginClass::getSavedUsername()
 bool UserLoginClass::getSavedLoginState()
 {
     return settings.value("loginstate").toBool();
+}
+
+void UserLoginClass::initBarGraphValues()
+{
+    m_barValues<<settings.value("lastdatecount").toInt()
+                <<settings.value("secondlastdatecount").toInt()
+                <<settings.value("thirdlastdatecount").toInt();
+    m_barValues<<settings.value("lastdate").toString()
+                <<settings.value("secondlastdate").toString()
+                <<settings.value("thirdlastdate").toString();
 }
 
 void UserLoginClass::checkLoginResult()
@@ -93,14 +101,4 @@ void UserLoginClass::registerUser()
     }
 }
 
-void UserLoginClass::initLineSeries()
-{
-    m_lineSeries = std::make_unique<QLineSeries>(this);
-    m_lineSeries->append(0, 0);
-    m_lineSeries->append(1, 2.1);
-    m_lineSeries->append(2, 3.3);
-    m_lineSeries->append(3, 2.1);
-    m_lineSeries->append(4, 4.9);
-    m_lineSeries->append(5, 3.0);
-}
 
