@@ -100,39 +100,53 @@ ApplicationWindow {
                 gridVisible: false
 
             }
-            axisX: ValueAxis {
-                max: 5
-                tickInterval: 1
-                subTickCount: 9
-                labelDecimals: 1
+            // axisX: ValueAxis {
+            //     max: 5
+            //     tickInterval: 1
+            //     subTickCount: 9
+            //     labelDecimals: 1
+            // }
+            axisX: BarCategoryAxis {
+                id:_barCategoryAxis
+                categories: userLogin.barCategory//["2023", "2024", "2025"]
+                lineVisible: false
             }
             axisY: ValueAxis {
-                max: 10
-                tickInterval: 1
+                min: 0
+                max: 20
                 subTickCount: 4
-                labelDecimals: 1
             }
-
-            component Marker : Rectangle {
-                width: 16
-                height: 16
-                color: "#ffffff"
-                radius: width * 0.5
-                border.width: 4
-                border.color: "#000000"
-            }
-
-            LineSeries{
-                id: lineSeries
-                width: 4
-                pointDelegate: Marker{}
-            }
-
-            Component.onCompleted:{
-                for(var i = 0; i < userLogin.lineSeries.count;i++){
-                    lineSeries.append(userLogin.lineSeries.at(i).x, userLogin.lineSeries.at(i).y)
+            BarSeries {
+                id: _barSeries
+                BarSet {
+                    color:"yellow"
+                    values: userLogin.barValues
                 }
             }
+            Component.onCompleted:{
+               // _barCategoryAxis.append(userLogin.barSeries)
+            }
+
+            // component Marker : Rectangle {
+            //     width: 16
+            //     height: 16
+            //     color: "#ffffff"
+            //     radius: width * 0.5
+            //     border.width: 4
+            //     border.color: "#000000"
+            // }
+
+            // LineSeries{
+            //     id: lineSeries
+            //     width: 4
+            //     pointDelegate: Marker{}
+            // }
+
+            // Component.onCompleted:{
+            //     for(var i = 0; i < userLogin.lineSeries.count;i++){
+            //         lineSeries.append(userLogin.lineSeries.at(i).x, userLogin.lineSeries.at(i).y)
+            //     }
+            // }
         }
 
         RowLayout{
