@@ -235,9 +235,27 @@ void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
                     m_loginResult = false;
                 }
 
-                QString newString = rootObject.value("body").toString();
-                newString.remove("\"");
-                m_userId = newString;
+                // QString newString = rootObject.value("body").toString();
+                // newString.remove("\"");
+                // m_userId = newString;
+                QString jsonText = rootObject.value("body").toString();
+                QByteArray jsonData = jsonText.toUtf8();
+                QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+
+                if(!doc.isNull() && doc.isArray())
+                {
+                    QJsonArray jsonArray = doc.array();
+                    m_userId = jsonArray.at(0)["UserId"].toString();
+                    qDebug()<<rootObject.value("body").toString();
+                    settings.setValue("lastdate", jsonArray.at(1)["Date"].toString());
+                    settings.setValue("lastdatecount", jsonArray.at(1)["DateCount"].toInt());
+
+                    settings.setValue("secondlastdate", jsonArray.at(2)["Date"].toString());
+                    settings.setValue("secondlastdatecount", jsonArray.at(2)["DateCount"].toInt());
+
+                    settings.setValue("thirdlastdate", jsonArray.at(3)["Date"].toString());
+                    settings.setValue("thirdlastdatecount", jsonArray.at(3)["DateCount"].toInt());
+                }
             }
 
         }
