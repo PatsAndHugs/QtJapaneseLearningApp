@@ -43,7 +43,7 @@ void UserLoginClass::initBarGraphValues()
     m_barValues<<settings.value("lastdatecount").toInt()
                 <<settings.value("secondlastdatecount").toInt()
                 <<settings.value("thirdlastdatecount").toInt();
-    m_barValues<<settings.value("lastdate").toString()
+    m_barCategory<<settings.value("lastdate").toString()
                 <<settings.value("secondlastdate").toString()
                 <<settings.value("thirdlastdate").toString();
 }

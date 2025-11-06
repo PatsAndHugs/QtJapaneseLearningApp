@@ -70,14 +70,6 @@ ApplicationWindow {
         anchors.topMargin: 20
         anchors.bottomMargin: 20
 
-        // Image{
-        //     id: _mainImg
-        //     source: "qrc:/image/resources/Ryza_and_the_holy_tower_of_Pynnor.png"
-        //     fillMode: Image.PreserveAspectCrop // Adjust as needed
-        //     Layout.preferredHeight: parent.height / 2
-        //     Layout.fillWidth: true
-        // }
-
         GraphsView {
             Layout.preferredHeight: parent.height / 2
             Layout.fillWidth: true
@@ -100,12 +92,7 @@ ApplicationWindow {
                 gridVisible: false
 
             }
-            // axisX: ValueAxis {
-            //     max: 5
-            //     tickInterval: 1
-            //     subTickCount: 9
-            //     labelDecimals: 1
-            // }
+
             axisX: BarCategoryAxis {
                 id:_barCategoryAxis
                 categories: userLogin.barCategory//["2023", "2024", "2025"]
@@ -122,31 +109,12 @@ ApplicationWindow {
                     color:"yellow"
                     values: userLogin.barValues
                 }
+
+                BarModelMapper{
+
+                }
             }
-            Component.onCompleted:{
-               // _barCategoryAxis.append(userLogin.barSeries)
-            }
 
-            // component Marker : Rectangle {
-            //     width: 16
-            //     height: 16
-            //     color: "#ffffff"
-            //     radius: width * 0.5
-            //     border.width: 4
-            //     border.color: "#000000"
-            // }
-
-            // LineSeries{
-            //     id: lineSeries
-            //     width: 4
-            //     pointDelegate: Marker{}
-            // }
-
-            // Component.onCompleted:{
-            //     for(var i = 0; i < userLogin.lineSeries.count;i++){
-            //         lineSeries.append(userLogin.lineSeries.at(i).x, userLogin.lineSeries.at(i).y)
-            //     }
-            // }
         }
 
         RowLayout{

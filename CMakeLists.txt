@@ -61,6 +61,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/LoginWindow.qml
         QML_FILES views/RegisterWindow.qml
         QML_FILES views/SearchTextField.qml
+        SOURCES
 )
 
 # add resource items here
