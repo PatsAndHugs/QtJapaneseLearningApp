@@ -181,21 +181,17 @@ ApplicationWindow {
         }
 
         AppButton{
-            text: "Learn"
+            text: "Learn Kanji"
             Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            onClicked:{
-                var component = Qt.createComponent("views/LearnMainWindow.qml")
-                if(component.status === Component.Ready){
-                    var newWindow = component.createObject(_mainAppWindow);
-                    if(newWindow){
-                        console.log("clicked")
-                        _mainAppWindow.hide()
-                        newWindow.show()
-                    }
-                }
-            }
+            onClicked: kanjiList.addItemsForLearning()
+        }
 
+        AppButton{
+            text: "Learn Vocab"
+            Layout.preferredHeight: parent.height / 10
+            Layout.fillWidth: true
+            onClicked: vocabList.addItemsForLearning()
         }
 
         AppButton{
@@ -215,8 +211,38 @@ ApplicationWindow {
 
     Connections{
         target: kanjiList
+        function onFetchedKanjiListFromApiForLearning(){
+            var component = Qt.createComponent("views/LearnMainWindow.qml")
+            if(component.status === Component.Ready){
+                var newWindow = component.createObject(_mainAppWindow);
+                if(newWindow){
+                    console.log("clicked")
+                    _mainAppWindow.hide()
+                    newWindow.show()
+                }
+            }
+        }
+    }
+
+    Connections{
+        target: kanjiList
         function onFetchedKanjiListFromApi(){
             var component = Qt.createComponent("views/KanjiMainWindow.qml")
+            if(component.status === Component.Ready){
+                var newWindow = component.createObject(_mainAppWindow);
+                if(newWindow){
+                    console.log("clicked")
+                    _mainAppWindow.hide()
+                    newWindow.show()
+                }
+            }
+        }
+    }
+
+    Connections{
+        target: vocabList
+        function onFetchedVocabListFromApiForLearning(){
+            var component = Qt.createComponent("views/LearnVocabMainWindow.qml")
             if(component.status === Component.Ready){
                 var newWindow = component.createObject(_mainAppWindow);
                 if(newWindow){
