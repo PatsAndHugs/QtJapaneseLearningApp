@@ -30,6 +30,21 @@ bool VocabList::setItemAt(int index, const VocabListStruct &item)
     return true;
 }
 
+void VocabList::setKanjiText(QString newVal)
+{
+    m_kanjiText = newVal;
+}
+
+void VocabList::setKanjiMeaning(QString newVal)
+{
+    m_kanjiMeaning = newVal;
+}
+
+void VocabList::setKanjiReading(QString newVal)
+{
+    m_kanjiReading = newVal;
+}
+
 void VocabList::appendItem()
 {
     emit preVocabItemAppended();
@@ -63,6 +78,34 @@ void VocabList::addItems()
             emit postVocabItemAppended();
         }
         emit fetchedVocabListFromApi();
+    });
+
+    loop.exec();
+}
+
+void VocabList::addItemsForLearning()
+{
+    mItems.clear();
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    apiConnClass->fetchVocabListForUser();
+
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::vocabOutputListChanged, &loop, &QEventLoop::quit);
+
+    connect(apiConnClass.get(), &ApiConnectionClass::vocabOutputListChanged,this, [&](){
+        QList<VocabListStruct> itemList = apiConnClass->getVocabOutputList();
+        for(int i = 0;i < itemList.count(); i++)
+        {
+            emit preVocabItemAppended();
+
+            mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
+                           itemList[i].vocabReading,itemList[i].lastDateAnswered,
+                           itemList[i].nextDateToAnswer,itemList[i].correctStreak,
+                           itemList[i].isSelected});
+
+            emit postVocabItemAppended();
+        }
+        emit fetchedVocabListFromApiForLearning();
     });
 
     loop.exec();
@@ -177,6 +220,24 @@ void VocabList::updateListDatesAfteResult(QList<VocabListStruct> list)
                 localItem.nextDateToAnswer = item.nextDateToAnswer;
                 localItem.correctStreak = item.correctStreak;
             }
+        }
+    }
+}
+
+void VocabList::setItemToShowInLearnWindow()
+{
+    for(VocabListStruct &item : mItems)
+    {
+        if(item.isSelected == true)
+        {
+            qDebug()<<"setItemToShowInLearnWindow";
+            m_kanjiText = item.vocabKanji;
+            m_kanjiMeaning = item.vocabMeaning;
+            m_kanjiReading = item.vocabReading;
+            emit kanjiTextChanged();
+            emit kanjiMeaningChanged();
+            emit kanjiReadingChanged();
+            return;
         }
     }
 }
