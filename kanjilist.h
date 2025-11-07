@@ -89,9 +89,13 @@ signals:
     void fetchedKanjiListFromApi();
     void fetchedNewKanjiListFromApi();
 
+    void fetchedKanjiListFromApiForLearning();
+
+
 public slots:
     void appendItem();
     void addItems();
+    void addItemsForLearning();
     void clearItems();
     void updateLastItemIsSelected(int count);
     void updateAllItemsIsSelected();

@@ -101,6 +101,33 @@ void KanjiList::addItems()
     loop.exec();
 }
 
+void KanjiList::addItemsForLearning()
+{
+    mItems.clear();
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    apiConnClass->fetchKanjiListForUser();
+
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::kanjiOutputListChanged, &loop, &QEventLoop::quit);
+
+    connect(apiConnClass.get(), &ApiConnectionClass::kanjiOutputListChanged,this, [&](){
+        QList<KanjiListStruct> itemList = apiConnClass->getKanjiOutputList();
+        for(int i = 0;i < itemList.count(); i++)
+        {
+            emit preItemAppended();
+            mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
+                           itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
+                           itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
+                           itemList[i].isSelected});
+
+            emit postItemAppended();
+        }
+        emit fetchedKanjiListFromApiForLearning();
+    });
+
+    loop.exec();
+}
+
 void KanjiList::clearItems()
 {
     dbClass->clearDbKanjiList();
