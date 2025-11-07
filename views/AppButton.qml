@@ -4,6 +4,7 @@ import QtQuick.Controls.Basic
 Button {
     id: _baseBtn
     property alias btnBgColor: _rect.color
+    property alias textBottomPadding: _text.bottomPadding
     font.pixelSize: parent.width / 20
     contentItem:Text {
         id: _text
