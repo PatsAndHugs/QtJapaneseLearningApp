@@ -114,6 +114,7 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                 //get kanjiid number Kj-1
                 if(lastKanjiId !="")
                 {
+                    qDebug()<<"insertKanji lastid isnot empty";
                     QString newString = lastKanjiId.remove("\"");
                     newString = newString.remove("KI-");
                     int counterId = newString.toInt();
@@ -121,6 +122,7 @@ void ApiConnectionClass::fetchAdditionalKanjiListForUser()
                     for(int i = (counterId + 1); i <= (counterId + 5); i++)
                     {
                         QString newKanjiId = "KI-" + QString::number(i);
+                        qDebug()<<newKanjiId;
                         kanjiIdList.append(newKanjiId);
                     }
                 }
@@ -148,7 +150,7 @@ void ApiConnectionClass::fetchAdditionalVocabListForUser()
     QJsonDocument userDoc(userData);
     QByteArray userJsonData = userDoc.toJson();
 
-    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/kanji_resource/per_user/insert_kanji");
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/vocab_resource/per_user/insert");
     QNetworkRequest request(serviceUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -526,8 +528,9 @@ void ApiConnectionClass::insertNewKanjiForUser(QJsonArray arrayToInsert)
     QNetworkRequest request(dbInsertUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QJsonObject insertData;
-    insertData["VocabIdList"] = arrayToInsert;
+    insertData["KanjiIdList"] = arrayToInsert;
     insertData["UserId"] =  settings.value("userid").toString();
+    qDebug()<<"UserId"<<settings.value("userid").toString();
     QJsonDocument userDoc(insertData);
     QByteArray dataToInsert = userDoc.toJson();
 
