@@ -16,13 +16,23 @@ ApplicationWindow {
     y: Screen.height / 2 - height / 2
     title: qsTr("Study Kanji Window")
     color:"#023D54"
+
+    Component.onCompleted: {
+        if (Qt.platform.os === "android") {
+            _learnKanjiWindow.width = Screen.width
+            _learnKanjiWindow.height = Screen.height
+        }
+    }
+
     AppButton{
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.topMargin: 10
+        font.pixelSize: parent.width * .03
         text:qsTr("back to Main")
-        width: 150
-        height: 50
+        width: Qt.platform.os === "android" ? parent.width * .2 : parent.width * .15
+        height: parent.height * .04
+        textBottomPadding: Qt.platform.os === "android" ? height * .5 : height * .2
         onClicked:{
             kanjiList.clearAllSelectedItems()
             _learnKanjiWindow.close()
@@ -36,19 +46,19 @@ ApplicationWindow {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.verticalCenter
-        anchors.topMargin: 100
+        anchors.topMargin: parent.height * .10
         spacing: 10
         Rectangle {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight: 100
-            Layout.preferredWidth: 100
+            Layout.preferredHeight:  Qt.platform.os === "android" ? parent.height * .25 : parent.height * .2
+            Layout.preferredWidth: parent.width * .5
             color:"transparent"
             Label{
                 id:_learnKanjiTxt
                 anchors.centerIn: parent
-                text:kanjiList.kanjiTxt
-                font.pointSize: 100
+                text:"月"//kanjiList.kanjiTxt
+                font.pixelSize: parent.width * .20
                 color:"white"
             }
         }
@@ -56,42 +66,42 @@ ApplicationWindow {
         Rectangle {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight: 100
-            Layout.preferredWidth: 100
+            Layout.preferredHeight: parent.height * .2
+            Layout.preferredWidth: parent.width * .5
             color:"transparent"
             Label{
                 id:_learnEnglishMeaningTxt
                 anchors.centerIn: parent
                 text:kanjiList.englishNameTxt
-                font.pointSize: 30
+                font.pixelSize: parent.width * .05
                 color:"white"
             }
         }
         Rectangle {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight: 100
-            Layout.preferredWidth: 100
+            Layout.preferredHeight: parent.height * .2
+            Layout.preferredWidth: parent.width * .5
             color:"transparent"
             Label{
                 id:_learnKunyomiTxt
                 anchors.centerIn: parent
                 text:kanjiList.kunyomiTxt
-                font.pointSize: 30
+                font.pixelSize: parent.width * .05
                 color:"white"
             }
         }
         Rectangle {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight: 100
-            Layout.preferredWidth: 100
+            Layout.preferredHeight: parent.height * .2
+            Layout.preferredWidth: parent.width * .5
             color:"transparent"
             Label{
                 id:_learnOnyomiTxt
                 anchors.centerIn: parent
                 text:kanjiList.onyomiTxt
-                font.pointSize: 30
+                font.pixelSize: parent.width * .05
                 color:"white"
             }
         }
@@ -112,8 +122,8 @@ ApplicationWindow {
             id:_drawBtn
             text:qsTr("DRAW")
             btnBgColor: _drawBtn.hovered ? "#ffff66" : "white"
-            Layout.preferredHeight: 50
-            Layout.preferredWidth: 100
+            Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
+            Layout.preferredWidth: parent.width * .15
             Layout.column: 3
             onClicked: {
                 console.log("draw")
@@ -125,8 +135,8 @@ ApplicationWindow {
             id:_eraseBtn
             text:qsTr("ERASE")
             btnBgColor: _eraseBtn.hovered ? "#ffff66" : "white"
-            Layout.preferredHeight: 50
-            Layout.preferredWidth: 100
+            Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
+            Layout.preferredWidth: parent.width * .15
             Layout.column: 4
             onClicked: {
                 console.log("draw")

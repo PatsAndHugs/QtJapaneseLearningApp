@@ -21,6 +21,13 @@ ApplicationWindow {
         id:_loginPopup
     }
 
+    Component.onCompleted: {
+        if (Qt.platform.os === "android") {
+            _learnMainWindow.width = Screen.width
+            _learnMainWindow.height = Screen.height
+        }
+    }
+
     header: MenuBar{
         MenuBarItem{
             text: qsTr("Menu")
@@ -52,12 +59,12 @@ ApplicationWindow {
         anchors.top:_searchInput.bottom
         anchors.right: parent.right
         anchors.left: parent.left
-        anchors.bottom: parent.bottom
         anchors.bottomMargin: 95
         anchors.leftMargin: 20
         anchors.rightMargin: 20
         anchors.topMargin: 20
         spacing:10
+        height: Qt.platform.os === "android" ? parent.height * 0.50 : parent.height * 0.75//parent.height * .75
         model: _filterModel
 
         delegate: KanjiListCard{ id:_wrapper
@@ -67,7 +74,7 @@ ApplicationWindow {
                                 onyomiText: model.onyomi
                                 lblTextColor: "#023D54"
                                 width: _learnListView.width
-                                height: 100
+                                height: Qt.platform.os === "android" ? _learnListView.height * 0.20 : _learnListView.height * 0.12
                                 color: "white"
                                 radioBtnChecked: model.isSelected
                                 MouseArea{anchors.fill: parent;
@@ -87,16 +94,16 @@ ApplicationWindow {
         focus: true
     }
 
-    TextField {
+    SearchTextField {
         id: _searchInput
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.left: parent.left
         placeholderText: "Search..."
-        font.pointSize: 15
+        font.pixelSize: parent.width / 20
         onTextChanged: _filterModel.searchText = _searchInput.text
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+        height: parent.height * .05
+        backgroundColor: "white"
     }
 
 
@@ -106,7 +113,8 @@ ApplicationWindow {
         anchors.right: parent.right
         anchors.bottomMargin: 200
         anchors.rightMargin: 20
-        width:100; height: 100
+        width: parent.width / 10
+        height: parent.width / 10
         onClicked: kanjiList.addNewListItems()
         opacity: 0.9
 
@@ -116,7 +124,7 @@ ApplicationWindow {
             verticalAlignment: Text.AlignVCenter
             color: "#023D54"
             text: "\u002B"
-            font.pointSize: 30
+            font.pixelSize: parent.width * 0.5
         }
     }
 

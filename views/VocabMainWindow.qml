@@ -21,55 +21,27 @@ ApplicationWindow {
         id:_loginPopup
     }
 
+    Component.onCompleted: {
+        if (Qt.platform.os === "android") {
+            _vocabMainWindow.width = Screen.width
+            _vocabMainWindow.height = Screen.height
+        }
+    }
+
     header: MenuBar{
         MenuBarItem{
-            text: qsTr("User")
-            onTriggered:{
-                console.log("triggered");
-                if(userLogin.getLoginStatus() === true)
-                    _userMenuItem.text ="Logout"
-                else
-                    _userMenuItem.text ="Login"
-            }
+            text: qsTr("Menu")
             menu:Menu{
                 MenuItem{
                     id:_userMenuItem
-                    text: qsTr("Login")
+                    text: qsTr("Return To Main Menu")
                     onClicked:{
-
-                        if(userLogin.getLoginStatus() === true){
-                            vocabList.clearItems()
-                            dbConn.logoutUser()
-                        }
-                        else{
-                            _loginPopup.open()
-                        }
+                        _mainAppWindow.show()
+                        _vocabMainWindow.destroy()
                     }
                 }
                 MenuItem{text:"Exit"}
             }
-        }
-
-        MenuBarItem{
-            text: qsTr("Connection Config")
-            menu:Menu {
-                id:_menu
-                MenuItem{
-                    text:"Edit Connection"
-                    onClicked:{
-                        var component = Qt.createComponent("DbConnWindow.qml")
-                        if(component.status === Component.Ready){
-                            var newWindow = component.createObject(_vocabMainWindow);
-                            newWindow.show()
-                        }
-                        else
-                            console.log("Error loading component:",component.errorString())
-                    }
-                }
-
-                MenuItem{text:"Exit"}
-            }
-
         }
     }
 
