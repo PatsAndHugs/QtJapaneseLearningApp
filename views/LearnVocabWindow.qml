@@ -24,71 +24,71 @@ ApplicationWindow {
         }
     }
 
-    AppButton{
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.topMargin: 10
-        font.pixelSize: parent.width * .03
-        text:qsTr("back to Main")
-        width: Qt.platform.os === "android" ? parent.width * .2 : parent.width * .15
-        height: parent.height * .04
-        textBottomPadding: Qt.platform.os === "android" ? height * .5 : height * .2
-        onClicked:{
-            kanjiList.clearAllSelectedItems()
-            _learnVocabWindow.close()
-            _learnVocabMainWindow.show()
-        }
-    }
-
-    ColumnLayout{
-        id:_learnVocabCol
+    GridLayout{
+        id:_learnVocabGrid
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.verticalCenter
-        anchors.topMargin: parent.height * .10
-        spacing: 10
-        Rectangle {
+        anchors.topMargin: Qt.platform.os === "android" ? parent.height * .07 : parent.height * .05
+        anchors.rightMargin: parent.width * .01
+        columns:3
+        ColumnLayout{
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight:  Qt.platform.os === "android" ? parent.height * .25 : parent.height * .2
-            Layout.preferredWidth: parent.width * .5
-            color:"transparent"
-            Label{
-                id:_learnKanjiTxt
-                anchors.centerIn: parent
-                text:vocabList.kanjiText
-                font.pixelSize: parent.width * .20
-                color:"white"
+            Layout.row: 0
+            Layout.column: 0
+            Layout.columnSpan: 1
+            Layout.alignment: Qt.AlignTop
+            Rectangle{
+                Layout.fillWidth: true
+                Layout.preferredHeight: 120
+                Layout.leftMargin: 5
+                color:"lightgreen"
+                radius: 5
+                Label{
+                    id:_learnVocabTxt
+                    anchors.centerIn: parent
+                    text:"一人"//vocabList.kanjiText
+                    font.pixelSize: parent.width * .30
+                    color:"#023D54"
+                }
+            }
+            Rectangle{
+                Layout.fillWidth: true
+                Layout.preferredHeight: 30
+                Layout.leftMargin: 5
+                color:"yellow"
+                radius: 5
+                Label{
+                    id:_learnVocabLevel
+                    anchors.centerIn: parent
+                    text:"jlpt n5"//vocabList.kanjiText
+                    font.pixelSize: parent.width * .10
+                    color:"#023D54"
+                }
             }
         }
 
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignVCenters
-            Layout.preferredHeight: parent.height * .2
-            Layout.preferredWidth: parent.width * .5
-            color:"transparent"
-            Label{
-                id:_learnEnglishMeaningTxt
-                anchors.centerIn: parent
-                text:vocabList.kanjiMeaning
-                font.pixelSize: parent.width * .05
-                color:"white"
+        ListView{
+            id:_itemList
+            Layout.preferredHeight: _learnVocabGrid.height
+            Layout.preferredWidth: _learnVocabWindow.width * .75
+            Layout.row: 0
+            Layout.column: 1
+            Layout.columnSpan: 2
+            spacing: 10
+            model: ListModel{
+                ListElement{ wordType:"Noun"; meaning:"being alone; being by oneself" }
+                ListElement{ wordType:"Noun"; meaning:"one person​"}
             }
-        }
-        Rectangle {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignVCenter
-            Layout.preferredHeight: parent.height * .2
-            Layout.preferredWidth: parent.width * .5
-            color:"transparent"
-            Label{
-                id:_learnKunyomiTxt
-                anchors.centerIn: parent
-                text:vocabList.kanjiReading
-                font.pixelSize: parent.width * .05
-                color:"white"
+
+            delegate: LearnVocabListCard{ id:_wrapper
+                                    wordType: model.wordType//model.vocabKanji
+                                    englishMeaning: model.meaning//model.vocabMeaning
+                                    lblTextColor: "#023D54"
+                                    width: _itemList.width
+                                    height: Qt.platform.os === "android" ? _itemList.height * 0.20 : _itemList.height * 0.12
+                                    color: "white"
             }
         }
     }
@@ -104,32 +104,7 @@ ApplicationWindow {
         anchors.leftMargin: 10
         anchors.bottomMargin: 10
         columns:5
-        AppButton{
-            id:_drawBtn
-            text:qsTr("DRAW")
-            btnBgColor: _drawBtn.hovered ? "#ffff66" : "white"
-            Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
-            Layout.preferredWidth: parent.width * .15
-            Layout.column: 3
-            onClicked: {
-                console.log("draw")
-                _canvas.penColor = "black"
-                _canvas.penLineWidth = 3
-            }
-        }
-        AppButton{
-            id:_eraseBtn
-            text:qsTr("ERASE")
-            btnBgColor: _eraseBtn.hovered ? "#ffff66" : "white"
-            Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
-            Layout.preferredWidth: parent.width * .15
-            Layout.column: 4
-            onClicked: {
-                console.log("draw")
-                _canvas.penColor = "gray"
-                _canvas.penLineWidth = 50
-            }
-        }
+
         Rectangle{
             Layout.columnSpan: 5
             Layout.fillWidth: true
@@ -141,7 +116,7 @@ ApplicationWindow {
                 property real lastX
                 property real lastY
                 property color penColor
-                property real penLineWidth
+                property real penLineWidth: 3
                 anchors.fill: parent
                 onPaint: {
                     var ctx = getContext('2d')
@@ -171,6 +146,55 @@ ApplicationWindow {
                 }
 
             }
+        }
+
+        AppButton{
+            id:_drawBtn
+            Layout.alignment: Qt.AlignTop
+            text:qsTr("DRAW")
+            btnBgColor: "#ffff66"
+            Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
+            Layout.preferredWidth: parent.width * .15
+            Layout.column: 3
+            onClicked: {
+                console.log("draw")
+                _drawBtn.btnBgColor = "#ffff66"
+                _eraseBtn.btnBgColor = "white"
+                _canvas.penColor = "black"
+                _canvas.penLineWidth = 3
+            }
+        }
+        AppButton{
+            id:_eraseBtn
+            Layout.alignment: Qt.AlignTop
+            text:qsTr("ERASE")
+            btnBgColor: "white"
+            Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
+            Layout.preferredWidth: parent.width * .15
+            Layout.column: 4
+            onClicked: {
+                console.log("erase")
+                _drawBtn.btnBgColor = "white"
+                _eraseBtn.btnBgColor = "#ffff66"
+                _canvas.penColor = "gray"
+                _canvas.penLineWidth = 50
+            }
+        }
+    }
+
+    AppButton{
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.topMargin: 10
+        font.pixelSize: parent.width * .03
+        text:qsTr("back to Main")
+        width: Qt.platform.os === "android" ? parent.width * .2 : parent.width * .15
+        height: parent.height * .04
+        textBottomPadding: Qt.platform.os === "android" ? height * .5 : height * .2
+        onClicked:{
+            kanjiList.clearAllSelectedItems()
+            _learnVocabWindow.close()
+            _learnVocabMainWindow.show()
         }
     }
 }
