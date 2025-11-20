@@ -31,6 +31,9 @@ QVariant VocabListModel::data(const QModelIndex &index, int role) const
     case VocabReadingRole:
         return QVariant(item.vocabReading);
 
+    case JlptLevelRole:
+        return QVariant(item.jlptLevel);
+
     case IsSelectedRole:
         return QVariant(item.isSelected);
     }
@@ -54,6 +57,10 @@ bool VocabListModel::setData(const QModelIndex &index, const QVariant &value, in
 
     case VocabReadingRole:
         item.vocabReading = value.toString();
+        break;
+
+    case JlptLevelRole:
+        item.jlptLevel = value.toString();
         break;
 
     case IsSelectedRole:
@@ -83,6 +90,7 @@ QHash<int, QByteArray> VocabListModel::roleNames() const
     names[VocabKanjiRole] = "vocabKanji";
     names[VocabMeaningRole] = "vocabMeaning";
     names[VocabReadingRole] = "vocabReading";
+    names[JlptLevelRole] = "jlptLevel";
     names[IsSelectedRole] = "isSelected";
     return names;
 }
@@ -143,7 +151,7 @@ void VocabListModel::updateSelection(VocabList *list)
             {
                 QModelIndex changedIndex = index(newSelectionList[i],0);
                 QVector<int> changedRoles;
-                changedRoles <<IsSelectedRole << VocabKanjiRole << VocabReadingRole << VocabMeaningRole;
+                changedRoles <<IsSelectedRole << VocabKanjiRole << VocabReadingRole << VocabMeaningRole << JlptLevelRole;
                 emit dataChanged(changedIndex,changedIndex,changedRoles);
                 qDebug()<<"updateSelection"<<newSelectionList.count();
                 qDebug()<<"current index "<<newSelectionList[i];

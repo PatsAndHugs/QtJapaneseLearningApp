@@ -20,6 +20,7 @@ public:
         VocabKanjiRole = Qt::UserRole,
         VocabMeaningRole,
         VocabReadingRole,
+        JlptLevelRole,
         IsSelectedRole
     };
 
