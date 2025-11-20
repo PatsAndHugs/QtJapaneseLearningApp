@@ -61,6 +61,7 @@ void VocabQuiz::getNextItem()
                 vocabList.at(currentListIndex).vocabReading,
                 QDate::currentDate().toString("yyyy-MM-dd"),
                 nextDate.toString("yyyy-MM-dd"),
+                vocabList.at(currentListIndex).jlptLevel,
                 ++currentCorrectCounter,
                 true
             });
@@ -117,6 +118,7 @@ void VocabQuiz::skipItem()
             vocabList.at(currentListIndex).vocabReading,
             QDate::currentDate().toString("yyyy-MM-dd"),
             nextDate.toString("yyyy-MM-dd"),
+            vocabList.at(currentListIndex).jlptLevel,
             currentCorrectCounter,
             true
         });
