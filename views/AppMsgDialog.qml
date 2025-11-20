@@ -17,8 +17,8 @@ Dialog {
    // signal cancelled()
 
     modal: true
-    width: 400
-    height: 200
+    width: parent.width * .5
+    height: parent.height * .2
 
     contentItem: Rectangle {
         color: "white"
@@ -31,7 +31,8 @@ Dialog {
 
             Text {
                 id: messageText
-                font.pointSize: 18
+                font.pixelSize: Qt.platform.os === "android" ? parent.width * .15 : parent.width * .1
+                fontSizeMode: Text.Fit
                 font.bold: true
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignHCenter
@@ -46,7 +47,7 @@ Dialog {
                 AppButton {
                     id: acceptButton
                     text: "OK"
-                    font.pointSize: 12
+                    font.pixelSize: _rootDialog.width * .05
                     onClicked: {
                         _rootDialog.accepted()
                         _rootDialog.close()
@@ -56,7 +57,7 @@ Dialog {
                 AppButton {
                     id: cancelButton
                     text: "Cancel"
-                    font.pointSize: 12
+                    font.pixelSize: _rootDialog.width * .05
                     onClicked: {
                         _rootDialog.reject()
                         _rootDialog.close()
