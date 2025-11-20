@@ -38,6 +38,9 @@ QVariant KanjiListModel::data(const QModelIndex &index, int role) const
     case KanjiEnglishNameRole:
         return QVariant(item.kanjiEnglishName);
 
+    case JpltLevelRole:
+        return QVariant(item.jlptLevel);
+
     case IsSelectedRole:
         return QVariant(item.isSelected);
     }
@@ -65,6 +68,10 @@ bool KanjiListModel::setData(const QModelIndex &index, const QVariant &value, in
 
     case KanjiEnglishNameRole:
         item.kanjiEnglishName = value.toString();
+        break;
+
+    case JpltLevelRole:
+        item.jlptLevel = value.toString();
         break;
 
     case IsSelectedRole:
@@ -96,6 +103,7 @@ QHash<int, QByteArray> KanjiListModel::roleNames() const
     names[KunyomiRole] = "kunyomi";
     names[OnyomiRole] = "onyomi";
     names[KanjiEnglishNameRole] = "kanjiEnglishName";
+    names[JpltLevelRole] = "jpltLevel";
     names[IsSelectedRole] = "isSelected";
     return names;
 }
@@ -157,7 +165,7 @@ void KanjiListModel::updateSelection(KanjiList *list)
             {
                 QModelIndex changedIndex = index(newSelectionList[i],0);
                 QVector<int> changedRoles;
-                changedRoles <<IsSelectedRole << KanjiRole << KanjiEnglishNameRole << OnyomiRole << KunyomiRole;
+                changedRoles <<IsSelectedRole << KanjiRole << KanjiEnglishNameRole << OnyomiRole << KunyomiRole << JpltLevelRole;
                 emit dataChanged(changedIndex,changedIndex,changedRoles);
                 qDebug()<<"updateSelection"<<newSelectionList.count();
                 qDebug()<<"current index "<<newSelectionList[i];

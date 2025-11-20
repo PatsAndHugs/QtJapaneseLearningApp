@@ -22,6 +22,7 @@ public:
         KunyomiRole,
         OnyomiRole,
         KanjiEnglishNameRole,
+        JpltLevelRole,
         IsSelectedRole
     };
 
