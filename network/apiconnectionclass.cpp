@@ -55,6 +55,7 @@ void ApiConnectionClass::fetchKanjiListForUser()
                                 value["KanjiMeaning"].toString(),
                                 value["LastDateAnswered"].toString(),
                                 value["NextDateAnswered"].toString(),
+                                value["JlptLevel"].toString(),
                                 value["CorrectStreak"].toInt(),
                                 false
                                 );
@@ -741,6 +742,7 @@ void ApiConnectionClass::addNewItemsToKanjiList()
                             value["KanjiMeaning"].toString(),
                             value["LastDateAnswered"].toString(),
                             value["NextDateAnswered"].toString(),
+                            value["JlptLevel"].toString(),
                             value["CorrectStreak"].toInt(),
                             false
                             );
