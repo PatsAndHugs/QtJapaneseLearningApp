@@ -68,7 +68,6 @@ ApplicationWindow {
 
         delegate: KanjiListCard{ id:_wrapper
                                 kanjiText: model.vocabKanji
-                                //englishMeaningText: model.
                                 kunyomiText: model.vocabMeaning
                                 onyomiText: model.vocabReading
                                 lblTextColor: "#023D54"
@@ -80,13 +79,7 @@ ApplicationWindow {
                                     onClicked: {
                                         _vocabListView.currentIndex = index
                                         model.isSelected = !model.isSelected
-                                        var component = Qt.createComponent("LearnVocabWindow.qml")
-                                        if(component.status === Component.Ready){
-                                            var newWindow = component.createObject(_learnVocabMainWindow);
-                                            vocabList.setItemToShowInLearnWindow()
-                                            newWindow.show()
-                                            _learnVocabMainWindow.hide()
-                                        }
+                                        vocabList.setItemToShowInLearnWindow()
                                     }
                                 }
         }
@@ -124,6 +117,18 @@ ApplicationWindow {
             color: "#023D54"
             text: "\u002B"
             font.pixelSize: parent.width * 0.5
+        }
+    }
+
+    Connections{
+        target: vocabList
+        function onVocabDetailsListChanged(){
+            var component = Qt.createComponent("LearnVocabWindow.qml")
+            if(component.status === Component.Ready){
+                var newWindow = component.createObject(_learnVocabMainWindow);
+                newWindow.show()
+                _learnVocabMainWindow.hide()
+            }
         }
     }
 }
