@@ -86,6 +86,7 @@ void KanjiQuiz::getNextItem()
                 kanjiList.at(currentListIndex).kanjiEnglishName,
                 QDate::currentDate().toString("yyyy-MM-dd"),
                 nextDate.toString("yyyy-MM-dd"),
+                kanjiList.at(currentListIndex).jlptLevel,
                 ++currentCorrectCounter,
                 true
             });
@@ -143,6 +144,7 @@ void KanjiQuiz::skipItem()
             kanjiList.at(currentListIndex).kanjiEnglishName,
             QDate::currentDate().toString("yyyy-MM-dd"),
             nextDate.toString("yyyy-MM-dd"),
+            kanjiList.at(currentListIndex).jlptLevel,
             currentCorrectCounter,
             true
         });
