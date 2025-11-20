@@ -48,7 +48,7 @@ ApplicationWindow {
                 Label{
                     id:_learnVocabTxt
                     anchors.centerIn: parent
-                    text:"一人"//vocabList.kanjiText
+                    text:vocabList.kanjiText
                     font.pixelSize: parent.width * .30
                     color:"#023D54"
                 }
@@ -62,7 +62,7 @@ ApplicationWindow {
                 Label{
                     id:_learnVocabLevel
                     anchors.centerIn: parent
-                    text:"jlpt n5"//vocabList.kanjiText
+                    text:vocabList.jlptLevel
                     font.pixelSize: parent.width * .10
                     color:"#023D54"
                 }
@@ -77,14 +77,13 @@ ApplicationWindow {
             Layout.column: 1
             Layout.columnSpan: 2
             spacing: 10
-            model: ListModel{
-                ListElement{ wordType:"Noun"; meaning:"being alone; being by oneself" }
-                ListElement{ wordType:"Noun"; meaning:"one person​"}
+            model: VocabDetaisModel{
+                list: vocabList.getVocabDetailsList()
             }
 
             delegate: LearnVocabListCard{ id:_wrapper
-                                    wordType: model.wordType//model.vocabKanji
-                                    englishMeaning: model.meaning//model.vocabMeaning
+                                    wordType: model.wordType
+                                    englishMeaning: model.vocabMeaning
                                     lblTextColor: "#023D54"
                                     width: _itemList.width
                                     height: Qt.platform.os === "android" ? _itemList.height * 0.20 : _itemList.height * 0.12
@@ -111,6 +110,7 @@ ApplicationWindow {
             Layout.fillHeight: true
             color:"gray"
             radius: 12
+            z: 0
             Canvas {
                 id: _canvas
                 property real lastX
@@ -156,6 +156,7 @@ ApplicationWindow {
             Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
             Layout.preferredWidth: parent.width * .15
             Layout.column: 3
+            z:1
             onClicked: {
                 console.log("draw")
                 _drawBtn.btnBgColor = "#ffff66"
@@ -172,6 +173,7 @@ ApplicationWindow {
             Layout.preferredHeight: Qt.platform.os === "android" ? parent.height * .2 : parent.height * .1
             Layout.preferredWidth: parent.width * .15
             Layout.column: 4
+            z:1
             onClicked: {
                 console.log("erase")
                 _drawBtn.btnBgColor = "white"
@@ -192,7 +194,7 @@ ApplicationWindow {
         height: parent.height * .04
         textBottomPadding: Qt.platform.os === "android" ? height * .5 : height * .2
         onClicked:{
-            kanjiList.clearAllSelectedItems()
+            vocabList.clearAllSelectedItems()
             _learnVocabWindow.close()
             _learnVocabMainWindow.show()
         }
