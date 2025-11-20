@@ -65,6 +65,7 @@ qt_add_qml_module(appQtJapaneseLearningApp
         QML_FILES views/LearnVocabMainWindow.qml
         QML_FILES views/LearnVocabWindow.qml
         QML_FILES views/LearnVocabListCard.qml
+        SOURCES vocab/vocabdetailsmodel.h vocab/vocabdetailsmodel.cpp
 )
 
 # add resource items here
