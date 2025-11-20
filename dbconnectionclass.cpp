@@ -194,7 +194,8 @@ void DbConnectionClass::populateModelList(QString userIdVal)
                 query.value(4).toString(),//kanjiMeaning
                 query.value(5).toString(),//lastdateanswered
                 query.value(6).toString(),//nextdatetoanswer
-                query.value(7).toInt(),   //correctstreak
+                query.value(7).toString(),//jlptlvl
+                query.value(8).toInt(),   //correctstreak
                 false
             );
 
@@ -532,7 +533,8 @@ void DbConnectionClass::addNewItemsToDbKanjiList(QStringList list, QString userI
                     query.value(4).toString(),//kanjiMeaning
                     query.value(5).toString(),//lastdateanswered
                     query.value(6).toString(),//nextdatetoanswer
-                    query.value(7).toInt(),   //correctstreak
+                    query.value(7).toString(),//jlptlvl
+                    query.value(8).toInt(),   //correctstreak
                     false
                 );
                 qDebug()<<query.value(1).toString()<<query.value(2).toString()
