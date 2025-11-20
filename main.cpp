@@ -15,6 +15,7 @@
 #include <vocab/filtervocablistmodel.h>
 #include <vocab/vocabquiz.h>
 #include <vocab/vocabquizresultmodel.h>
+#include <vocab/vocabdetailsmodel.h>
 
 int main(int argc, char *argv[])
 {
@@ -35,6 +36,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<VocabListModel>("VocabClass",1,0,"VocabListModel");
     qmlRegisterUncreatableType<VocabList>("VocabClass", 1, 0, "VocabList",
         QStringLiteral("VocabList Should not be created in Qml"));
+
+    qmlRegisterType<VocabDetailsModel>("VocabClass",1,0,"VocabDetaisModel");
 
 
     qmlRegisterType<KanjiQuiz>("KanjiClass",1,0,"KanjiQuiz");
