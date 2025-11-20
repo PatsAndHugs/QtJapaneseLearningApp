@@ -232,7 +232,8 @@ void DbConnectionClass::populateVocabModelList(QString userIdVal)
                 query.value(3).toString(),//vocabreading
                 query.value(4).toString(),//lastdateanswered
                 query.value(5).toString(),//nextdatetoanswer
-                query.value(6).toInt(),//correctstreak
+                query.value(6).toString(),//jlpt
+                query.value(7).toInt(),//correctstreak
                 false
                 );
 
@@ -572,7 +573,8 @@ void DbConnectionClass::addNewItemsToDbVocabList(QStringList list, QString userI
                     query.value(3).toString(),//vocabreading
                     query.value(4).toString(),//lastdateanswered
                     query.value(5).toString(),//nextdatetoanswer
-                    query.value(6).toInt(),//correctstreak
+                    query.value(6).toString(),//nextdatetoanswer
+                    query.value(7).toInt(),//correctstreak
                     false
                     );
 
