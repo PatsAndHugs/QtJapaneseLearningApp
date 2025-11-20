@@ -22,6 +22,7 @@ bool VocabList::setItemAt(int index, const VocabListStruct &item)
         && item.vocabReading == oldItem.vocabReading
         && item.lastDateAnswered == oldItem.lastDateAnswered
         && item.nextDateToAnswer == oldItem.nextDateToAnswer
+        && item.jlptLevel == oldItem.jlptLevel
         && item.correctStreak == oldItem.correctStreak
         && item.isSelected == oldItem.isSelected)
         return false;
@@ -43,6 +44,11 @@ void VocabList::setKanjiMeaning(QString newVal)
 void VocabList::setKanjiReading(QString newVal)
 {
     m_kanjiReading = newVal;
+}
+
+void VocabList::setJlptLevel(QString newVal)
+{
+    m_jlptLevel = newVal;
 }
 
 void VocabList::appendItem()
@@ -72,8 +78,8 @@ void VocabList::addItems()
 
             mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
                            itemList[i].vocabReading,itemList[i].lastDateAnswered,
-                           itemList[i].nextDateToAnswer,itemList[i].correctStreak,
-                           itemList[i].isSelected});
+                           itemList[i].nextDateToAnswer,itemList[i].jlptLevel,
+                           itemList[i].correctStreak,itemList[i].isSelected});
 
             emit postVocabItemAppended();
         }
@@ -100,8 +106,8 @@ void VocabList::addItemsForLearning()
 
             mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
                            itemList[i].vocabReading,itemList[i].lastDateAnswered,
-                           itemList[i].nextDateToAnswer,itemList[i].correctStreak,
-                           itemList[i].isSelected});
+                           itemList[i].nextDateToAnswer,itemList[i].jlptLevel,
+                           itemList[i].correctStreak,itemList[i].isSelected});
 
             emit postVocabItemAppended();
         }
@@ -195,8 +201,8 @@ void VocabList::addNewListItems()
 
             mItems.append({itemList[i].vocabId,itemList[i].vocabKanji,itemList[i].vocabMeaning,
                            itemList[i].vocabReading,itemList[i].lastDateAnswered,
-                           itemList[i].nextDateToAnswer,itemList[i].correctStreak,
-                           itemList[i].isSelected});
+                           itemList[i].nextDateToAnswer,itemList[i].jlptLevel,
+                           itemList[i].correctStreak,itemList[i].isSelected});
 
             emit postVocabItemAppended();
         }
@@ -224,20 +230,43 @@ void VocabList::updateListDatesAfteResult(QList<VocabListStruct> list)
     }
 }
 
+void VocabList::clearAllSelectedItems()
+{
+    for(int i = 0;i < mItems.count(); i++)
+    {
+        mItems[i].isSelected = false;
+        mSelectionList.append(i);
+        emit postVocabIsSelectedChanged();
+        qDebug()<<"clearAllSelectedItems"<<mItems[i].isSelected;
+    }
+}
+
 void VocabList::setItemToShowInLearnWindow()
 {
+    QString itemVocabId;
     for(VocabListStruct &item : mItems)
     {
         if(item.isSelected == true)
         {
-            qDebug()<<"setItemToShowInLearnWindow";
             m_kanjiText = item.vocabKanji;
-            m_kanjiMeaning = item.vocabMeaning;
-            m_kanjiReading = item.vocabReading;
-            emit kanjiTextChanged();
-            emit kanjiMeaningChanged();
-            emit kanjiReadingChanged();
-            return;
+            m_jlptLevel = item.jlptLevel;
+            itemVocabId = item.vocabId;
+            break;
         }
     }
+
+    std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
+    apiConnClass->fetchVocabDetails(itemVocabId);
+
+    QEventLoop loop;
+    connect(apiConnClass.get(), &ApiConnectionClass::vocabDetailsListChanged, &loop, &QEventLoop::quit);
+
+    connect(apiConnClass.get(), &ApiConnectionClass::vocabDetailsListChanged,this, [&](){
+        vocabDetailsList = apiConnClass->getVocabDetailsList();
+        qDebug()<<"setItemToShowInLearnWindow"<< vocabDetailsList.count();
+        emit vocabDetailsListChanged();
+
+    });
+
+    loop.exec();
 }

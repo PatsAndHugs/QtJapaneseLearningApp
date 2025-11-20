@@ -14,6 +14,7 @@ struct VocabListStruct
     QString vocabReading;
     QString lastDateAnswered;
     QString nextDateToAnswer;
+    QString jlptLevel;
     int correctStreak;
     bool isSelected;
 
@@ -22,7 +23,7 @@ struct VocabListStruct
 
     VocabListStruct(QString valVocabId, QString valVocab,QString valVocabMeaning,
                     QString valVocabReading, QString valLastDateAnswered,
-                    QString valNextDateToAnswer, int valCorrectStreak,
+                    QString valNextDateToAnswer, QString valJlptLevel,int valCorrectStreak,
                     bool valIsSelected)
     {
         vocabId = valVocabId;
@@ -33,6 +34,21 @@ struct VocabListStruct
         nextDateToAnswer = valNextDateToAnswer;
         correctStreak = valCorrectStreak;
         isSelected = valIsSelected;
+        jlptLevel = valJlptLevel;
+    }
+};
+
+struct VocabDetailsStruct
+{
+    QString wordType;
+    QString vocabMeaning;
+
+    VocabDetailsStruct(){}
+
+    VocabDetailsStruct(QString wordTypeVal, QString vocabMeaningVal)
+    {
+        wordType = wordTypeVal;
+        vocabMeaning = vocabMeaningVal;
     }
 };
 
@@ -45,6 +61,8 @@ class VocabList : public QObject
     Q_PROPERTY(QString kanjiMeaning READ kanjiMeaning WRITE setKanjiMeaning NOTIFY kanjiMeaningChanged)
     //reading
     Q_PROPERTY(QString kanjiReading READ kanjiReading WRITE setKanjiReading NOTIFY kanjiReadingChanged)
+    //jlptlvl
+    Q_PROPERTY(QString jlptLevel READ jlptLevel WRITE setJlptLevel NOTIFY jlptLevelChanged)
 
 public:
 
@@ -64,6 +82,9 @@ public:
     QString kanjiReading(){return m_kanjiReading;}
     void setKanjiReading(QString newVal);
 
+    QString jlptLevel(){return m_jlptLevel;}
+    void setJlptLevel(QString newVal);
+
 signals:
     void preVocabItemAppended();
     void postVocabItemAppended();
@@ -80,6 +101,9 @@ signals:
     void kanjiMeaningChanged();
     void kanjiReadingChanged();
 
+    void vocabDetailsListChanged();
+    void jlptLevelChanged();
+
 public slots:
     void appendItem();
     void addItems();
@@ -92,8 +116,10 @@ public slots:
     int getSelectedItemsCount();
     void addNewListItems();
     void updateListDatesAfteResult(QList<VocabListStruct> list);
-
+    void clearAllSelectedItems();
     void setItemToShowInLearnWindow();
+
+    QList<VocabDetailsStruct> getVocabDetailsList(){return vocabDetailsList;}
 
 private:
     QVector<VocabListStruct> mItems;
@@ -104,6 +130,9 @@ private:
     QString m_kanjiText;
     QString m_kanjiMeaning;
     QString m_kanjiReading;
+    QString m_jlptLevel;
+
+    QList<VocabDetailsStruct> vocabDetailsList;
 };
 
 #endif // VOCABLIST_H
