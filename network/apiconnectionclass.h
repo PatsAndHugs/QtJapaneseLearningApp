@@ -42,6 +42,9 @@ public:
     QList<VocabListStruct> getVocabOutputList(){return vocabOutputList;}
     QList<VocabListStruct> getNewVocabListToAdd(){return newVocabListToadd;}
 
+    void fetchVocabDetails(QString vocabId);
+    QList<VocabDetailsStruct> getVocabDetailsList(){return vocabDetailsList;}
+
 private:
 
     QSettings settings;
@@ -63,6 +66,7 @@ private:
     void insertNewVocabForUser(QJsonArray arrayToInsert);
     void addNewItemsToVocabList();
     QList<VocabListStruct> newVocabListToadd;
+    QList<VocabDetailsStruct> vocabDetailsList;
 
 signals:
 
@@ -75,6 +79,7 @@ signals:
     void vocabOutputListChanged();
     void newVocabListChanged();
     void updateVocabDateFinished();
+    void vocabDetailsListChanged();
 
 };
 

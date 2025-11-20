@@ -198,6 +198,67 @@ void ApiConnectionClass::fetchAdditionalVocabListForUser()
     });
 }
 
+void ApiConnectionClass::fetchVocabDetails(QString vocabId)
+{
+    QJsonObject userData;
+    userData["vocabid"] = vocabId;
+    QJsonDocument userDoc(userData);
+    QByteArray userJsonData = userDoc.toJson();
+
+    QUrl serviceUrl("https://7eqjfwz2n3.execute-api.ap-southeast-2.amazonaws.com/dev/vocab_resource/details/per_item");
+    QNetworkRequest request(serviceUrl);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = manager->post(request, userJsonData);
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        qDebug()<<"network replied";
+        if (reply->error() == QNetworkReply::NoError)
+        {
+            QByteArray responseData = reply->readAll();
+            reply->abort();
+            reply->deleteLater();
+            QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+            if (!jsonDoc.isNull() && jsonDoc.isObject())
+            {
+                rootObject = jsonDoc.object();
+                QString jsonText;
+                if(rootObject.value("statusCode") == 200)
+                {
+                    jsonText = rootObject.value("body").toString();
+                    QByteArray jsonData = jsonText.toUtf8();
+                    QJsonDocument doc = QJsonDocument::fromJson(jsonData);
+
+                    if(!doc.isNull() && doc.isArray())
+                    {
+                        QJsonArray jsonArray = doc.array();
+                        for (const QJsonValue &value : std::as_const(jsonArray)) {
+                            //TODO struct for vocab details
+                            VocabDetailsStruct listStruct(
+                                value["WordType"].toString(),
+                                value["VocabMeaning"].toString()
+                            );
+                            vocabDetailsList.append(listStruct);
+                        }
+                    }
+                }
+                else if(rootObject.value("statusCode") == 401)
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
+                }
+                else
+                {
+                    qDebug()<<"Error query"<<rootObject.value("body").toString();
+                }
+            }
+        }
+        else{
+            qDebug() << "Error: " << reply->errorString();
+        }
+        emit vocabDetailsListChanged();
+    });
+}
+
 void ApiConnectionClass::loginUser(QString usernameVal, QString passwordVal)
 {
     QJsonObject userCredObj;
@@ -497,6 +558,7 @@ void ApiConnectionClass::fetchVocabListForUser()
                                 value["VocabReading"].toString(),
                                 value["LastDateAnswered"].toString(),
                                 value["NextDateAnswered"].toString(),
+                                value["JlptLevel"].toString(),
                                 value["CorrectStreak"].toInt(),
                                 false
                                 );
@@ -742,6 +804,7 @@ void ApiConnectionClass::addNewItemsToVocabList()
                             value["VocabReading"].toString(),
                             value["LastDateAnswered"].toString(),
                             value["NextDateAnswered"].toString(),
+                            value["JlptLevel"].toString(),
                             value["CorrectStreak"].toInt(),
                             false
                             );
