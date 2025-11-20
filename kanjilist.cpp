@@ -36,6 +36,7 @@ bool KanjiList::setItemAt(int index, const KanjiListStruct &item)
         && item.kanjiEnglishName == oldItem.kanjiEnglishName
         && item.lastDateAnswered == oldItem.lastDateAnswered
         && item.nextDateToAnswer == oldItem.nextDateToAnswer
+        && item.jlptLevel == oldItem.jlptLevel
         && item.correctStreak == oldItem.correctStreak
         && item.isSelected == oldItem.isSelected)
         return false;
@@ -64,6 +65,11 @@ void KanjiList::setOnyomiTxt(QString newVal)
     m_onyomiTxt = newVal;
 }
 
+void KanjiList::setJlptLevelTxt(QString newVal)
+{
+    m_jlptLevelTxt = newVal;
+}
+
 void KanjiList::appendItem()
 {
     emit preItemAppended();
@@ -90,8 +96,8 @@ void KanjiList::addItems()
             emit preItemAppended();
             mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
                            itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
-                           itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
-                           itemList[i].isSelected});
+                           itemList[i].nextDateToAnswer, itemList[i].jlptLevel,
+                           itemList[i].correctStreak, itemList[i].isSelected});
 
             emit postItemAppended();
         }
@@ -117,8 +123,8 @@ void KanjiList::addItemsForLearning()
             emit preItemAppended();
             mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
                            itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
-                           itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
-                           itemList[i].isSelected});
+                           itemList[i].nextDateToAnswer, itemList[i].jlptLevel,
+                           itemList[i].correctStreak, itemList[i].isSelected});
 
             emit postItemAppended();
         }
@@ -243,8 +249,8 @@ void KanjiList::addNewListItems()
 
             mItems.append({itemList[i].kanjiId,itemList[i].kanji,itemList[i].kunyomi,
                            itemList[i].onyomi,itemList[i].kanjiEnglishName,itemList[i].lastDateAnswered,
-                           itemList[i].nextDateToAnswer,itemList[i].correctStreak ,
-                           itemList[i].isSelected});
+                           itemList[i].nextDateToAnswer, itemList[i].jlptLevel,
+                           itemList[i].correctStreak, itemList[i].isSelected});
 
             emit postItemAppended();
         }
@@ -286,10 +292,12 @@ void KanjiList::setItemToShowInLearnWindow()
             m_kanjiTxt = item.kanji;
             m_kunyomiTxt = item.kunyomi;
             m_onyomiTxt = item.onyomi;
+            m_jlptLevelTxt = item.jlptLevel;
             emit englishNameTxtChanged();
             emit kanjiTxtChanged();
             emit kunyomiTxtChanged();
             emit onyomiTxtChanged();
+            emit jlptLevelTxtChanged();
             return;
         }
     }

@@ -20,6 +20,7 @@ struct KanjiListStruct
     QString kanjiEnglishName;
     QString lastDateAnswered;
     QString nextDateToAnswer;
+    QString jlptLevel;
     int correctStreak;
     bool isSelected;
 
@@ -28,7 +29,7 @@ struct KanjiListStruct
 
     KanjiListStruct(QString valKanjiId, QString valKanji, QString valKunyomi,
                     QString valOnyomi, QString valEnglishName, QString valLastDateAnswered,
-                    QString valNextDateToAnswer, int valCorrectStreak, bool valIsSelected)
+                    QString valNextDateToAnswer, QString valJlptLevel, int valCorrectStreak, bool valIsSelected)
     {
         kanjiId = valKanjiId;
         kanji = valKanji;
@@ -39,6 +40,7 @@ struct KanjiListStruct
         nextDateToAnswer = valNextDateToAnswer;
         correctStreak = valCorrectStreak;
         isSelected = valIsSelected;
+        jlptLevel = valJlptLevel;
     }
 };
 
@@ -50,6 +52,7 @@ class KanjiList : public QObject
     Q_PROPERTY(QString kanjiTxt READ kanjiTxt WRITE setKanjiTxt NOTIFY kanjiTxtChanged)
     Q_PROPERTY(QString kunyomiTxt READ kunyomiTxt WRITE setKunyomiTxt NOTIFY kunyomiTxtChanged)
     Q_PROPERTY(QString onyomiTxt READ onyomiTxt WRITE setOnyomiTxt NOTIFY onyomiTxtChanged)
+    Q_PROPERTY(QString jlptLevelTxt READ jlptLevelTxt WRITE setJlptLevelTxt NOTIFY jlptLevelTxtChanged)
 
 public:
 
@@ -73,6 +76,9 @@ public:
     QString onyomiTxt(){return m_onyomiTxt;}
     void setOnyomiTxt(QString newVal);
 
+    QString jlptLevelTxt(){return m_jlptLevelTxt;}
+    void setJlptLevelTxt(QString newVal);
+
 signals:
     void preItemAppended();
     void postItemAppended();
@@ -85,6 +91,7 @@ signals:
     void kanjiTxtChanged();
     void kunyomiTxtChanged();
     void onyomiTxtChanged();
+    void jlptLevelTxtChanged();
 
     void fetchedKanjiListFromApi();
     void fetchedNewKanjiListFromApi();
@@ -119,6 +126,7 @@ private:
     QString m_kanjiTxt;
     QString m_kunyomiTxt;
     QString m_onyomiTxt;
+    QString m_jlptLevelTxt;
 };
 
 #endif // KANJILIST_H
