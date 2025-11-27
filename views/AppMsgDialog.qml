@@ -16,6 +16,7 @@ Dialog {
     // Signal to emit when the dialog is cancelled
    // signal cancelled()
 
+
     modal: true
     width: parent.width * .5
     height: parent.height * .2
@@ -66,6 +67,9 @@ Dialog {
             }
         }
     }
-
+    function enableButtons(isEnabled: bool) : void{
+        acceptButton.enabled = isEnabled;
+        cancelButton.enabled = isEnabled;
+    }
 
 }
