@@ -65,6 +65,7 @@ signals:
     void vocabReadingTxtChanged();
     void getNextItemTriggered();
     void quizFinished();
+    void tallyWindowLoading();
 
 private:
 

@@ -71,6 +71,7 @@ signals:
     void onyomiTxtChanged();
     void quizFinished();
     void getNextItemTriggered();
+    void tallyWindowLoading();
 
 private:
 

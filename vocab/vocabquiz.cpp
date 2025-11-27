@@ -73,6 +73,7 @@ void VocabQuiz::getNextItem()
             }
             else
             {
+                emit tallyWindowLoading();
                 std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
                 apiConnClass->updateVocabDbItemsForUser(vocabQuizItemList);
 
@@ -130,6 +131,7 @@ void VocabQuiz::skipItem()
         }
         else
         {
+            emit tallyWindowLoading();
             std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
             apiConnClass->updateVocabDbItemsForUser(vocabQuizItemList);
 

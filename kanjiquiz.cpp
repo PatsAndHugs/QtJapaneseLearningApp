@@ -98,6 +98,7 @@ void KanjiQuiz::getNextItem()
             }
             else
             {
+                emit tallyWindowLoading();
                 std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
                 apiConnClass->UpdateKanjiDbItemsForUser(kanjiQuizItemList);
 
@@ -156,7 +157,7 @@ void KanjiQuiz::skipItem()
         }
         else
         {
-            //dbConnClass->UpdateDbItems(kanjiQuizItemList, userId);
+            emit tallyWindowLoading();
             std::unique_ptr<ApiConnectionClass> apiConnClass = std::make_unique<ApiConnectionClass>();
             apiConnClass->UpdateKanjiDbItemsForUser(kanjiQuizItemList);
 
