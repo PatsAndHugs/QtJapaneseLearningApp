@@ -181,32 +181,61 @@ ApplicationWindow {
         }
 
         AppButton{
+            id:_kanjiLearnBtn
             text: "Learn Kanji"
             Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            onClicked: kanjiList.addItemsForLearning()
+            onClicked: {
+                _loadingSpinner.running = !_loadingSpinner.running
+                _kanjiLearnBtn.enabled = false
+                kanjiList.addItemsForLearning()
+            }
         }
 
         AppButton{
+            id:_vocabLearnBtn
             text: "Learn Vocab"
             Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            onClicked: vocabList.addItemsForLearning()
+            onClicked: {
+                _loadingSpinner.running = !_loadingSpinner.running
+                _vocabLearnBtn.enabled = false
+                vocabList.addItemsForLearning()
+            }
         }
 
         AppButton{
+            id:_kanjiTestBtn
             text: "Kanji Test"
             Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            onClicked: kanjiList.addItems()
+            onClicked: {
+                _loadingSpinner.running = !_loadingSpinner.running
+                _kanjiTestBtn.enabled = false
+                kanjiList.addItems()
+            }
         }
 
         AppButton{
+            id:_vocabTestBtn
             text: "Vocab Test"
             Layout.preferredHeight: parent.height / 10
             Layout.fillWidth: true
-            onClicked: vocabList.addItems()
+            onClicked: {
+                _loadingSpinner.running = !_loadingSpinner.running
+                _vocabTestBtn.enabled = false
+                vocabList.addItems()
+            }
         }
+    }
+
+    BusyIndicator{
+        id: _loadingSpinner
+        anchors.centerIn: parent
+        running: false
+        width: parent.width * .20
+        height: parent.width * .20
+        palette.dark: "lightgreen"
     }
 
     Connections{
@@ -219,6 +248,8 @@ ApplicationWindow {
                     console.log("clicked")
                     _mainAppWindow.hide()
                     newWindow.show()
+                    _loadingSpinner.running = !_loadingSpinner.running
+                    _kanjiLearnBtn.enabled = true
                 }
             }
         }
@@ -234,6 +265,8 @@ ApplicationWindow {
                     console.log("clicked")
                     _mainAppWindow.hide()
                     newWindow.show()
+                    _loadingSpinner.running = !_loadingSpinner.running
+                    _kanjiTestBtn.enabled = true
                 }
             }
         }
@@ -249,6 +282,8 @@ ApplicationWindow {
                     console.log("clicked")
                     _mainAppWindow.hide()
                     newWindow.show()
+                    _loadingSpinner.running = !_loadingSpinner.running
+                    _vocabLearnBtn.enabled = true
                 }
             }
         }
@@ -264,6 +299,8 @@ ApplicationWindow {
                     console.log("clicked")
                     _mainAppWindow.hide()
                     newWindow.show()
+                    _loadingSpinner.running = !_loadingSpinner.running
+                    _vocabTestBtn.enabled = true
                 }
             }
         }

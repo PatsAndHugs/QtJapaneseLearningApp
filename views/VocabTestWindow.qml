@@ -46,15 +46,31 @@ ApplicationWindow {
         columns: 2
         rowSpacing: 20
 
-        Label{
-            id:_lblVocabKanji
-            color: "black"
-            font.pointSize: 100
-            horizontalAlignment: Text.AlignHCenter
-            Layout.alignment: Qt.AlignCenter
-            text:vocabQuiz.vocabKanjiTxt
+        Rectangle{
             Layout.columnSpan: 2
             Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            AppButton{
+                id:_kanjiShowBtn
+                anchors.centerIn: parent
+                text: qsTr("Show Kanji")
+                onClicked:{
+                    _lblVocabKanji.visible = true
+                    _kanjiShowBtn.visible = false
+                }
+            }
+            Label{
+                id:_lblVocabKanji
+                color: "black"
+                font.pointSize: 100
+                horizontalAlignment: Text.AlignHCenter
+                //Layout.alignment: Qt.AlignCenter
+                text:vocabQuiz.vocabKanjiTxt
+                anchors.centerIn: parent
+                //Layout.columnSpan: 2
+                //Layout.fillWidth: true
+                visible: false
+            }
         }
 
         Label{
@@ -96,6 +112,8 @@ ApplicationWindow {
             property string getItemResult
             onClicked: {
                 vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
+                _kanjiShowBtn.visible = true
+                _lblVocabKanji.visible = false
                 vocabQuiz.getNextItem()
             }
         }
@@ -112,6 +130,8 @@ ApplicationWindow {
                 if(vocabTestSwitchState === true){
                     vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
                     vocabQuiz.skipItem()
+                    _kanjiShowBtn.visible = true
+                    _lblVocabKanji.visible = false
                 }
                 else
                     _vocabTestConfirmMsgDialog.open()
@@ -133,81 +153,81 @@ ApplicationWindow {
         }
     }
 
-    // GridLayout{
-    //     id: _vocabCanvasGrid
-    //     //anchors.verticalCenter: parent.verticalCenter
-    //     anchors.right: parent.right
-    //     anchors.top: _mainGrid.bottom
-    //     anchors.topMargin: 50
-    //     anchors.bottom:parent.bottom
-    //     anchors.left: parent.left
-    //     anchors.rightMargin: 10
-    //     columns:5
-    //     AppButton{
-    //         id:_vocabDrawBtn
-    //         text:qsTr("DRAW")
-    //         btnBgColor: _vocabDrawBtn.hovered ? "#ffff66" : "white"
-    //         Layout.preferredHeight: 50
-    //         Layout.preferredWidth: 100
-    //         Layout.column: 3
-    //         onClicked: {
-    //             console.log("draw")
-    //             _vocabCanvas.penColor = "black"
-    //             _vocabCanvas.penLineWidth = 3
-    //         }
-    //     }
-    //     AppButton{
-    //         id:_vocabEraseBtn
-    //         text:qsTr("ERASE")
-    //         btnBgColor: _vocabEraseBtn.hovered ? "#ffff66" : "white"
-    //         Layout.preferredHeight: 50
-    //         Layout.preferredWidth: 100
-    //         Layout.column: 4
-    //         onClicked: {
-    //             console.log("draw")
-    //             _vocabCanvas.penColor = "#023D54"
-    //             _vocabCanvas.penLineWidth = 30
-    //         }
-    //     }
+    GridLayout{
+        id: _vocabCanvasGrid
+        //anchors.verticalCenter: parent.verticalCenter
+        anchors.right: parent.right
+        anchors.top: _mainGrid.bottom
+        anchors.topMargin: 50
+        anchors.bottom:parent.bottom
+        anchors.left: parent.left
+        anchors.rightMargin: 10
+        columns:5
+        AppButton{
+            id:_vocabDrawBtn
+            text:qsTr("DRAW")
+            btnBgColor: _vocabDrawBtn.hovered ? "#ffff66" : "white"
+            Layout.preferredHeight: 50
+            Layout.preferredWidth: 100
+            Layout.column: 3
+            onClicked: {
+                console.log("draw")
+                _vocabCanvas.penColor = "black"
+                _vocabCanvas.penLineWidth = 3
+            }
+        }
+        AppButton{
+            id:_vocabEraseBtn
+            text:qsTr("ERASE")
+            btnBgColor: _vocabEraseBtn.hovered ? "#ffff66" : "white"
+            Layout.preferredHeight: 50
+            Layout.preferredWidth: 100
+            Layout.column: 4
+            onClicked: {
+                console.log("draw")
+                _vocabCanvas.penColor = "#023D54"
+                _vocabCanvas.penLineWidth = 30
+            }
+        }
 
-    //     Canvas {
-    //         id: _vocabCanvas
-    //         property real lastX
-    //         property real lastY
-    //         property color penColor
-    //         property real penLineWidth
-    //         Layout.columnSpan: 5
-    //         Layout.fillWidth: true
-    //         Layout.fillHeight: true
-    //         onPaint: {
-    //             var ctx = getContext('2d')
-    //             ctx.lineWidth = penLineWidth
-    //             ctx.strokeStyle = penColor
-    //             ctx.beginPath()
-    //             ctx.moveTo(lastX, lastY)
-    //             lastX = area.mouseX
-    //             lastY = area.mouseY
-    //             ctx.lineTo(lastX, lastY)
-    //             ctx.stroke()
-    //         }
+        Canvas {
+            id: _vocabCanvas
+            property real lastX
+            property real lastY
+            property color penColor
+            property real penLineWidth
+            Layout.columnSpan: 5
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            onPaint: {
+                var ctx = getContext('2d')
+                ctx.lineWidth = penLineWidth
+                ctx.strokeStyle = penColor
+                ctx.beginPath()
+                ctx.moveTo(lastX, lastY)
+                lastX = area.mouseX
+                lastY = area.mouseY
+                ctx.lineTo(lastX, lastY)
+                ctx.stroke()
+            }
 
-    //         MouseArea {
-    //             id: area
-    //             anchors.fill: parent
-    //             acceptedButtons: Qt.LeftButton | Qt.RightButton
+            MouseArea {
+                id: area
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
 
-    //             onPressed:{
-    //                 _vocabCanvas.lastX = mouseX
-    //                 _vocabCanvas.lastY = mouseY
-    //             }
-    //             onPositionChanged: (mouse) => {
-    //                 _vocabCanvas.requestPaint()
-    //             }
-    //             onClicked: console.log("canvas clicked")
-    //         }
+                onPressed:{
+                    _vocabCanvas.lastX = mouseX
+                    _vocabCanvas.lastY = mouseY
+                }
+                onPositionChanged: (mouse) => {
+                    _vocabCanvas.requestPaint()
+                }
+                onClicked: console.log("canvas clicked")
+            }
 
-    //     }
-    // }
+        }
+    }
 
     AppMsgDialog
     {
@@ -220,7 +240,18 @@ ApplicationWindow {
         onAccepted:{
             vocabQuiz.vocabReadingTxt = _txtFieldVocabReading.text
             vocabQuiz.skipItem()
+            _kanjiShowBtn.visible = true
+            _lblVocabKanji.visible = false
         }
+    }
+
+    BusyIndicator{
+        id: _loadingSpinner
+        anchors.centerIn: parent
+        running: false
+        width: parent.width * .20
+        height: parent.width * .20
+        palette.dark: "lightgreen"
     }
 
     Connections{
@@ -234,6 +265,10 @@ ApplicationWindow {
             if(component.status === Component.Ready){
                 var newWindow = component.createObject(_vocabMainWindow);
                 if(newWindow){
+                    _vocabConfirmBtn.enabled = false
+                    _vocabSkipBtn.enabled = false
+                    _vocabTestConfirmMsgDialog.enableButtons(false);
+                    _loadingSpinner.running = !_loadingSpinner.running
                     _vocabTestAppWindow.close()
                     newWindow.show()
                 }
@@ -241,6 +276,15 @@ ApplicationWindow {
             else {
                 console.log("Error loading component:", component.errorString());
             }
+        }
+        // _kanjiShowBtn.visible = true
+        // _lblVocabKanji.visible = false
+        function onTallyWindowLoading(){
+            _vocabConfirmBtn.enabled = false
+            _vocabSkipBtn.enabled = false
+            //disable skip msgbox btn
+            _loadingSpinner.running = !_loadingSpinner.running
+            _vocabTestConfirmMsgDialog.enableButtons(false);
         }
     }
 }

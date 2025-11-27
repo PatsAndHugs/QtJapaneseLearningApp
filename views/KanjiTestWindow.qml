@@ -70,8 +70,6 @@ ApplicationWindow {
                 anchors.centerIn: parent
                 visible: false
             }
-
-
         }
 
         Label{
@@ -172,7 +170,6 @@ ApplicationWindow {
 
     GridLayout{
         id: _canvasGrid
-        //anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
         anchors.top: _mainGrid.bottom
         anchors.topMargin: 50
@@ -263,6 +260,15 @@ ApplicationWindow {
         }
     }
 
+    BusyIndicator{
+        id: _loadingSpinner
+        anchors.centerIn: parent
+        running: false
+        width: parent.width * .20
+        height: parent.width * .20
+        palette.dark: "lightgreen"
+    }
+
     Connections{
         target: kanjiQuiz
         function onGetNextItemTriggered(){
@@ -275,6 +281,10 @@ ApplicationWindow {
             if(component.status === Component.Ready){
                 var newWindow = component.createObject(_kanjiMainWindow);
                 if(newWindow){
+                    _confirmBtn.enabled = true
+                    _skipBtn.enabled = true
+                    _kanjiTestConfirmMsgDialog.enableButtons(true);
+                    _loadingSpinner.running = !_loadingSpinner.running
                     _testAppWindow.close()
                     newWindow.show()
                 }
@@ -282,6 +292,13 @@ ApplicationWindow {
             else {
                 console.log("Error loading component:", component.errorString());
             }
+        }
+        function onTallyWindowLoading(){
+            _confirmBtn.enabled = false
+            _skipBtn.enabled = false
+            //disable skip msgbox btn
+            _loadingSpinner.running = !_loadingSpinner.running
+            _kanjiTestConfirmMsgDialog.enableButtons(false);
         }
     }
 }
